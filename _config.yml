@@ -61,6 +61,10 @@ default_asides: [custom/asides/category_list.html, asides/recent_posts.html, cus
 # post_asides:
 # page_asides:
 
+blog_index_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
+post_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
+page_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
+
 # ----------------------- #
 #   3rd Party Settings    #
 # ----------------------- #
