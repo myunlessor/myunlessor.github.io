@@ -95,7 +95,11 @@ default_asides: [asides/recent_posts.html, custom/asides/about.html]
 # disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+# google_analytics_tracking_id:
 
 # Facebook Like
 # facebook_like: false
+
+
+# 分享到微博功能
+weibo_share: true

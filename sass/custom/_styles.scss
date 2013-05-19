@@ -1,2 +1,39 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+#main, .sidebar {
+  // background-image: none;
+  background-color: #eee !important;
+}
+
+#content {
+  background: url('/images/line-tile.png') top left !important;
+  background-image: none;
+  background-color: rgba(240, 237, 227, 0.8) !important;
+}
+
+#main a {
+  text-decoration: none !important;
+}
+
+#main a:visited, #main a:hover, #main a:active {
+  border-bottom: 1px solid !important;
+  color: #1863a1 !important;
+}
+
+code {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  -webkit-border-radius: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(240, 237, 227, 0.8) !important;
+  margin: 0 0.4em !important;
+}
+
+body>footer a {
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+
+#content .blog-index a[rel=full-article] {
+  background: #aaa;
+}
