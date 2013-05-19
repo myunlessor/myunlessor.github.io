@@ -1,25 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>
-            http://myunlessor.github.io/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/
-        </loc>
+        <loc>http://myunlessor.me/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/</loc>
         <lastmod>2013-05-19T12:01:48+08:00</lastmod>
     </url>
     <url>
-        <loc>http://myunlessor.github.io/blog/2013/05/19/file-batch-stuff/</loc>
+        <loc>http://myunlessor.me/blog/2013/05/19/file-batch-stuff/</loc>
         <lastmod>2013-05-19T12:03:10+08:00</lastmod>
     </url>
     <url>
-        <loc>http://myunlessor.github.io/blog/archives/</loc>
+        <loc>http://myunlessor.me/blog/archives/</loc>
         <lastmod>2013-05-19T12:03:10+08:00</lastmod>
     </url>
     <url>
-        <loc>http://myunlessor.github.io/</loc>
+        <loc>http://myunlessor.me/</loc>
         <lastmod>2013-05-19T12:03:10+08:00</lastmod>
     </url>
     <url>
-        <loc>http://myunlessor.github.io/robots.txt</loc>
+        <loc>http://myunlessor.me/robots.txt</loc>
         <lastmod>2013-05-19T09:13:50+08:00</lastmod>
     </url>
 </urlset>
