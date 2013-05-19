@@ -9,7 +9,7 @@
   <meta name="author" content="刘郁">
 
   
-  <meta name="description" content="What is Octopress? Octopress is Jekyll blogging at its finest. Octopress sports a clean responsive theme written in semantic HTML5, focused on &hellip;">
+  <meta name="description" content="引子 在日常工作中我们无疑会碰到形形色色的针对文件操作的重复性工作，比如说批量复制、批量替换、批量重命名、批量删除文件或文件夹等的机械活。机械意味着我们不应该执拗于手工地去完成它们，我们需要尽力地从中摆脱出来。 之前做过批量重命名的活，在那之前经常用Adobe Bridge用于文件管理， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +71,57 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/05/19/file-batch-stuff/">文件批处理那些事儿</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-19T11:14:00+08:00" pubdate data-updated="true">May 19<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>引子</h2>
+
+<p>在日常工作中我们无疑会碰到形形色色的针对文件操作的重复性工作，比如说批量复制、批量替换、批量重命名、批量删除文件或文件夹等的机械活。机械意味着我们不应该执拗于手工地去完成它们，我们需要<strong>尽力</strong>地从中摆脱出来。</p>
+
+<p>之前做过批量重命名的活，在那之前经常用<code>Adobe Bridge</code>用于文件管理，知道其中就有个叫<code>Batch Rename</code>的工具。我很推荐使用它，但它有个缺点，只能针对文件进行重命名，对文件夹无效。但瑕不掩瑜，它真的很棒，能出色地完成我指定规则的重命名工作。</p>
+
+<p>之后为了应对文件批操作，我写了个<code>文件批处理小工具</code>。我对这玩意的评价是，它只能处理很窄范围的特点需求，稍微来点需求变更，它便束手无策、黯然失色。顺便再吐嘈一句，我用了把牛刀干了件杀鸡的事。</p>
+
+<p>直到最近做了些很坑爹的事，我们一直给设计部的设计变更擦屁股这话就不提了。橙视圈十二生肖和十二星座两个应用被改版得几尽与原先版本脱节，数据已不由后台接口提供，得自己手活制造一大批json序列文件用于界面查询，算下来有接近3k个文件。开始重复地做复制、重命名文件、填充数据，依此反复，一下午时间弄完不到400个文件。</p>
+
+<p>这样下去可不是办法，久闻shell命令名不虚传，稍试了下水，便惊叹shell的无底深渊，一些简单的命令便帮我完成了一些不简单的事。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/19/file-batch-stuff/">继续阅读 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/">Octopress搭建博客实践心得</a></h1>
     
     
@@ -109,35 +160,12 @@
 
 <h2>Documentation</h2>
 
-<p>Check out <a href="http://octopress.org/docs">Octopress.org</a> for guides and documentation.</p>
-
-<h2>Contributing</h2>
-
-<p><a href="https://travis-ci.org/imathis/octopress"><img src="https://travis-ci.org/imathis/octopress.png?branch=master" alt="Build Status" /></a></p>
-
-<p>We love to see people contributing to Octopress, whether it&rsquo;s a bug report, feature suggestion or a pull request. At the moment, we try to keep the core slick and lean, focusing on basic blogging needs, so some of your suggestions might not find their way into Octopress. For those ideas, we started a <a href="https://github.com/imathis/octopress/wiki/3rd-party-plugins">list of 3rd party plug-ins</a>, where you can link your own Octopress plug-in repositories. For the future, we&rsquo;re thinking about ways to easier add them them into our main releases.</p>
-
-<h2>License</h2>
-
-<p>(The MIT License)</p>
-
-<p>Copyright © 2009-2013 Brandon Mathis</p>
-
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-
-<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-
-<p>THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-
-<h4>If you want to be awesome.</h4>
-
-<ul>
-<li>Proudly display the &lsquo;Powered by Octopress&rsquo; credit in the footer.</li>
-<li>Add your site to the Wiki so we can watch the community grow.</li>
-</ul>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/">继续阅读 &rarr;</a>
+    </footer>
   
 
 
@@ -154,6 +182,10 @@
     <section>
   <h1>最近文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/19/file-batch-stuff/">文件批处理那些事儿</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/">Octopress搭建博客实践心得</a>
