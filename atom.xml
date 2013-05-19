@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.github.io/atom.xml" rel="self"/>
   <link href="http://myunlessor.github.io/"/>
-  <updated>2013-05-19T10:44:21+08:00</updated>
+  <updated>2013-05-19T10:57:03+08:00</updated>
   <id>http://myunlessor.github.io/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -12,5 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress搭建博客实践心得]]></title>
+    <link href="http://myunlessor.github.io/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de/"/>
+    <updated>2013-05-19T10:53:00+08:00</updated>
+    <id>http://myunlessor.github.io/blog/2013/05/19/octopressda-jian-bo-ke-shi-jian-xin-de</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
 </feed>
