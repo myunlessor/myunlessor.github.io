@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 杂谈 | Silent Reverie]]></title>
-  <link href="http://myunlessor.github.io/blog/categories/za-tan/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Tricks | Silent Reverie]]></title>
+  <link href="http://myunlessor.github.io/blog/categories/tricks/atom.xml" rel="self"/>
   <link href="http://myunlessor.github.io/"/>
-  <updated>2013-05-19T11:53:32+08:00</updated>
+  <updated>2013-05-19T11:57:05+08:00</updated>
   <id>http://myunlessor.github.io/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
