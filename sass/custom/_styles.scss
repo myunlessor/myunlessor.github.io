@@ -16,9 +16,10 @@
   text-decoration: none !important;
 }
 
-#main a:visited, #main a:hover, #main a:active {
+#main a:hover {
   border-bottom: 1px solid !important;
   color: #1863a1 !important;
+  text-decoration: none !important;
 }
 
 code {
