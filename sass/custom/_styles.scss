@@ -36,5 +36,13 @@ body>footer a {
 }
 
 #content .blog-index a[rel=full-article] {
-  background: #aaa;
+  border: none !important;
+  background: #aaa !important;
+}
+
+#content .blog-index a[rel=full-article]:hover {
+  background: #1863a1 !important;
+  color: #fff !important;
+  border: none !important;
+  text-decoration: none !important;
 }
