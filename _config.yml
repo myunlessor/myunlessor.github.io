@@ -6,14 +6,16 @@ url: http://myunlessor.me
 title: Silent Reverie
 subtitle: Creating memories with the awesome stuff I've learnt.
 author: 刘郁
-simple_search: http://google.com/search
-description:
+simple_search: http://google.com/
+keywords: html5, css3, javascript, linux, photoshop
+description: Emil6us's Space
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime
 # Additionally, %o will give you the ordinal representation of the day
-date_format: "ordinal"
+# date_format: "ordinal"
+date_format: "%Y年%m月%d日"
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
@@ -33,7 +35,7 @@ destination: public
 plugins: plugins
 code_dir: downloads/code
 category_dir: blog/categories
-category_title_prefix: "文章分类: "
+category_title_prefix: "分类: "
 markdown: rdiscount
 rdiscount:
   extensions:
