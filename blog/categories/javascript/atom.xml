@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-05-20T23:46:31+08:00</updated>
+  <updated>2013-05-20T23:48:23+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -139,7 +139,7 @@
 </span><span class='line'><span class="kd">var</span> <span class="nx">divides</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// 宫格间隙(默认无间隙)</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">gutter</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">gutter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// 每宫格宽度</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">slotWidth</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docWidth</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>

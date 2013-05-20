@@ -17,7 +17,7 @@ var docHeight = docRef.height;
 var divides = 3;
 
 // 宫格间隙(默认无间隙)
-var gutter = 2;
+var gutter = 0;
 
 // 每宫格宽度
 var slotWidth = Math.floor(docWidth / divides);
