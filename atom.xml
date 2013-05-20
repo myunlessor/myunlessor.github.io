@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-05-20T20:18:59+08:00</updated>
+  <updated>2013-05-20T23:25:47+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -12,6 +12,190 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用Photoshop: 将整图一分为九]]></title>
+    <link href="http://myunlessor.me/blog/2013/05/20/sudoku-slicing-within-photoshop/"/>
+    <updated>2013-05-20T20:31:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2013/05/20/sudoku-slicing-within-photoshop</id>
+    <content type="html"><![CDATA[<h2>引子</h2>
+
+<p>前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。</p>
+
+<!-- more -->
+
+
+<h2>思路一(动作)</h2>
+
+<p>我们切图一般都在<code>photoshop</code>中完成。以往我遇到这种大量的重复性工作时，我绝对不会坐以待毙，我会想方设法，不达目的绝不罢休。通常面对这种问题时，我首先想到的就是生成一个<code>action</code>(动作)，然后利用它批量完成。</p>
+
+<p>该<code>action</code>(动作)的大致思路是将各宫格图片分散到不同的图层中，然后便可以通过菜单命令<code>File | Scripts | Export Layers to Files…</code>将图层一一导出为文件，具体如下：</p>
+
+<ul>
+<li>计算一张图片的三等分宽高，生成并保存选区</li>
+<li>将选区定位在图片左上角，然后通过菜单命令<code>Layer | New | Layer via Cut(Copy)</code>将该区域隔离到新的图层</li>
+<li>重新载入选区，移位选区至新的位置，执行第二步同样命令</li>
+<li>重复执行第三步，直到图片九等分分散在不同图层</li>
+</ul>
+
+
+<p>但是，生成这样的动作不仅麻烦，而且也不甚高效，原因如下：</p>
+
+<ul>
+<li>需要为九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)不同规格生成不同的动作</li>
+<li>其他原因忘了~^~…</li>
+</ul>
+
+
+<p>于是这种思路只成为了一种念想，一闪即过。</p>
+
+<h2>思路二(切片工具)</h2>
+
+<p>然后有考虑利用<code>Divide Slice…</code>(划分切图)及<code>Slices from Guides</code>(辅助线自动生成切片)功能——一种传统古老的切图方式。然后通过菜单命令<code>File | Save for Web…</code>将各切片导出为图片。这种方式可行是可行，但事实是提供的图片不是很理想，宫格中有1个像素的透明<code>gutter</code>(间隙)。如果不考虑<code>gutter</code>(间隙)的话，九宫格切图只需四条均分辅助线，否则需要八条，这样就会导出很多垃圾图片——1像素宽或(和)1像素高的图。这样效果不是很理想(自许准理想主义者)，于是这种方法也不了了之了。</p>
+
+<blockquote><p>事实是，这种方法确实可行，考虑四条均分辅助线生成切片，最后可以生成个<code>action</code>(动作)对这些图片做最后的<code>sanitization</code>(“消毒处理”)，傻眼了当时…</p></blockquote>
+
+<h2>思路三(脚本)</h2>
+
+<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^&ndash;^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
+
+<figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='http://myunlessor.me/downloads/code/divide_slice.js'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">#</span><span class="nx">target</span> <span class="nx">photoshop</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">!==</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// 采用像素单位进行计算</span>
+</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">=</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 当前文档引用</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">docRef</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">activeDocument</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 文档宽度</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">docWidth</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// 文档高度</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">docHeight</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 细分次数(默认 3 x 3，即九宫格切分)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">divides</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 宫格间隙(默认无间隙)</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">gutter</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 每宫格宽度</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">slotWidth</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docWidth</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// 每宫格高度</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">slotHeight</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docHeight</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 保存当前图层(即整图)引用</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">layerRef</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 遍历行</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">docWidth</span><span class="p">;</span> <span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">y</span> <span class="o">-=</span> <span class="nx">slotHeight</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// 遍历列</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">docHeight</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">-=</span> <span class="nx">slotWidth</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 重置当前图片为原图层(即整图)</span>
+</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span> <span class="o">=</span> <span class="nx">layerRef</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 从右往左、从下往上设置选区</span>
+</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">select</span><span class="p">([</span>
+</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span> <span class="c1">// 左</span>
+</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span>  <span class="c1">// 上</span>
+</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">],</span> <span class="c1">// 右</span>
+</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="c1">// 下</span>
+</span><span class='line'>    <span class="p">],</span> <span class="nx">SelectionType</span><span class="p">.</span><span class="nx">REPLACE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// layer via copy ^-^</span>
+</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">copy</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">artLayers</span><span class="p">.</span><span class="nx">add</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">paste</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 水平轴向间隙偏移</span>
+</span><span class='line'>    <span class="nx">x</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">// 垂直轴向间隙偏移</span>
+</span><span class='line'>  <span class="nx">y</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 删除原图层(即整图)</span>
+</span><span class='line'><span class="nx">layerRef</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>用法很简单，只需下载这段脚本到本地，打开需要切分的图片，然后执行菜单命令<code>File | Scripts | Browse…</code>，在打开的弹出框中找到该脚本，双击执行即可。</p>
+
+<p>如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
+
+<h2>参考书目</h2>
+
+<ol>
+<li><a href="http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/products/photoshop/pdfs/cs6/Photoshop-CS6-Scripting-Guide.pdf">Photoshop CS6 Scripting Guide</a></li>
+<li><a href="http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/products/photoshop/pdfs/cs6/Photoshop-CS6-JavaScript-Ref.pdf">Photoshop CS6 JavaScript Ref</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[文件批处理那些事儿]]></title>
@@ -26,12 +210,12 @@
 
 <p>之后为了应对文件批操作，我写了个<code>文件批处理小工具</code>。我对这玩意的评价是，它只能处理很窄范围的特点需求，稍微来点需求变更，它便束手无策、黯然失色。顺便再吐嘈一句，我用了把牛刀干了件杀鸡的事。</p>
 
+<!--more-->
+
+
 <p>直到最近做了些很坑爹的事，我们一直给设计部的设计变更擦屁股这话就不提了。橙视圈十二生肖和十二星座两个应用被改版得几尽与原先版本脱节，数据已不由后台接口提供，得自己手活制造一大批json序列文件用于界面查询，算下来有接近3k个文件。开始重复地做复制、重命名文件、填充数据，依此反复，一下午时间弄完不到400个文件。</p>
 
 <p>这样下去可不是办法，久闻shell命令名不虚传，稍试了下水，便惊叹shell的无底深渊，一些简单的命令便帮我完成了一些不简单的事。</p>
-
-<!--more-->
-
 
 <h2>正题</h2>
 
