@@ -53,7 +53,7 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
+default_asides: [custom/asides/category_list.html, asides/recent_posts.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -61,9 +61,9 @@ default_asides: [custom/asides/category_list.html, asides/recent_posts.html, cus
 # post_asides:
 # page_asides:
 
-blog_index_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
-post_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
-page_asides: [custom/asides/category_list.html, asides/recent_posts.html, custom/asides/about.html]
+blog_index_asides: [custom/asides/category_list.html, asides/recent_posts.html]
+post_asides: [custom/asides/category_list.html, asides/recent_posts.html]
+page_asides: [custom/asides/category_list.html, asides/recent_posts.html]
 
 # ----------------------- #
 #   3rd Party Settings    #
