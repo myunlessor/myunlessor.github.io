@@ -1,5 +1,5 @@
 function addBlankTargetForLinks() {
-  $('a[href]').each(function(){
+  $('a[href^=http]').each(function(){
     $(this).attr('target', '_blank');
   });
 }
