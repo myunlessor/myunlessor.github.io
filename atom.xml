@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-05-20T23:51:05+08:00</updated>
+  <updated>2013-05-20T23:52:54+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[使用Photoshop: 将整图一分为九]]></title>
-    <link href="http://myunlessor.me/blog/2013/05/20/divide-slice-by-photoshop-scripts/"/>
+    <link href="http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/"/>
     <updated>2013-05-20T20:31:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/05/20/divide-slice-by-photoshop-scripts</id>
+    <id>http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts</id>
     <content type="html"><![CDATA[<h2>引子</h2>
 
 <p>前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。</p>
@@ -183,9 +183,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>用法很简单，只需下载这段脚本到本地，打开需要切分的图片，然后执行菜单命令<code>File | Scripts | Browse…</code>，在打开的弹出框中找到该脚本，双击执行即可。</p>
-
-<p>如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
+<p>用法很简单，只需下载这段脚本到本地，打开需要切分的图片，然后执行菜单命令<code>File | Scripts | Browse…</code>，在打开的弹出框中找到该脚本，双击执行即可。
+r
+如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
 
 <h2>参考书目</h2>
 
