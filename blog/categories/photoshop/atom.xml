@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: photoshop | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/photoshop/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-05-20T23:29:57+08:00</updated>
+  <updated>2013-05-20T23:34:11+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -59,7 +59,7 @@
 
 <p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^&ndash;^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='/downloads/code/divide_slice.js'>download</a></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='/downloads/code/divide_slice.js'>下载</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
