@@ -49,3 +49,7 @@ body>footer a {
   border: none !important;
   text-decoration: none !important;
 }
+
+.download-source, html .gist .gist-file .gist-meta a[href*=raw], figure.code figcaption a {
+  padding-left: 0em;
+}
