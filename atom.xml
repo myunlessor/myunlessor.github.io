@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-05-20T23:52:54+08:00</updated>
+  <updated>2013-05-21T18:16:00+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -360,10 +360,10 @@ r
 </span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> mkdir -p package_files/<span class="o">{}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># 拷贝文件夹需要带上`-r`选项表示递归拷贝</span>
-</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -r package_temptate/* package_files/<span class="o">{}</span>
+</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -a package_temptate/* package_files/<span class="o">{}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># 将应用拷贝至相应的`brolife`文件夹中</span>
-</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -r source_files/<span class="o">{}</span> package_files/<span class="o">{}</span>/assets/brolife
+</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -a source_files/<span class="o">{}</span> package_files/<span class="o">{}</span>/assets/brolife
 </span></code></pre></td></tr></table></div></figure>
 
 

@@ -261,10 +261,10 @@
 </span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> mkdir -p package_files/<span class="o">{}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># 拷贝文件夹需要带上`-r`选项表示递归拷贝</span>
-</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -r package_temptate/* package_files/<span class="o">{}</span>
+</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -a package_temptate/* package_files/<span class="o">{}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># 将应用拷贝至相应的`brolife`文件夹中</span>
-</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -r source_files/<span class="o">{}</span> package_files/<span class="o">{}</span>/assets/brolife
+</span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -a source_files/<span class="o">{}</span> package_files/<span class="o">{}</span>/assets/brolife
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -385,6 +385,12 @@
         <a href="/blog/2013/05/19/file-batch-stuff/">文件批处理那些事儿</a>
       </li>
     
+  </ul>
+</section>
+<section>
+  <h1>Tags</h1>
+  <ul class="tag-cloud">
+
   </ul>
 </section>
 
