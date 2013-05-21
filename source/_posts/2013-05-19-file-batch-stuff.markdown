@@ -4,6 +4,7 @@ title: "文件批处理那些事儿"
 date: 2013-05-19 11:14
 comments: true
 categories: [pragmatic]
+tags: batch
 ---
 
 ##引子##
@@ -118,10 +119,10 @@ works
 > ls source_files | xargs -n 1 -I {} mkdir -p package_files/{}
 
 # 拷贝文件夹需要带上`-r`选项表示递归拷贝
-> ls source_files | xargs -n 1 -I {} cp -r package_temptate/* package_files/{}
+> ls source_files | xargs -n 1 -I {} cp -a package_temptate/* package_files/{}
 
 # 将应用拷贝至相应的`brolife`文件夹中
-> ls source_files | xargs -n 1 -I {} cp -r source_files/{} package_files/{}/assets/brolife
+> ls source_files | xargs -n 1 -I {} cp -a source_files/{} package_files/{}/assets/brolife
 ```
 
 ###2.应用解包
