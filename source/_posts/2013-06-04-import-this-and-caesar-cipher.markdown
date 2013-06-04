@@ -87,7 +87,7 @@ Namespaces are one honking great idea -- let's do more of those!
 利用取余运算符`%`，我们可以将如上代码简化为如下（注意此时没有了`if`条件语句）:
 
 ```js
-function () {
+(function () {
   var lower   = 10,
       upper   = 17,
       dist    = upper - lower + 1,
