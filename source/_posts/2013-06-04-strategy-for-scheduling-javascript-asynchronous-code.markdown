@@ -91,7 +91,7 @@ var schedule = (function (self) {
   // 入队
   self.join = function (fn, params) {
     params = params || {};
-    args = [].concat(params.args);
+    var args = [].concat(params.args);
 
     queue.push(function (_) {
       _.pause();
