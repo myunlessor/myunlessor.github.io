@@ -295,7 +295,7 @@ setTimeout(function foo() { console.log(&#39;foo&#39 &hellip;">
 </span><span class='line'>  <span class="c1">// 入队</span>
 </span><span class='line'>  <span class="nx">self</span><span class="p">.</span><span class="nx">join</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">params</span> <span class="o">=</span> <span class="nx">params</span> <span class="o">||</span> <span class="p">{};</span>
-</span><span class='line'>    <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">concat</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">args</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">concat</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">args</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">_</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>      <span class="nx">_</span><span class="p">.</span><span class="nx">pause</span><span class="p">();</span>
