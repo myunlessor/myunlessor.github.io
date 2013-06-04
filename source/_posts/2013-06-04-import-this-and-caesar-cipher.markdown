@@ -36,7 +36,7 @@ If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea -- let's do more of those!
 ```
 
-我想，这个模块应该是python里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：
+我想，这个模块应该是`python`里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：
 
 {% include_code python哲学 this.py %}
 
@@ -47,7 +47,7 @@ Namespaces are one honking great idea -- let's do more of those!
 
 可以看到，恺撒密码的原理很简单，对每个字母按照同一偏移量映射为别的字母，这样就完成了简单的加密。
 
-看到this模块，我最大的感悟就是python语言优雅简洁的表达能力，我试过用JavaScript语言表达恺撒密码，实在为它感到汗颜。大概是因为JavaScript表达的废话太多，才催生了CoffeeScript这种比JavaScript更具表达力的语言吧。当然这得力于CoffeeScript大量借鉴python、ruby这种表达能力强的语言的语法才使然哩！
+看到`this`模块，我最大的感悟就是`python`语言优雅简洁的表达能力，我试过用`JavaScript`语言表达恺撒密码，实在为它感到汗颜。大概是因为`JavaScript`表达的废话太多，才催生了`CoffeeScript`这种比`JavaScript`更具表达力的语言吧。当然这得力于`CoffeeScript`大量借鉴`python、ruby`这种表达能力强的语言的语法才使然哩！
 
 `this.py`中用到的取余运算符`%`有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：
 
