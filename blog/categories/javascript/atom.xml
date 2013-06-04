@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-06-04T20:32:12+08:00</updated>
+  <updated>2013-06-04T22:05:04+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -12,6 +12,190 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[import this 与恺撒密码]]></title>
+    <link href="http://myunlessor.me/blog/2013/06/04/import-this-and-caesar-cipher/"/>
+    <updated>2013-06-04T20:56:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2013/06/04/import-this-and-caesar-cipher</id>
+    <content type="html"><![CDATA[<p>学过<code>python</code>脚本语言的人都知道<code>python</code>中有一个叫<code>this</code>的模块（<code>module</code>）。该模块只做了件很简单的事，打印一段字符串，内容是有关python语言的一些禅语（也可以称它为<code>python</code>哲学）。</p>
+
+<!-- more -->
+
+
+<p>要显示它很简单，在<code>python</code>的<code>REPL</code>（<code>Read-Eval-Print Loop</code>）中键入<code>import this</code>，可以看到如下字符串:</p>
+
+<p>```
+The Zen of Python, by Tim Peters</p>
+
+<p>Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren&rsquo;t special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one&mdash; and preferably only one &mdash;obvious way to do it.
+Although that way may not be obvious at first unless you&rsquo;re Dutch.
+Now is better than never.
+Although never is often better than <em>right</em> now.
+If the implementation is hard to explain, it&rsquo;s a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
+```</p>
+
+<p>我想，这个模块应该是python里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>python哲学 (this.py)</span> <a href='/downloads/code/this.py'>下载</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;Gur Mra bs Clguba, ol Gvz Crgref</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">Ornhgvshy vf orggre guna htyl.</span>
+</span><span class='line'><span class="s">Rkcyvpvg vf orggre guna vzcyvpvg.</span>
+</span><span class='line'><span class="s">Fvzcyr vf orggre guna pbzcyrk.</span>
+</span><span class='line'><span class="s">Pbzcyrk vf orggre guna pbzcyvpngrq.</span>
+</span><span class='line'><span class="s">Syng vf orggre guna arfgrq.</span>
+</span><span class='line'><span class="s">Fcnefr vf orggre guna qrafr.</span>
+</span><span class='line'><span class="s">Ernqnovyvgl pbhagf.</span>
+</span><span class='line'><span class="s">Fcrpvny pnfrf nera&#39;g fcrpvny rabhtu gb oernx gur ehyrf.</span>
+</span><span class='line'><span class="s">Nygubhtu cenpgvpnyvgl orngf chevgl.</span>
+</span><span class='line'><span class="s">Reebef fubhyq arire cnff fvyragyl.</span>
+</span><span class='line'><span class="s">Hayrff rkcyvpvgyl fvyraprq.</span>
+</span><span class='line'><span class="s">Va gur snpr bs nzovthvgl, ershfr gur grzcgngvba gb thrff.</span>
+</span><span class='line'><span class="s">Gurer fubhyq or bar-- naq cersrenoyl bayl bar --boivbhf jnl gb qb vg.</span>
+</span><span class='line'><span class="s">Nygubhtu gung jnl znl abg or boivbhf ng svefg hayrff lbh&#39;er Qhgpu.</span>
+</span><span class='line'><span class="s">Abj vf orggre guna arire.</span>
+</span><span class='line'><span class="s">Nygubhtu arire vf bsgra orggre guna *evtug* abj.</span>
+</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf uneq gb rkcynva, vg&#39;f n onq vqrn.</span>
+</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf rnfl gb rkcynva, vg znl or n tbbq vqrn.</span>
+</span><span class='line'><span class="s">Anzrfcnprf ner bar ubaxvat terng vqrn -- yrg&#39;f qb zber bs gubfr!&quot;&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">97</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">d</span><span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">13</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>呈现在眼前的不是一段平淡无奇的print语句，而采用了恺撒密码算法（<code>Caesar cipher</code>）。以下内容摘自维基百科，详见<a href="http://goo.gl/n9Ldz">凯撒密码</a>:</p>
+
+<blockquote><p>在密码学中,恺撒密码(或称恺撒加密、恺撒变换、变换加密)是一种最简单且最广为人知的加密技术。它是一种替换加密的技 术,明文中的所有字母都在字母表上向后(或向前)按照一个固定数目进行偏移后被替换成密文。例如,当偏移量是3的时候,所有的字母A将被替换成 D,B变成E,以此类推。这个加密方法是以恺撒的名字命名的,当年恺撒曾用此方法与其将军们进行联系。<br>
+恺撒密码通常被作为其他更复杂的加密方法中的一个步骤,例如维吉尼尔密码。恺撒密码还在现代的 ROT13系统中被应用。但是 和所有的利用字母表进行替换的加密技术一样,恺撒密码非常容易被破解,而且在实际应用中也无法保证通信安全。</p></blockquote>
+
+<p>可以看到，恺撒密码的原理很简单，对每个字母按照同一偏移量映射为别的字母，这样就完成了简单的加密。</p>
+
+<p>看到this模块，我最大的感悟就是python语言优雅简洁的表达能力，我试过用JavaScript语言表达恺撒密码，实在为它感到汗颜。大概是因为JavaScript表达的废话太多，才催生了CoffeeScript这种比JavaScript更具表达力的语言吧。当然这得力于CoffeeScript大量借鉴python、ruby这种表达能力强的语言的语法才使然哩！</p>
+
+<p><code>this.py</code>中用到的取余运算符<code>%</code>有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：</p>
+
+<p>```js
+(function () {
+  var lower   = 10,</p>
+
+<pre><code>  upper   = 17,
+  current = 14;
+</code></pre>
+
+<p>  // 单位递增
+  function next() {</p>
+
+<pre><code>if (current &lt; upper) {
+  current += 1;
+} else {
+  current = lower;
+}
+return current;
+</code></pre>
+
+<p>  }</p>
+
+<p>  // 单位递减
+  function prev() {</p>
+
+<pre><code>if (current &gt; lower) {
+  current -= 1;
+} else {
+  current = upper;
+}
+return current;
+</code></pre>
+
+<p>  }</p>
+
+<p>  console.log(next()); // current = 15
+  console.log(next()); // current = 16
+  console.log(next()); // current = 17
+  console.log(next()); // current = 10
+}());
+```</p>
+
+<p>利用取余运算符<code>%</code>，我们可以将如上代码简化为如下（注意此时没有了<code>if</code>条件语句）:</p>
+
+<p>```js
+function () {
+  var lower   = 10,</p>
+
+<pre><code>  upper   = 17,
+  dist    = upper - lower + 1,
+  current = 14;
+</code></pre>
+
+<p>  function next() {</p>
+
+<pre><code>return (current = lower + (current - lower + 1 + dist) % dist);
+</code></pre>
+
+<p>  }</p>
+
+<p>  function prev() {</p>
+
+<pre><code>return (current = lower + (current - lower - 1 + dist) % dist);
+</code></pre>
+
+<p>  }</p>
+
+<p>  console.log(prev()); // current = 13
+  console.log(prev()); // current = 12
+  console.log(prev()); // current = 11
+  console.log(prev()); // current = 10
+  console.log(prev()); // current = 17
+}());
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JavaScript异步代码排程策略]]></title>
