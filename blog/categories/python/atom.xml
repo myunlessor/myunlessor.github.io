@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: python | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-06-05T00:05:43+08:00</updated>
+  <updated>2013-06-05T00:08:30+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -49,7 +49,7 @@ If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
 ```</p>
 
-<p>我想，这个模块应该是python里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
+<p>我想，这个模块应该是<code>python</code>里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>python哲学 (this.py)</span> <a href='/downloads/code/this.py'>下载</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -117,7 +117,7 @@ Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
 
 <p>可以看到，恺撒密码的原理很简单，对每个字母按照同一偏移量映射为别的字母，这样就完成了简单的加密。</p>
 
-<p>看到this模块，我最大的感悟就是python语言优雅简洁的表达能力，我试过用JavaScript语言表达恺撒密码，实在为它感到汗颜。大概是因为JavaScript表达的废话太多，才催生了CoffeeScript这种比JavaScript更具表达力的语言吧。当然这得力于CoffeeScript大量借鉴python、ruby这种表达能力强的语言的语法才使然哩！</p>
+<p>看到<code>this</code>模块，我最大的感悟就是<code>python</code>语言优雅简洁的表达能力，我试过用<code>JavaScript</code>语言表达恺撒密码，实在为它感到汗颜。大概是因为<code>JavaScript</code>表达的废话太多，才催生了<code>CoffeeScript</code>这种比<code>JavaScript</code>更具表达力的语言吧。当然这得力于<code>CoffeeScript</code>大量借鉴<code>python、ruby</code>这种表达能力强的语言的语法才使然哩！</p>
 
 <p><code>this.py</code>中用到的取余运算符<code>%</code>有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：</p>
 
