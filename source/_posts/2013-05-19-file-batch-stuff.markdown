@@ -118,7 +118,7 @@ works
 # 在应用打包目录下建立相应的应用文件夹
 > ls source_files | xargs -n 1 -I {} mkdir -p package_files/{}
 
-# 拷贝文件夹需要带上`-r`选项表示递归拷贝
+# 拷贝文件夹需要带上`-a`或`-pPR`选项表示递归拷贝
 > ls source_files | xargs -n 1 -I {} cp -a package_temptate/* package_files/{}
 
 # 将应用拷贝至相应的`brolife`文件夹中
