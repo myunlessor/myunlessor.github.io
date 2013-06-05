@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-06-05T00:11:19+08:00</updated>
+  <updated>2013-06-05T19:09:22+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -900,7 +900,7 @@ r
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># 在应用打包目录下建立相应的应用文件夹</span>
 </span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> mkdir -p package_files/<span class="o">{}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c"># 拷贝文件夹需要带上`-r`选项表示递归拷贝</span>
+</span><span class='line'><span class="c"># 拷贝文件夹需要带上`-a`或`-pPR`选项表示递归拷贝</span>
 </span><span class='line'>&gt; ls source_files | xargs -n 1 -I <span class="o">{}</span> cp -a package_temptate/* package_files/<span class="o">{}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># 将应用拷贝至相应的`brolife`文件夹中</span>

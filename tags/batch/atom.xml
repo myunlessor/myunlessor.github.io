@@ -4,7 +4,7 @@
   <title><![CDATA[标签云: batch | Silent Reverie]]></title>
   <link href="http://myunlessor.me/tags/batch/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-06-05T00:11:19+08:00</updated>
+  <updated>2013-06-05T19:09:22+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -145,7 +145,7 @@ works
 
 <blockquote><p>ls source_files | xargs -n 1 -I {} mkdir -p package_files/{}</p></blockquote>
 
-<h1>拷贝文件夹需要带上<code>-r</code>选项表示递归拷贝</h1>
+<h1>拷贝文件夹需要带上<code>-a</code>或<code>-pPR</code>选项表示递归拷贝</h1>
 
 <blockquote><p>ls source_files | xargs -n 1 -I {} cp -a package_temptate/* package_files/{}</p></blockquote>
 
