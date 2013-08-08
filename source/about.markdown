@@ -12,7 +12,7 @@ footer: false
 
 ##常用工具##
 
-* 编辑器: [Sublime Text 2](http://www.sublimetext.com/)
-* Markdown预览: [Marked](http://markedapp.com/)
-* FTP工具: [WinSCP](http://winscp.net/eng/index.php)
+* 编辑器: [Sublime Text 2](http://goo.gl/Frc2)
+* Markdown预览: [Marked](http://goo.gl/dmhu0)
+* FTP工具: [WinSCP](http://goo.gl/Xi46)
 * 喜欢的语言: JavaScript、Python、Ruby

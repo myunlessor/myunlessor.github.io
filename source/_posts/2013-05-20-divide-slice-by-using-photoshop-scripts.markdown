@@ -48,5 +48,5 @@ r
 
 ##参考书目##
 
-1. [Photoshop CS6 Scripting Guide](http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/products/photoshop/pdfs/cs6/Photoshop-CS6-Scripting-Guide.pdf)
-2. [Photoshop CS6 JavaScript Ref](http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/products/photoshop/pdfs/cs6/Photoshop-CS6-JavaScript-Ref.pdf)
+1. [Photoshop CS6 Scripting Guide](http://goo.gl/IFQav)
+2. [Photoshop CS6 JavaScript Ref](http://goo.gl/ukIhf)
