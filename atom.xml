@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-08-09T01:26:10+08:00</updated>
+  <updated>2013-08-09T01:30:33+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -68,10 +68,14 @@
 <p style="clear:both"></p>
 
 
-<p>动作准备好后，玩游戏就是机械运动了：
-  * <code>Alt + Print Screen</code> 截取游戏窗口
-  * 切换到Photoshop执行脚本
-  * 点点点点点、然后换图继续执行第一步</p>
+<p>动作准备好后，玩游戏就是机械运动了：</p>
+
+<ul>
+<li><code>Alt + Print Screen</code> 截取游戏窗口</li>
+<li>切换到Photoshop执行脚本</li>
+<li>点点点点点、然后换图继续执行第一步</li>
+</ul>
+
 
 <p>当然为了方便可以为动作设置快捷键。</p>
 
