@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Photoshop趣味用法：玩转QQ找茬游戏 - Silent Reverie</title>
+  <meta name="author" content="刘郁">
+
+  
+  <meta name="description" content="Emil6us's Space">
+  
+  <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
+
+  
+  <meta name="description" content="引子 相信不少童鞋都玩过QQ找茬游戏，游戏规则很简单：在2～4人的房间里，随机几组图片，每组图片分2张，找出每组图片中5处不同的地方，在规定的时间内谁找的茬多算谁赢。玩这个游戏的第一感觉就是各种眼花缭乱，我接受自己没有火眼金睛这一事实，在每组图规定的时间能平均能找出3个茬算是幸运之至了（ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Silent Reverie" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/javascripts/link_open_in_blank.js"></script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41039292-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Silent Reverie</a></h1>
+  
+    <h2>Creating memories with the awesome stuff I've learnt.</h2>
+  
+</hgroup>
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:myunlessor.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="搜索"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">所有文章</a></li>
+  <li><a href="/about.html">关于我</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Photoshop趣味用法：玩转QQ找茬游戏</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-08T22:52:00+08:00" pubdate data-updated="true">2013年08月08日</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>引子</h2>
+
+<p>相信不少童鞋都玩过QQ找茬游戏，游戏规则很简单：在2～4人的房间里，随机几组图片，每组图片分2张，找出每组图片中5处不同的地方，在规定的时间内谁找的茬多算谁赢。玩这个游戏的第一感觉就是各种眼花缭乱，我接受自己没有火眼金睛这一事实，在每组图规定的时间能平均能找出3个茬算是幸运之至了（我运气一向很差，无论做什么）。这样下来战绩总是令人沮丧，胜率老是上不去。尽管这些都是虚的，但心里多有不甘，于是就想到了一种投机取巧的办法——让Photoshop来充当自己的眼睛，自己则当指挥^_^。</p>
+
+<!-- more -->
+
+
+<p>其实最初用这方法玩找茬游戏还是三年前的事情了，只是近两天不知怎的突然心血来潮，有心将它记录下来留作纪念已矣。</p>
+
+<h2>正文</h2>
+
+<p>原理呢其实挺简单，找茬嘛就是找两张图的差异，这可是Photoshop最擅长做的事情啦（这也是我想到用它的原因）。在游戏过程中用Photoshop找茬需要解决的关键问题是如何做到迅速地让茬茬尽收眼底，显然Photoshop的Action最能胜任此类事情了。</p>
+
+<p>如果Problem是输入的话，那么输出则是Solution。</p>
+
+<p>现在的Problem是:</p>
+
+<p><img src="/images/muo_img/zhaocha/problem.jpg"></p>
+
+<p>而所谓的Solution的就是这样的(瞧，5茬尽收眼底！):</p>
+
+<p><img src="/images/muo_img/zhaocha/solution.jpg"></p>
+
+<p>从Problem出发，可以看出原图大小即为游戏窗口大小(<code>800 x 600</code>)，Solution中的结果图大小为原图中单张茬茬图的大小(<code>381 x 286</code>)，我们要做的就是从原图到结果图中的转换。</p>
+
+<p>首先需要建一张<code>381 x 286</code>大小的纯黑色图片（比如将其保存为x.png，如下图）作为结果图的容器然后在Photoshop中打开。</p>
+
+<p><img src="/images/muo_img/zhaocha/x.png"></p>
+
+<p>Photoshop要想获取游戏窗口的截图，需要剪贴板作为中介，在<code>Windows</code>下按快捷键<code>Alt + Print Screen</code>将当前激活窗口（这里即为游戏窗口）拷贝至剪贴板，这时在Photoshop就可以按<code>Ctrl + V</code>或<code>F4</code>键将截图拷贝至图层。</p>
+
+<p>第二步就是录制<code>Action</code>啦，一共分为8步，如下图:</p>
+
+<p><img class="left" src="/images/muo_img/zhaocha/zhaocha_action.png"></p>
+
+<ul>
+<li>粘贴：将通过<code>Alt + Print Screen</code>快捷键截取的游戏窗口粘贴到打开的<code>x.png</code>图片中作为图层</li>
+<li>图层对位：移动图层的位置使左张茬图完全显示在画布中</li>
+<li>复制图层：<code>Ctrl + J</code>复制图层到新的图层</li>
+<li>全选：<code>Ctrl + A</code>选区选中整个画布</li>
+<li>右对齐新复制的图层</li>
+<li>取消选择：<code>Ctrl + D</code>取消选区</li>
+<li>设置新复制图层的叠加模式为<code>Difference</code></li>
+<li>移位新复制图层使右张茬图与左张茬图重叠得到Solution所示效果</li>
+</ul>
+
+
+<p style="clear:both"></p>
+
+
+<p>动作准备好后，玩游戏就是机械运动了：
+  * <code>Alt + Print Screen</code> 截取游戏窗口
+  * 切换到Photoshop执行脚本
+  * 点点点点点、然后换图继续执行第一步</p>
+
+<p>当然为了方便可以为动作设置快捷键。</p>
+
+<p>我的做法，响应文件<code>Revert</code>事件：通过菜单命令<code>File | Scripts | Script Event Manager…</code>打开<code>脚本事件管理</code>弹出框，如下图，按以下方式进行设置：</p>
+
+<p><img src="/images/muo_img/zhaocha/script_events_manager_panel.png"></p>
+
+<ul>
+<li>勾选<code>Enable Events to Run Scripts/Actions</code></li>
+<li><code>Photoshop Event</code>下拉框选择<code>Add an Event…</code>添加自定义事件</li>
+<li>在打开的<code>Add an Event</code>弹出框中
+
+<ul>
+<li><code>Event Name</code>文本框填入<code>Revert</code></li>
+<li><code>Descriptive Label</code>文本框填入<code>Rvrt</code></li>
+<li>点击<code>OK</code>按钮完成添加</li>
+</ul>
+</li>
+<li><code>Photoshop Event</code>下拉框选择刚刚添加的<code>Event</code>事件</li>
+<li>选中单选框<code>Action</code>，然后选择之前刚录制的动作</li>
+</ul>
+
+
+<p>这时候<code>Alt + Print Screen</code> + <code>F12</code>的<code>“REPL”</code>完成，一切妥妥的、一切都变得机械！</p>
+
+<h2>尾声</h2>
+
+<p>当我利用这投机取巧的办法再次投入战斗时，真是屡试不爽、所向披靡。一相比较，游戏里的辅助道具实在弱爆了。我并不认为我这种玩法叫开挂，作弊一说也算勉强的了，晓之以理的讲法叫扬长避短、不亦乐乎。尽管缺失了些游戏的趣味性，但心理上得到的满足感却更强，这就够了。游戏说白了就是图个开心，每个人从中汲取开心的因子不一罢了。同时这也算是我用Photoshop比较有趣味的一种玩法吧！</p>
+
+<p>P.S.：行文着实仓促!</p>
+
+<h2>参考</h2>
+
+<ol>
+<li><a href="http://tinyurl.com/kwmfjj9">Photoshop Programming Guide</a></li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">刘郁</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-08T22:52:00+08:00" pubdate data-updated="true">2013年08月08日</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/photoshop/'>photoshop</a>, <a class='category' href='/blog/categories/pragmatic/'>pragmatic</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+
+  
+
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/04/import-this-and-caesar-cipher/" title="Previous Post: import this 与恺撒密码">&laquo; import this 与恺撒密码</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>文章分类</h1>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (3)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (4)</a></li><li><a href='/blog/categories/python'>PYTHON (1)</a></li></ul>
+</section><section>
+  <h1>近期文章</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/08/playing-zhao-cha-with-photoshop/">Photoshop趣味用法：玩转QQ找茬游戏</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/04/import-this-and-caesar-cipher/">Import This 与恺撒密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/">JavaScript异步代码排程策略</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/">使用Photoshop: 将整图一分为九</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/19/file-batch-stuff/">文件批处理那些事儿</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>标签云</h1>
+  <ul class="tag-cloud">
+    <a style="font-size: NaN%" href="/tags/batch/">batch</a>
+
+  </ul>
+</section>
+<section>
+  <h1>友情链接</h1>
+  <ul>
+    <li><a href="http://goo.gl/ExJZ1">谢宗星博客</a></li>
+    <li><a href="http://goo.gl/bWE18">周梦康</a></li>
+  </ul>
+</section>
+
+
+<section>
+    <h1>最近评论</h1>
+    <div id="recentcomments" class="dsq-widget"><script type="text/javascript" src="http://myunlessor.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=0&avatar_size=48&excerpt_length=200"></script></div>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - 刘郁 -
+  <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'myunlessor';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop/';
+        var disqus_url = 'http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
