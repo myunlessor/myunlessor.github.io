@@ -52,6 +52,7 @@ Photoshop要想获取游戏窗口的截图，需要剪贴板作为中介，在`W
 <p style="clear:both"></p>
 
 动作准备好后，玩游戏就是机械运动了：
+
   * `Alt + Print Screen` 截取游戏窗口
   * 切换到Photoshop执行脚本
   * 点点点点点、然后换图继续执行第一步
