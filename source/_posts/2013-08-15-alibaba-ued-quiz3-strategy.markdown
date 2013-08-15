@@ -8,7 +8,7 @@ categories: [javascript]
 
 今天在群里看到好多人都在玩这游戏，都玩得挺high，自己也点进链接玩了下，第一次玩这类游戏，觉得挺有意思的，遂记录下自己的玩法。
 
-首先，游戏链接如下：
+首先，[游戏链接](http://ued.campus.alibaba.com/quiz3/index.php)如下：
 ```
 http://ued.campus.alibaba.com/quiz3/index.php
 ```
@@ -66,6 +66,7 @@ github
 v
 css sprite
 stackoverflow
+underscore
 jade
 php
 less
