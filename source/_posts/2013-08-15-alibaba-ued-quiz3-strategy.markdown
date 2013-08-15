@@ -73,6 +73,7 @@ wordpress
 sublime text
 w3
 grunt
+npm
 ```
 
 ##第五关 —— 寻找，无尽的房间##
