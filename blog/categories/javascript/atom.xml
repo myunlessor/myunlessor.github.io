@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-08-15T23:53:37+08:00</updated>
+  <updated>2013-08-16T00:45:01+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -20,7 +20,7 @@
     <id>http://myunlessor.me/blog/2013/08/15/alibaba-ued-quiz3-strategy</id>
     <content type="html"><![CDATA[<p>今天在群里看到好多人都在玩这游戏，都玩得挺high，自己也点进链接玩了下，第一次玩这类游戏，觉得挺有意思的，遂记录下自己的玩法。</p>
 
-<p>首先，游戏链接如下：
+<p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：
 <code>
 http://ued.campus.alibaba.com/quiz3/index.php
 </code></p>
@@ -86,6 +86,7 @@ github
 v
 css sprite
 stackoverflow
+underscore
 jade
 php
 less
@@ -94,7 +95,6 @@ sublime text
 w3
 grunt
 npm
-underscore
 </code></p>
 
 <h2>第五关 —— 寻找，无尽的房间</h2>
