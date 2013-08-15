@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-08-15T23:40:14+08:00</updated>
+  <updated>2013-08-15T23:53:37+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -108,6 +108,7 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
+<span class='line-number'>13</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">github</span>
 </span><span class='line'><span class="nx">v</span>
 </span><span class='line'><span class="nx">css</span> <span class="nx">sprite</span>
@@ -120,6 +121,7 @@
 </span><span class='line'><span class="nx">w3</span>
 </span><span class='line'><span class="nx">grunt</span>
 </span><span class='line'><span class="nx">npm</span>
+</span><span class='line'><span class="nx">underscore</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
