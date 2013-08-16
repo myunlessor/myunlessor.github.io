@@ -68,6 +68,7 @@ css sprite
 stackoverflow
 underscore
 jade
+ubuntu
 php
 less
 wordpress
