@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-08-16T00:45:01+08:00</updated>
+  <updated>2013-08-16T19:33:29+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -109,12 +109,14 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
+<span class='line-number'>14</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">github</span>
 </span><span class='line'><span class="nx">v</span>
 </span><span class='line'><span class="nx">css</span> <span class="nx">sprite</span>
 </span><span class='line'><span class="nx">stackoverflow</span>
 </span><span class='line'><span class="nx">underscore</span>
 </span><span class='line'><span class="nx">jade</span>
+</span><span class='line'><span class="nx">ubuntu</span>
 </span><span class='line'><span class="nx">php</span>
 </span><span class='line'><span class="nx">less</span>
 </span><span class='line'><span class="nx">wordpress</span>
