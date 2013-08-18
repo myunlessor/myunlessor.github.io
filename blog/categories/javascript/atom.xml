@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-08-18T20:43:45+08:00</updated>
+  <updated>2013-08-18T20:45:05+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[刘郁]]></name>
@@ -69,9 +69,9 @@ http://ued.campus.alibaba.com/quiz3/index.php
 <pre><code>return node.nodeType === 8;
 </code></pre>
 
-<p>  })[0].data.trim().split(&lsquo; &rsquo;).forEach(function () {</p>
+<p>  })[0].data.trim().split(&lsquo; &rsquo;).forEach(function (params) {</p>
 
-<pre><code>ctx.fillRect.apply(ctx, arguments[0].split(','));
+<pre><code>ctx.fillRect.apply(ctx, params.split(','));
 </code></pre>
 
 <p>  });
