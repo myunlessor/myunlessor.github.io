@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-10-11T22:19:39+08:00</updated>
+  <updated>2013-12-09T21:58:17+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,144 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[闭包陷阱：我中招了！]]></title>
+    <link href="http://myunlessor.me/blog/2013/12/09/closure-caveat-it-got-me/"/>
+    <updated>2013-12-09T21:37:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2013/12/09/closure-caveat-it-got-me</id>
+    <content type="html"><![CDATA[<p>一直以来我都以为自己对js的闭包功能掌握的还算可以，最近在工作中却实实在在地被闭包整了一回，特记录于斯，以为警戒！</p>
+
+<!-- more -->
+
+
+<p>以下代码是从工作中提炼出来的，在这4个case中两次调用<code>howdy()</code>函数时log打印值分别是什么？</p>
+
+<p>```js
+// closure caveat</p>
+
+<p>// case 1
+;(function (window, $, undefined) {
+  var $target;</p>
+
+<p>  function howdy() {</p>
+
+<pre><code>var x = 'foo';
+
+if (!$target) {
+  $target = $({})
+    .on('whatever', function () {
+      console.log(x);
+    })
+    .on('soga', function () {
+      x = 'bar';
+    });
+
+  $target.triggerHandler('soga');
+}
+
+$target.triggerHandler('whatever');
+</code></pre>
+
+<p>  }</p>
+
+<p>  howdy();
+  howdy();
+})(this, jQuery);</p>
+
+<p>// case 2
+;(function (window, $, undefined) {
+  var $target, x;</p>
+
+<p>  function howdy() {</p>
+
+<pre><code>x = 'foo';
+
+if (!$target) {
+  $target = $({})
+    .on('whatever', function () {
+      console.log(x);
+    })
+    .on('soga', function () {
+      x = 'bar';
+    });
+
+  $target.triggerHandler('soga');
+}
+
+$target.triggerHandler('whatever');
+</code></pre>
+
+<p>  }</p>
+
+<p>  howdy();
+  howdy();
+})(this, jQuery);</p>
+
+<p>// case 3
+;(function (window, $, undefined) {
+  var $target;</p>
+
+<p>  function howdy() {</p>
+
+<pre><code>var x = 'foo';
+
+if (!$target) {
+  $target = $({}).on('soga', function () {
+    x = 'bar';
+  });
+}
+
+$target
+  .off('whatever')
+  .on('whatever', function () {
+    console.log(x);
+  });
+
+$target.triggerHandler('soga');
+$target.triggerHandler('whatever');
+</code></pre>
+
+<p>  }</p>
+
+<p>  howdy();
+  howdy();
+})(this, jQuery);</p>
+
+<p>// case 4
+;(function (window, $, undefined) {
+  var $target, x;</p>
+
+<p>  function howdy() {</p>
+
+<pre><code>x = 'foo';
+
+if (!$target) {
+  $target = $({}).on('soga', function () {
+    x = 'bar';
+  });
+}
+
+$target
+  .off('whatever')
+  .on('whatever', function () {
+    console.log(x);
+  });
+
+$target.triggerHandler('soga');
+$target.triggerHandler('whatever');
+</code></pre>
+
+<p>  }</p>
+
+<p>  howdy();
+  howdy();
+})(this, jQuery);
+```</p>
+
+<p>总结：<code>prefer object properties to local variables when recording state!</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[淘宝前端之智勇大闯关第三季攻略]]></title>
