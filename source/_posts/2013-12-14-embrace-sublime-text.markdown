@@ -3,7 +3,7 @@ layout: post
 title: "情逗Sublime Text"
 date: 2013-12-14 13:11
 comments: true
-categories: [Sublime Text]
+categories: [sublime text]
 ---
 
 
