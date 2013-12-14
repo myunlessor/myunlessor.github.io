@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[文章分类: Sublime Text | Silent Reverie]]></title>
+  <title><![CDATA[文章分类: sublime text | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/sublime-text/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-12-14T17:05:02+08:00</updated>
+  <updated>2013-12-14T21:33:29+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,209 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Sublime Text Snippets实用技巧二则]]></title>
+    <link href="http://myunlessor.me/blog/2013/12/16/pragmatic-sublime-text-snippets/"/>
+    <updated>2013-12-16T18:22:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2013/12/16/pragmatic-sublime-text-snippets</id>
+    <content type="html"><![CDATA[<p>由于<code>Sublime Text Snippets</code>功能设计的强大和灵活性（TAB跳转、多编辑点多选区支持、正则匹配替换等），我们可以很方便地将它应用到各种能用上它的场合。</p>
+
+<p>关于<code>Sublime Text Snippets</code>的基本介绍可参见文章<a href="/blog/2013/12/15/embrace-sublime-text-snippets/">拥抱Sublime Text Snippets</a>以及该文章给出的参考文档。</p>
+
+<p>下面列举使用<code>snippet</code>的实用技巧，参详这两例子后，大可举一反三而为之。</p>
+
+<!-- more -->
+
+
+<h2>一、选区片段包裹</h2>
+
+<p>现在前端开发环境少不了模板系统的使用，诣如<a href="https://github.com/janl/mustache.js">Mustache</a>、<a href="http://handlebarsjs.com/">Handlebars</a>、<a href="http://underscorejs.org/#template">Underscore</a>和<a href="http://lodash.com/docs#template">Lo-Dash</a>等。</p>
+
+<p>模板系统一般都在模板上下文中内嵌<code>分隔符(delimiter)</code>进行解析，像<a href="http://underscorejs.org/#template">Underscore</a>和<a href="http://lodash.com/docs#template">Lo-Dash</a>默认有<code>&lt;%  %&gt;(interpolate delimiter)</code>、<code>&lt;%=  %&gt;(evaluate delimiter)</code>及<code>&lt;%-  %&gt;(escape delimiter)</code>，使用模板的时间书写这些分隔符尤显得不太方便。借助<code>Sublime Text Snippets</code>可以使书写模板不再头痛。</p>
+
+<p>下面这个<code>snippet</code>我将它保存为<code>Packages/User/snippets/angle-delimiter.sublime-snippet</code>，你会注意到元素<code>snippet</code>中只包含<code>content</code>一个元素，在<code>content</code>中定义了两个跳转<code>编辑点(edit point)</code>，同时将环境变量<code>$SELECTION(文本选区)</code>作为<code>编辑点2($2)</code>的占位符。</p>
+
+<p><code>xml
+&lt;snippet&gt;
+  &lt;content&gt;&lt;![CDATA[
+&lt;%$1 ${2:$SELECTION} %&gt;
+]]&gt;&lt;/content&gt;
+&lt;/snippet&gt;
+</code></p>
+
+<p>这样当我们选中文本(可以为空，单个或多个选区)后，触发该片段后就可以将选中文本包裹在<code>&lt;%</code>和<code>%&gt;</code>间，同时跳转到<code>编辑点1($1)</code>，可以选择性地添加<code>=</code>或<code>-</code>从而定义不同的<code>分隔符(delimiter)</code>。但是我并没有定义<code>tabTrigger</code>元素进行<code>tab</code>触发，原因是我们这里包含环境变量<code>$SELECTION(文本选区)</code>，使用<code>tabTrigger</code>无法达到片段包裹的目的，因此我们选择定义键盘快捷键来触发该片段，如下所示：</p>
+
+<p>```json
+{
+  &ldquo;keys&rdquo;: [&ldquo;super+k&rdquo;, &ldquo;super+5&rdquo;],
+  &ldquo;command&rdquo;: &ldquo;insert_snippet&rdquo;,
+  &ldquo;args&rdquo;: {</p>
+
+<pre><code>"name": "Packages/User/snippets/angle-delimiter.sublime-snippet"
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<p>将此段代码加入到<code>Packages/User/Default (OSX).sublime-keymap</code>后，然后选中你想包裹的文本，此时先后按下快捷键<code>cmd + k</code>、及<code>cmd + 5</code>后可以触发该片段。Cool!</p>
+
+<h2>二、正则匹配替换</h2>
+
+<p>有时候我们进行页面重构的时候，需要使用占位图片进行临时布局。<a href="http://placekitten.com/">placekitten</a>提供了一个快速而简单的服务帮我们完成此目的。</p>
+
+<p>比如我们需要在页面某个位置放置一个宽200高300的图片，只需要添加如下标签代码即可，如下所示：</p>
+
+<p><code>html
+&lt;img src="http://placekitten.com/200/300" width="200" height="300" title="KITTEN: [200 x 300]" alt="" /&gt;
+</code></p>
+
+<p>然后<code>placekitten</code>会给我们返回一张<code>200 x 300</code>的猫咪图片，我们只要指定任意宽高就好了，so cutely it is!</p>
+
+<p>使用<code>Sublime Text Snippets</code>提供的正则区配替换特性，我们可以快速输出以上标签，使得图片占位更加称心如意。片段如下：</p>
+
+<p><code>xml
+&lt;snippet&gt;
+  &lt;content&gt;&lt;![CDATA[
+&lt;img src="http://placekitten.com/${1:300/240}"${2: width="${1/^\/?([^\/]+)\/?.*$/$1/}" height="${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}"} title="KITTEN: [${1/^\/?([^\/]+)\/?.*$/$1/} x ${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}]" alt="" /&gt;
+]]&gt;&lt;/content&gt;
+  &lt;tabTrigger&gt;kitten&lt;/tabTrigger&gt;
+  &lt;scope&gt;text.html&lt;/scope&gt;
+&lt;/snippet&gt;
+</code></p>
+
+<p>将此片段保存到<code>Packages/User/snippets/placekitten.sublime-snippet</code>，然后在我们的html页面中敲入<code>kitten</code>后按<code>tab</code>键，输出标签如下：</p>
+
+<p><code>html
+&lt;img src="http://placekitten.com/300/240" width="300" height="240" title="KITTEN: [300 x 240]" alt="" /&gt;
+</code></p>
+
+<p>此时<code>300/240</code>处于高亮显示，这是我们的第一个编辑点，在这个编辑点我们可以随意更改宽高值，可以看到<code>width</code>、<code>height</code>及<code>title</code>三个标签属性值跟着变化。</p>
+
+<p>比如替换为<code>250</code>，标签显示为：</p>
+
+<p><code>html
+&lt;img src="http://placekitten.com/250" width="250" height="250" title="KITTEN: [250 x 250]" alt="" /&gt;
+</code></p>
+
+<p>替换为<code>400/300</code>，标签显示为：</p>
+
+<p><code>html
+&lt;img src="http://placekitten.com/400/300" width="400" height="300" title="KITTEN: [400 x 300]" alt="" /&gt;
+</code></p>
+
+<p>如果我们不需要<code>width="xxx" height="xxx"</code>，这里按<code>tab</code>跳至第二个编辑点，按<code>delete</code>键即可删除，awesome!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[拥抱Sublime Text Snippets]]></title>
+    <link href="http://myunlessor.me/blog/2013/12/15/embrace-sublime-text-snippets/"/>
+    <updated>2013-12-15T17:07:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2013/12/15/embrace-sublime-text-snippets</id>
+    <content type="html"><![CDATA[<p>用过<code>Sublime Text</code>很长一段时间，对它的<code>Snippets(片段)</code>功能却是情有独钟。</p>
+
+<p>它的用法很简洁，在文档编辑点敲入定义的触发字符(<code>tabTrigger</code>)，然后按下<code>tab</code>键就可以输出预先定义的片段文字(<code>content</code>)。</p>
+
+<!-- more -->
+
+
+<h2>介绍</h2>
+
+<p>片段是通过普通的XML格式文件进行定义的，文件扩展名为<code>sublime-snippet</code>，自定义的片段一般存放在<code>Packages/User/snippets</code>目录下。通过菜单命令<code>Tools | New Snippet...</code>进行创建，统一格式如下：</p>
+
+<p><code>xml
+&lt;snippet&gt;
+  &lt;content&gt;&lt;![CDATA[]]&gt;&lt;/content&gt;
+  &lt;tabTrigger&gt;&lt;/tabTrigger&gt;
+  &lt;scope&gt;&lt;/scope&gt;
+  &lt;description&gt;&lt;/description&gt;
+&lt;/snippet&gt;
+</code></p>
+
+<p><code>snippet</code>元素由以下4个元素构成：</p>
+
+<ul>
+<li><code>content</code>: 实际片段内容</li>
+<li><code>tabTrigger(可选)</code>: 通过TAB键触发的代码片段的简短字符串，未指定时可通过绑定键盘快捷键触发该片段</li>
+<li><code>scope(可选)</code>: 指定触发激活该片段的作用域，如<code>text.html</code>、<code>js.source</code></li>
+<li><code>description(可选)</code>: <code>completions</code>补全提示时该片段的描述语</li>
+</ul>
+
+
+<p>当在<code>snippet</code>元素中包含了这些信息后，<code>Sublime Text</code>就知道什么何时可以触发，是否触发及在哪触发这个片段了。</p>
+
+<p><code>content</code>中可以包含任意字符，包含的字符必须置于<code>&lt;![CDATA[</code>及<code>]]&gt;</code>之间，否则<code>Sublime Text</code>不知道如何解析它。</p>
+
+<p>如果要输出符号<code>$</code>，则须转义为<code>\$</code>，因为符号<code>$</code>在<code>content</code>中有特殊作用，具体如下：</p>
+
+<ul>
+<li>定义<code>环境变量名(environment variables)</code>，如<code>$SELECTION</code>，更多定义的环境变量参见<a href="http://docs.sublimetext.info/en/latest/reference/snippets.html#environment-variables">这里</a></li>
+<li>定义通过<code>tab</code>或<code>shift+tab</code>键进行编辑点位置跳转的<code>域(fields)</code>
+
+<ul>
+<li>语法：<code>$1</code> .. <code>$n</code></li>
+</ul>
+</li>
+<li>定义<code>占位符(placeholder)</code>，即带默认值的<code>域(fields)</code>
+
+<ul>
+<li>语法：<code>${1:占位符}</code> .. <code>${n:占位符}</code></li>
+</ul>
+</li>
+<li>定义正则替换，详细的语法定义参见<a href="http://docs.sublimetext.info/en/latest/reference/snippets.html#substitutions">这里</a>
+
+<ul>
+<li>语法 <code>${var_name/regex/format_string/}</code>, <code>${var_name/regex/format_string/options}</code></li>
+</ul>
+</li>
+</ul>
+
+
+<p><code>content</code>中不能直接键入字符串<code>]]&gt;</code>，如果片段要实际输入<code>]]&gt;</code>，可以书写为<code>]]$NOT_DEFINED&gt;</code>，这里的<code>$NOT_DEFINED</code>可以是任意未定义的环境变量，而未定义的环境变量解析为空字符串，因此可以达到输出<code>]]&gt;</code>的目的。</p>
+
+<h2>用例</h2>
+
+<p>定义并保存以下片段到<code>Packages/User/snippets/conditional-html-tag.sublime-snippet</code>后，就可以在<code>html</code>文件中键入<code>condhtml</code>后按<code>tab</code>键触发<code>content</code>中定义的内容了。</p>
+
+<p>```xml
+<snippet>
+  <content>&lt;![CDATA[</p>
+
+<!--[if lt IE 7]> <html class="ie6"> <![endif]-->
+
+
+<!--[if IE 7]>    <html class="ie7"> <![endif]-->
+
+
+<!--[if IE 8]>    <html class="ie8"> <![endif]-->
+
+
+<!--[if IE 9]>    <html class="ie9"> <![endif]-->
+
+
+<!--[if (gt IE 9)|!(IE)]><!-->
+
+
+<p> <html class=""> <!--<![endif]-->
+]]&gt;</content>
+  <tabTrigger>condhtml</tabTrigger>
+  <scope>text.html</scope>
+</snippet>
+```</p>
+
+<p>更多实用技巧参见文章<a href="/blog/2013/12/16/pragmatic-sublime-text-snippets/">Sublime Text Snippets实用技巧二则</a>。</p>
+
+<h2>参考</h2>
+
+<ol>
+<li><a href="http://docs.sublimetext.info/en/latest/reference/snippets.html">Snippets Reference</a></li>
+<li><a href="http://docs.sublimetext.info/en/latest/extensibility/snippets.html">Snippets Usage</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[情逗Sublime Text]]></title>
