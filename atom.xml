@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-12-16T22:19:37+08:00</updated>
+  <updated>2013-12-16T22:33:55+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -118,12 +118,9 @@
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
 </pre></td><td class='code'><pre><code class='py'><span class='line'><span class="c"># -*- coding: utf-8 -*-</span>
 </span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">sublime_plugin</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">re</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">sublime_plugin</span><span class="o">,</span> <span class="nn">re</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">class</span> <span class="nc">PlaceImageCommand</span><span class="p">(</span><span class="n">sublime_plugin</span><span class="o">.</span><span class="n">EventListener</span><span class="p">):</span>
 </span><span class='line'>  <span class="k">def</span> <span class="nf">on_query_completions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">locations</span><span class="p">):</span>
@@ -131,7 +128,7 @@
 </span><span class='line'>    <span class="n">placeit</span> <span class="o">=</span> <span class="s">&#39;&lt;img src=&quot;http://placehold.it/</span><span class="si">%s</span><span class="s">x</span><span class="si">%s</span><span class="s">&quot;${1: width=&quot;</span><span class="si">%s</span><span class="s">&quot; height=&quot;</span><span class="si">%s</span><span class="s">&quot;} title=&quot;PLACE.IT: [</span><span class="si">%s</span><span class="s"> x </span><span class="si">%s</span><span class="s">]&quot; alt=&quot;&quot; /&gt;&#39;</span>
 </span><span class='line'>    <span class="n">kitten</span>  <span class="o">=</span> <span class="s">&#39;&lt;img src=&quot;http://placekitten.com/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;${1: width=&quot;</span><span class="si">%s</span><span class="s">&quot; height=&quot;</span><span class="si">%s</span><span class="s">&quot;} title=&quot;KITTEN: [</span><span class="si">%s</span><span class="s"> x </span><span class="si">%s</span><span class="s">]&quot; alt=&quot;&quot; /&gt;&#39;</span>
 </span><span class='line'>    <span class="n">pattern</span> <span class="o">=</span> <span class="s">r&#39;^pi(?:(\d+)(?:(X|x)(\d+))?)?$&#39;</span>
-</span><span class='line'>    <span class="n">match</span>   <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">match</span>   <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
 </span><span class='line'>      <span class="n">groups</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
@@ -148,11 +145,10 @@
 </span><span class='line'>        <span class="n">height</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 </span><span class='line'>        <span class="n">tmpl</span>   <span class="o">=</span> <span class="n">kitten</span> <span class="k">if</span> <span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;X&#39;</span> <span class="k">else</span> <span class="n">placeit</span>
 </span><span class='line'>        <span class="n">val</span>    <span class="o">=</span> <span class="n">tmpl</span> <span class="o">%</span> <span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-</span><span class='line'>
 </span><span class='line'>    <span class="k">else</span><span class="p">:</span>
 </span><span class='line'>      <span class="n">val</span> <span class="o">=</span> <span class="bp">None</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">val</span><span class="p">)]</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">val</span><span class="p">)]</span> <span class="k">if</span> <span class="n">val</span> <span class="k">else</span> <span class="p">[]</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
