@@ -19,7 +19,7 @@ categories: [sublime text, pragmatic]
 
 现在前端开发环境少不了模板系统的使用，诣如[Mustache][mustache]、[Handlebars][handlebars]、[Underscore][underscore.template]和[Lo-Dash][lodash.template]等。
 
-模板系统一般都在模板上下文中内嵌`分隔符(delimiter)`进行解析，像[Underscore][underscore.template]和[Lo-Dash][lodash.template]默认有`<%  %>(interpolate delimiter)`、`<%=  %>(evaluate delimiter)`及`<%-  %>(escape delimiter)`，使用模板的时间书写这些分隔符尤显得不太方便。借助`Sublime Text Snippets`可以使书写模板不再头痛。
+模板系统一般都在模板上下文中内嵌`分隔符(delimiter)`进行解析，像[Underscore][underscore.template]和[Lo-Dash][lodash.template]默认有`<%  %>(interpolate delimiter)`、`<%=  %>(evaluate delimiter)`及`<%-  %>(escape delimiter)`，使用模板的时候书写这些分隔符尤显得不太方便。借助`Sublime Text Snippets`可以使书写模板不再头痛。
 
 下面这个`snippet`我将它保存为`Packages/User/snippets/angle-delimiter.sublime-snippet`，你会注意到元素`snippet`中只包含`content`一个元素，在`content`中定义了两个跳转`编辑点(edit point)`，同时将环境变量`$SELECTION(文本选区)`作为`编辑点2($2)`的占位符。
 
