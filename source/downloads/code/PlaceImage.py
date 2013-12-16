@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sublime_plugin
-import re
+import sublime_plugin, re
 
 class PlaceImageCommand(sublime_plugin.EventListener):
   def on_query_completions(self, view, prefix, locations):
@@ -9,7 +8,7 @@ class PlaceImageCommand(sublime_plugin.EventListener):
     placeit = '<img src="http://placehold.it/%sx%s"${1: width="%s" height="%s"} title="PLACE.IT: [%s x %s]" alt="" />'
     kitten  = '<img src="http://placekitten.com/%s/%s"${1: width="%s" height="%s"} title="KITTEN: [%s x %s]" alt="" />'
     pattern = r'^pi(?:(\d+)(?:(X|x)(\d+))?)?$'
-    match   = re.match(pattern, prefix, re.I)
+    match   = re.match(pattern, prefix)
 
     if match:
       groups = match.groups()
@@ -26,8 +25,7 @@ class PlaceImageCommand(sublime_plugin.EventListener):
         height = groups[2]
         tmpl   = kitten if groups[1] == 'X' else placeit
         val    = tmpl % ((width, height) * 3)
-
     else:
       val = None
 
-    return [(prefix, val)] if val else []
+    return [(prefix, prefix, val)] if val else []
