@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2013-12-17T21:06:24+08:00</updated>
+  <updated>2014-03-01T19:45:18+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,681 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[浅尝ECMAScript 6]]></title>
+    <link href="http://myunlessor.me/blog/2014/03/01/venture-into-es6/"/>
+    <updated>2014-03-01T10:43:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/03/01/venture-into-es6</id>
+    <content type="html"><![CDATA[<p>现在ECMAScript 6草案制定在不断地推进，浏览器们也在跟进实现，了解ES6的提供的诸多特性是势在必行的事了。</p>
+
+<p>有关浏览器们对ECMAScript 6草案的实现情况可参阅<a href="http://kangax.github.io/es5-compat-table/es6/">这里</a>。</p>
+
+<p>有关ES6的语言特性可参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures">这里</a>。</p>
+
+<p>目前对ES6实现较为充分的环境有<a href="https://github.com/google/traceur-compiler">Google Traceur Compiler</a>及<a href="http://nightly.mozilla.org/">Firefox Nightly</a>。</p>
+
+<p>有关<code>traceur compiler</code>的环境配置如下：</p>
+
+<p>```html</p>
+
+<script src="https://traceur-compiler.googlecode.com/git/bin/traceur.js"></script>
+
+
+<script src="https://traceur-compiler.googlecode.com/git/src/bootstrap.js"></script>
+
+
+<script>
+traceur.options.experimental = true;
+</script>
+
+
+<script>
+  // blablabla...
+</script>
+
+
+<p>```</p>
+
+<!-- more -->
+
+
+<h2>I、新的语法</h2>
+
+<h3>1. 块作用域(Block Scope)</h3>
+
+<p><code>var</code>关键字声明的变量具有函数作用域或全局作用域，而通过<code>let</code>关键字将变量声明为块作用域，对比如下：</p>
+
+<p>```js
+// 在块(curly)作用域中声明并初始化变量
+{ var foo = &lsquo;foo&rsquo;; }
+{ let bar = &lsquo;bar&rsquo;; }</p>
+
+<p>console.log(foo); // &ndash;> &lsquo;foo&rsquo;
+console.log(bar); // ReferenceError: bar is not defined
+```</p>
+
+<h3>2. 常量(Constants)</h3>
+
+<p>许多语言都有常量的概念(值不能改变的变量)。ES6草案将常量引入到了JavaScript中。</p>
+
+<p>使用<code>const</code>关键字将变量声明为常量，规范要求<code>const</code>声明的常量具块作用域，某些浏览器目前将其实现为函数作用域或全局作用域。声明变量为常量时如果不赋值，某些浏览器会将该变量赋<code>undefined</code>值，而某些浏览器则直接报错。为常量重新赋值，某些浏览器会忽略新赋值，某些浏览器会报错。将引用类型（如数组或对象）声明为常量，并不影响引用类型的扩充行为：</p>
+
+<p>```js
+const noexist;             // Const must be initialized (IE)
+const foo = &lsquo;foo&rsquo;;
+foo = &lsquo;hoo&rsquo;;               // Assignment to const (IE)
+console.log(foo);          // &ndash;> &lsquo;foo&rsquo;</p>
+
+<p>// 常量引用类型并不影响对其自身的扩充(<code>augument</code>)
+const bar = [];
+bar.push(&lsquo;spam&rsquo;, &lsquo;eggs&rsquo;);
+console.log(bar.length);   // &ndash;> 2</p>
+
+<p>// 同上
+const baz = {};
+baz.spam = &lsquo;eggs&rsquo;;
+console.log(baz.spam);     // &ndash;> &lsquo;eggs&rsquo;
+```</p>
+
+<h3>3. 默认参数(Default Parameters)</h3>
+
+<p>函数声明时可以为参数赋予默认值，这样函数调用时如果参数缺省(<code>undefined</code>)，则该参数会被赋予默认值，使用默认参数在一定程序上使函数声明更为直观，并且简化我们的代码。</p>
+
+<p>```js
+// 传统写法
+function fill(container, liquid) {
+  if (typeof liquid === &lsquo;undefined&rsquo;) {</p>
+
+<pre><code>liquid = 'coffee';
+</code></pre>
+
+<p>  }
+  // blablabla&hellip;
+}</p>
+
+<p>// 新式写法
+function fill(container, liquid = &lsquo;coffee&rsquo;) {
+  // blablabla&hellip;
+}
+```</p>
+
+<h3>4. Rest和Spread操作符</h3>
+
+<p>很多时候我们处理函数的时候需要用到数组参数，ES6提供的<code>Rest</code>和<code>Spread</code>操作符可以让我们更方便地处理数组参数。</p>
+
+<p><code>rest</code>是将多值折叠为单值集合的过程，和<code>rest</code>相反，<code>spread</code>是将单值集合展开为多值的过程。很多语言都有对它的支持，语法略有差异，Python、Ruby和CoffeeScript将这种语法统称为<code>splats</code>，Python和Ruby用形如<code>*var</code>的语法来表达。CoffeeScript用形如<code>var...</code>的语法来表达，而ES6则用形如<code>...var</code>的语法来表达。</p>
+
+<p>```js
+// 1. rest
+function unary(&hellip;first) {
+  console.log(first);
+}</p>
+
+<p>function binary(first, &hellip;rest) {
+  console.log([first, rest]);
+}</p>
+
+<p>unary(&lsquo;foo&rsquo;);                 // &ndash;> [&lsquo;foo&rsquo;]
+unary(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;);          // &ndash;> [&lsquo;foo&rsquo;, &lsquo;bar&rsquo;]</p>
+
+<p>binary(&lsquo;foo&rsquo;);                // &ndash;> [&lsquo;foo&rsquo;, []]
+binary(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;, &lsquo;baz&rsquo;);  // &ndash;> [&lsquo;foo&rsquo;, [&lsquo;bar&rsquo;, &lsquo;baz&rsquo;]]</p>
+
+<p>// rest实现
+;(function (window, undefined) {
+  var _slice = Array.prototype.slice;</p>
+
+<p>  function variadic(fn) {</p>
+
+<pre><code>var numParams    = fn.length, // 形参个数
+    numNamedArgs = numParams - 1;
+
+
+return numParams &lt; 1 ? fn : function () {
+  var
+    numArgs             = arguments.length, // 实参个数
+    namedArgs           = _slice.call(arguments, 0, numNamedArgs),
+    numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
+    argPadding          = Array(numMissingNamedArgs),
+    variadicArgs        = _slice.call(arguments, numNamedArgs);
+
+  return fn.apply(this, namedArgs
+                          .concat(argPadding)
+                          .concat([variadicArgs]));
+};
+</code></pre>
+
+<p>  }</p>
+
+<p>  window.variadic = variadic;
+}).call(this, this);</p>
+
+<p>// &ndash;> [&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;]
+variadic(unary)(&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;);</p>
+
+<p>// &ndash;> [&lsquo;why&rsquo;, [&lsquo;hello&rsquo;, &lsquo;there&rsquo;]]
+variadic(binary)(&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;);</p>
+
+<p>// &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</p>
+
+<p>// 2. spread
+var numbers = [1, 2, 3, 4, 5];</p>
+
+<p>// 传统写法
+var max = Math.max.apply(Math, number);</p>
+
+<p>var filled = numbers.slice(0);
+[].push.apply(filled, [6, 7, 8, 9, 10]);</p>
+
+<p>// 新式写法
+var max = Math.max(&hellip;number);
+var filled = [&hellip;numbers, 6, 7, 8, 9, 10]
+```</p>
+
+<h3>5. 解构赋值(Destructuring Assignment)</h3>
+
+<p>如果你想从数组中拿取多个元素并赋予其他变量，或是从函数中返回多值，那么ES6提供的<code>解构赋值(Destructuring Assignment)</code>特性正是我们所需要的。</p>
+
+<p>```js
+// 1. 数组解构赋值
+let a = 1, b = 2;
+[b, a] = [a, b];   // swap two variabls</p>
+
+<p>console.log(a, b); // &ndash;> 2 1</p>
+
+<p>function dest() {
+  return [&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;];
+}</p>
+
+<p>let [foo, bar, baz] = dest();</p>
+
+<p>// &ndash;> &lsquo;why&rsquo; &lsquo;hello&rsquo; &lsquo;there&rsquo;
+console.log(foo, bar, baz);</p>
+
+<p>// 忽略不需要的值
+let [a, , c] = dest();</p>
+
+<p>// &ndash;> &lsquo;why&rsquo; &lsquo;there&rsquo;
+console.log(a, c);</p>
+
+<p>// 2. 对象解构赋值
+let janeDoe = {
+  first: &lsquo;jane&rsquo;,
+  last: &lsquo;doe&rsquo;,
+  gender: &lsquo;female&rsquo;,
+  hobbies: [&lsquo;music&rsquo;, &lsquo;sports&rsquo;]
+};</p>
+
+<p>let { first: firstName, last: lastName } = janeDoe;</p>
+
+<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
+console.log(firstName, lastName);</p>
+
+<p>let { first, last } = janeDoe;</p>
+
+<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
+console.log(first, last);</p>
+
+<p>function whatever({ first: f, last: l }) {
+  console.log(f, l);
+}</p>
+
+<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
+whatever(janeDoe);</p>
+
+<p>function another({ gender, hobbies: [hob1, hob2] }) {
+  console.log(gender, hob1, hob2);
+}</p>
+
+<p>// &ndash;> &lsquo;female&rsquo; &lsquo;music&rsquo; &lsquo;sports&rsquo;
+another(janeDoe);
+```</p>
+
+<h3>6. for…of 循环语句</h3>
+
+<p>ES6新引入了<code>for…of</code>循环语句，以往我们使用的<code>for..in</code>循环语句用于迭代对象的<code>属性(properties)</code>，而新式的for…of循环语句则用于迭代对象的<code>值(values)</code>。</p>
+
+<p>```js
+var numbers = [1, 2, 3, 4, 5];</p>
+
+<p>// 传统写法
+numbers.forEach(function (number) {
+  console.log(number);
+});</p>
+
+<p>// 新式写法
+for (let number of numbers) {
+  console.log(number);
+}
+```</p>
+
+<h3>7. 迭代器(Iterators)</h3>
+
+<p><code>for..of</code>循环只对迭代对象有效，这意味着要使一个对象可迭代，对象自身需要迭代器。具体可移步参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-iterators-and-for-of-loops">这里</a></p>
+
+<h3>8. 生成器(Generators)</h3>
+
+<p>生成器可以创建迭代器，并且可以用它来创建自定义迭代对象。生成器异常强大，网上你可以找到它联合<code>Promises</code>一起使用的情形，它为ajax异步调用开启一个新的世界，一个没有<code>callbacks</code>，没有<code>then</code>的世界，它的强大会超乎你的想象。</p>
+
+<p>```js
+// 基本用法
+function* numberGen() {
+  let limit = 3, i = 0;</p>
+
+<p>  do {</p>
+
+<pre><code>yield i++;
+</code></pre>
+
+<p>  } while (i &lt; limit);
+}</p>
+
+<p>let iter = numberGen();</p>
+
+<p>// &ndash;> { value: 0, done: false }
+iter.next();</p>
+
+<p>// &ndash;> { value: 1, done: false }
+iter.next();</p>
+
+<p>// &ndash;> { value: 2, done: false }
+iter.next();</p>
+
+<p>// &ndash;> { value: undefined, done: true }
+iter.next();</p>
+
+<p>// 过滤偶数
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];</p>
+
+<p>function* even(numbers) {
+  for (let n of numbers) {</p>
+
+<pre><code>if (n % 2 === 0) {
+  yield n;
+}
+</code></pre>
+
+<p>  }
+}</p>
+
+<p>for (let n of even(numbers)) {
+  console.log(n);
+}</p>
+
+<p>// 延伸用法1
+let janeDoe = {
+  first: &lsquo;jane&rsquo;,
+  last: &lsquo;doe&rsquo;
+};</p>
+
+<p>function* iterObj(obj) {
+  for (let prop in obj) {</p>
+
+<pre><code>if (obj.hasOwnProperty(prop)) {
+  yield [prop, obj[prop]];
+}
+</code></pre>
+
+<p>  }
+}</p>
+
+<p>// &ndash;> &ldquo;first: jane&rdquo;
+// &ndash;> &ldquo;last: doe&rdquo;
+for (let [key, value] of iterObj(janeDoe)) {
+  console.log([key, value].join(&lsquo;: &rsquo;));
+}</p>
+
+<p>// 延伸用法2
+function Person(firstName, lastName) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+}</p>
+
+<p>Person.prototype.greeting = function (name) {
+  return &lsquo;Hello, &rsquo; + name;
+};</p>
+
+<p>// Person.prototype[Symbol.iterator]
+Person.prototype[&lsquo;@@iterator&rsquo;] = function* () {
+  for (let prop in this) {</p>
+
+<pre><code>if (this.hasOwnProperty(prop)) {
+  yield [prop, this[prop]];
+}
+</code></pre>
+
+<p>  }
+};</p>
+
+<p>let johndoe = new Person(&lsquo;john&rsquo;, &lsquo;doe&rsquo;);</p>
+
+<p>// &ndash;> &ldquo;first: john&rdquo;
+// &ndash;> &ldquo;last: doe&rdquo;
+for (let [key, value] of johndoe) {
+  console.log([key, value].join(&lsquo;: &rsquo;));
+}
+```</p>
+
+<h3>9. Comprehensions</h3>
+
+<p>Python最早引入了<code>List Comprehensions(列表推导)</code>的概念，这一特性深受程序员的喜爱，这一特性继而引申出<code>Dict Comprehensions</code>及<code>Generator Comprehensions</code>。CoffeeScript设计时也参考了Python，它也有<code>Comprehensions</code>的概念。而作为日渐流行的JavaScript，这么好的东西怎么能错过呢？自然而然地它也成为了JavaScript的标配。
+我们在操作数组的时候经常会使用<code>Array.prototype.map</code>和<code>Array.prototype.filter</code>方法，ES6为我们提供的<code>Comprehensions</code>简直可以称为这两个方法提供<code>语法糖(syntax sugar)</code>，其语法表达直白、简明、形象。</p>
+
+<p>```js
+let fruits = [&lsquo;apple&rsquo;, &lsquo;orange&rsquo;, &lsquo;banana&rsquo;];</p>
+
+<p>// 传统应用
+let ripeFruits = fruits.map(function (item) {
+  return &lsquo;ripe &rsquo; + item;
+});</p>
+
+<p>let fruitsWithN = fruits.filter(function (item) {
+  return item.indexOf(&lsquo;n&rsquo;) > -1;
+});</p>
+
+<p>console.log(ripeFruits);
+console.log(fruitsWithN);</p>
+
+<p>// 新式玩法
+// 1. 数组推导(Array Comprehension)
+let ripeFruits2 = [&lsquo;ripe &rsquo; + item for (item of fruits)];
+let fruitsWithN2 = [item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1)];
+let ripeFruitsWithN = [&lsquo;ripe &rsquo; + item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1)];</p>
+
+<p>console.log(ripeFruits2);
+console.log(fruitsWithN2);
+console.log(ripeFruitsWithN);</p>
+
+<p>// 2. 生成器推导(Generator Comprehension)
+let iter = (&lsquo;ripe &rsquo; + item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1));
+console.log(iter.next()); // &ndash;> &ldquo;ripe orange&rdquo;
+console.log(iter.next()); // &ndash;> &ldquo;ripe banana&rdquo;
+```</p>
+
+<h3>10. 箭头函数(Arrow Functions)</h3>
+
+<p>有关ES6箭头函数的介绍移步<a href="http://www.nczonline.net/blog/2013/09/10/understanding-ecmascript-6-arrow-functions/">这里</a>参阅。</p>
+
+<h2>II、新的代码组织方式</h2>
+
+<h3>1. 类(Classes)</h3>
+
+<p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-classes">这里</a>以及<a href="http://www.nczonline.net/blog/2012/10/16/does-javascript-need-classes/">这里</a>进行参阅。</p>
+
+<h3>2. 模块(Modules)</h3>
+
+<p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-modules">这里</a>进行参阅。</p>
+
+<h2>III、新的标准类库</h2>
+
+<h3>1. 集合(Set)</h3>
+
+<p>Python的作者是个数学家，所以这门语言早期就有了对<code>Set</code>的支持。现在，ES6也将<code>Set</code>纳为标配了。有了集合，数组去除已然不费吹灰之力了。
+更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/09/25/ecmascript-6-collections-part-1-sets/">这里</a>。</p>
+
+<p>```js
+// 创建集合实例
+let items = new Set([1, 2, 2, 3, 4, 3, 5, &lsquo;2&rsquo;]);</p>
+
+<p>// 判断指定元素是否在集合中
+console.log(items.has(&lsquo;2&rsquo;));</p>
+
+<p>// 遍历集合元素
+for (let item of items) {
+  console.log(item);
+}</p>
+
+<p>// 添加元素到集合中
+items.add(6);</p>
+
+<p>// 从集合中移除元素
+items.delete(1);</p>
+
+<p>// 获取集合里元素个数
+console.log(items.size);</p>
+
+<p>// 遍历集合元素
+for (let item of items) {
+  console.log(item);
+}</p>
+
+<p>// 移除集合里所有元素
+items.clear();
+```</p>
+
+<h3>2. 映射(Map)</h3>
+
+<p>以往我们都是使用字面对象构建键值对映射，ES6提供的<code>Map</code>结构提供了友好直白的API让我们可以更好地操纵键值对，就像<code>localStorge</code>一样，它使我们更好地在客户端保存数据。
+更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/10/09/ecmascript-6-collections-part-2-maps/">这里</a>。</p>
+
+<p>```js
+// 创建映射实例
+let stuff = new Map();</p>
+
+<p>// 设置键值对
+stuff.set(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;)
+// 你没看错，对象也可以作为Map的key
+stuff.set(document, document.createElement(&lsquo;div&rsquo;));</p>
+
+<p>// 判断是否设置了指定键
+console.log(stuff.has(&lsquo;foo&rsquo;));</p>
+
+<p>// 获取键值对个数
+console.log(stuff.size);</p>
+
+<p>// 获取指定键的值
+console.log(stuff.get(&lsquo;foo&rsquo;));</p>
+
+<p>// 删除指定的键
+stuff.delete(&lsquo;foo&rsquo;);</p>
+
+<p>// 清除所有键
+stuff.clear();</p>
+
+<p>// 遍历键值对
+for (let item of stuff) {
+  // key = item[0];
+  // value = item[1];
+  // do something
+}</p>
+
+<p>// 同上
+for (let item of stuff.items()) {
+  // do something
+}</p>
+
+<p>// 同上(解构赋值)
+for (let [key, value] of stuff) {
+  // do something
+}</p>
+
+<p>// 遍历所有键
+for (let key of stuff.keys()) {
+  // do something
+}</p>
+
+<p>// 遍历所有值
+for (let value of stuff.values()) {
+  // do something
+}
+```</p>
+
+<h3>2. 弱映射(WeakMap)</h3>
+
+<p><code>WeakMap</code>和<code>Map</code>类似，但<code>WeakMap</code>的键只能为对象，而不能为原始类型。
+有关<code>WeakMap</code>的详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/11/06/ecmascript-6-collections-part-3-weakmaps/">这里</a>以及<a href="http://www.nczonline.net/blog/2014/01/21/private-instance-members-with-weakmaps-in-javascript/">这里</a>。</p>
+
+<h3>3. Promises</h3>
+
+<p>由于JavaScript的异步编程的普遍应用，Promises尤显得重要。众望所归，ES6也把<code>Promises</code>写入草案中了。目前<code>Firefox 30+及Chrome33+</code>实现了<code>Promises</code>，加了这个<a href="https://github.com/jakearchibald/es6-promise">polyfill</a>，我们可以在所有现代浏览器中使用它。</p>
+
+<p>```js
+function get(url) {
+  return new Promise(function (resolve, reject) {</p>
+
+<pre><code>var xhr = new XMLHttpRequest();
+
+xhr.open('GET', url);
+
+xhr.onload = function () {
+  var status = xhr.status;
+
+  if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
+    resolve(xhr.response);
+  } else {
+    reject(xhr.statusText);
+  }
+};
+
+xhr.onerror = function () {
+  reject('Network error');
+};
+
+xhr.send(null);
+</code></pre>
+
+<p>  });
+}</p>
+
+<p>function getJSON(url) {
+  return get(url).then(JSON.parse);
+}</p>
+
+<p>// file1.txt: { &ldquo;message&rdquo;: &ldquo;This is the first file.&rdquo; }
+// file2.txt: { &ldquo;message&rdquo;: &ldquo;This is the second file.&rdquo; }
+// file3.txt: 404</p>
+
+<p>let promise = getJSON(&lsquo;file1.txt&rsquo;);</p>
+
+<p>promise
+  .then(function (obj) {</p>
+
+<pre><code>alert(obj.message);
+return getJSON('file2.txt');
+</code></pre>
+
+<p>  })
+  .then(function () {</p>
+
+<pre><code>alert(obj.message);
+return getJSON('file3.txt');
+</code></pre>
+
+<p>  })
+  .then(function (obj) {</p>
+
+<pre><code>alert(obj.message);
+</code></pre>
+
+<p>  })
+  .catch(console.log);
+```</p>
+
+<h3>3. 虚拟对象(Proxies)</h3>
+
+<p><code>Proxies</code>实为虚拟对象，它为对象操纵添加了一道包装，使用它有点Ruby元编程的味道。更多关于<code>Proxies</code>的解释请参阅<a href="http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies">这里</a></p>
+
+<p>```js
+// 原型
+let handler = {
+  get: function (proxy, name) {</p>
+
+<pre><code>console.log('Getter for ' + name);
+</code></pre>
+
+<p>  },</p>
+
+<p>  set: function (proxy, name, value) {</p>
+
+<pre><code>console.log('Setter for ' + name + ' and value of ' + value);
+</code></pre>
+
+<p>  },</p>
+
+<p>  has: function (name) {</p>
+
+<pre><code>console.log(name + ' is in the has trap.');
+</code></pre>
+
+<p>  }
+};</p>
+
+<p>var proxy = Proxy.create(handler);</p>
+
+<p>// 实例
+let createElement = (function () {
+  let specialProps = [&lsquo;id&rsquo;, &lsquo;className&rsquo;];</p>
+
+<p>  return function (tagName) {</p>
+
+<pre><code>let element = document.createElement(tagName);
+
+let p = Proxy.create({
+  get: function (proxy, name) {
+    if (name === 'node') {
+      return element;
+    }
+
+    if (name in element) {
+      return element[name];
+    }
+
+    return element.getAttribute(name);
+  },
+
+  set: function (proxy, name, value) {
+    if (name === 'node') {
+      throw new Error('node cannot be set');
+    }
+
+    if (name in element) {
+      if (specialProps.indexOf(name) === -1) {
+        throw new Error(name + ' cannot be set');
+      }
+
+      element[name] = value;
+    } else {
+      element.setAttribute(name, value);
+    }
+  }
+});
+
+return p;
+</code></pre>
+
+<p>  };
+})();</p>
+
+<p>let el = createElement(&lsquo;div&rsquo;); // proxy</p>
+
+<p>el.id = &lsquo;proxyTest&rsquo;;
+el.className = &lsquo;first-class&rsquo;;
+el.classList.add(&lsquo;second-class&rsquo;);
+el.foo = &lsquo;bar&rsquo;;
+el[&lsquo;data-proxy-test&rsquo;] = true;</p>
+
+<p>console.log(el.node);
+console.log(el.id);
+console.log(el.className);
+console.log(el.foo);
+console.log(el[&lsquo;data-proxy-test&rsquo;]);
+```</p>
+
+<h2>IV、尾声</h2>
+
+<p>更多关于ES6的信息可参阅如下链接：</p>
+
+<ol>
+<li><a href="https://github.com/addyosmani/es6-tools">Addy Osmani ES6 Tools</a></li>
+<li><a href="http://addyosmani.com/blog/tracking-es6-support/">Tracking ECMAScript 6 Support</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">ES6 Support in Mozilla</a></li>
+<li><a href="http://kangax.github.io/es5-compat-table/es6/">Kangax’s ES6 Support Table</a></li>
+<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts">ES6 Specification Wiki</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[闭包陷阱：我中招了！]]></title>
@@ -694,189 +1369,6 @@ args: [10, 17] // 为bear函数提供参数
 <ul>
 <li><a href="http://goo.gl/1A8ew">Secrets of the JavaScript Ninja</a></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用Photoshop: 将整图一分为九]]></title>
-    <link href="http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/"/>
-    <updated>2013-05-20T20:31:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts</id>
-    <content type="html"><![CDATA[<h2>引子</h2>
-
-<p>前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。</p>
-
-<!-- more -->
-
-
-<h2>思路一(动作)</h2>
-
-<p>我们切图一般都在<code>photoshop</code>中完成。以往我遇到这种大量的重复性工作时，我绝对不会坐以待毙，我会想方设法，不达目的绝不罢休。通常面对这种问题时，我首先想到的就是生成一个<code>action</code>(动作)，然后利用它批量完成。</p>
-
-<p>该<code>action</code>(动作)的大致思路是将各宫格图片分散到不同的图层中，然后便可以通过菜单命令<code>File | Scripts | Export Layers to Files…</code>将图层一一导出为文件，具体如下：</p>
-
-<ul>
-<li>计算一张图片的三等分宽高，生成并保存选区</li>
-<li>将选区定位在图片左上角，然后通过菜单命令<code>Layer | New | Layer via Cut(Copy)</code>将该区域隔离到新的图层</li>
-<li>重新载入选区，移位选区至新的位置，执行第二步同样命令</li>
-<li>重复执行第三步，直到图片九等分分散在不同图层</li>
-</ul>
-
-
-<p>但是，生成这样的动作不仅麻烦，而且也不甚高效，原因如下：</p>
-
-<ul>
-<li>需要为九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)不同规格生成不同的动作</li>
-<li>其他原因忘了~^~…</li>
-</ul>
-
-
-<p>于是这种思路只成为了一种念想，一闪即过。</p>
-
-<h2>思路二(切片工具)</h2>
-
-<p>然后有考虑利用<code>Divide Slice…</code>(划分切图)及<code>Slices from Guides</code>(辅助线自动生成切片)功能——一种传统古老的切图方式。然后通过菜单命令<code>File | Save for Web…</code>将各切片导出为图片。这种方式可行是可行，但事实是提供的图片不是很理想，宫格中有1个像素的透明<code>gutter</code>(间隙)。如果不考虑<code>gutter</code>(间隙)的话，九宫格切图只需四条均分辅助线，否则需要八条，这样就会导出很多垃圾图片——1像素宽或(和)1像素高的图。这样效果不是很理想(自许准理想主义者)，于是这种方法也不了了之了。</p>
-
-<blockquote><p>事实是，这种方法确实可行，考虑四条均分辅助线生成切片，最后可以生成个<code>action</code>(动作)对这些图片做最后的<code>sanitization</code>(“消毒处理”)，傻眼了当时…</p></blockquote>
-
-<h2>思路三(脚本)</h2>
-
-<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^&ndash;^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='/downloads/code/divide_slice.js'>下载</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">#</span><span class="nx">target</span> <span class="nx">photoshop</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">!==</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// 采用像素单位进行计算</span>
-</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">=</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 当前文档引用</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docRef</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">activeDocument</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 文档宽度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docWidth</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// 文档高度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docHeight</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 细分次数(默认 3 x 3，即九宫格切分)</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">divides</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 宫格间隙(默认无间隙)</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">gutter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 每宫格宽度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">slotWidth</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docWidth</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
-</span><span class='line'><span class="c1">// 每宫格高度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">slotHeight</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docHeight</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 保存当前图层(即整图)引用</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">layerRef</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 遍历行</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">docWidth</span><span class="p">;</span> <span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">y</span> <span class="o">-=</span> <span class="nx">slotHeight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// 遍历列</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">docHeight</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">-=</span> <span class="nx">slotWidth</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 重置当前图片为原图层(即整图)</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span> <span class="o">=</span> <span class="nx">layerRef</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 从右往左、从下往上设置选区</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">select</span><span class="p">([</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span> <span class="c1">// 左</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span>  <span class="c1">// 上</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">],</span> <span class="c1">// 右</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="c1">// 下</span>
-</span><span class='line'>    <span class="p">],</span> <span class="nx">SelectionType</span><span class="p">.</span><span class="nx">REPLACE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// layer via copy ^-^</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">copy</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">artLayers</span><span class="p">.</span><span class="nx">add</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">paste</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 水平轴向间隙偏移</span>
-</span><span class='line'>    <span class="nx">x</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">// 垂直轴向间隙偏移</span>
-</span><span class='line'>  <span class="nx">y</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 删除原图层(即整图)</span>
-</span><span class='line'><span class="nx">layerRef</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>用法很简单，只需下载这段脚本到本地，打开需要切分的图片，然后执行菜单命令<code>File | Scripts | Browse…</code>，在打开的弹出框中找到该脚本，双击执行即可。
-r
-如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
-
-<h2>参考书目</h2>
-
-<ol>
-<li><a href="http://goo.gl/IFQav">Photoshop CS6 Scripting Guide</a></li>
-<li><a href="http://goo.gl/ukIhf">Photoshop CS6 JavaScript Ref</a></li>
-</ol>
 
 ]]></content>
   </entry>
