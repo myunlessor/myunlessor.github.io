@@ -4,7 +4,7 @@
   <title><![CDATA[标签云: batch | Silent Reverie]]></title>
   <link href="http://myunlessor.me/tags/batch/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -37,26 +37,20 @@
 
 <p>假如我有一个名叫<code>template.json</code>的json模板数据文件，文件内容如下：</p>
 
-<p>```json
-{
-  &ldquo;result&rdquo;: &ldquo;0&rdquo;,
-  &ldquo;dataArea&rdquo;: {</p>
-
-<pre><code>"content": ""
-</code></pre>
-
-<p>  }
+<pre><code class="json">{
+  "result": "0",
+  "dataArea": {
+    "content": ""
+  }
 }
-```</p>
+</code></pre>
 
 <p>我要生成一堆类似<code>a_0.json、a_1.json...d_4.json</code>这样的序列文件，同时文件都包含<code>template.json</code>的内容，手活的话我会先复制一堆<code>template.json</code>文件，然后一个个重命名得到期望的序列文件，这真的很累。可是若借助shell命令的魔力，简直不费吹灰之力。</p>
 
 <p>我们都知道<code>cp</code>是拷贝文件命令，例如在终端下执行：</p>
 
-<p>```bash</p>
-
-<blockquote><p>cp template.json a_0.json
-```</p></blockquote>
+<pre><code class="bash">&gt; cp template.json a_0.json
+</code></pre>
 
 <p>那么在<code>template.json</code>文件的所在目录下将得到一个名为<code>a_0.json</code>的文件，内容与<code>template.json</code>一模一样。</p>
 
@@ -66,10 +60,8 @@
 
 <p>可以看出，<code>xargs</code>命令其实不<strong>干实事</strong>，它旨在督导和帮助其他一些<strong>干实事</strong>的命令（比如<code>cp、mdkir、mv、rm</code>等）重复做事，从而让那些<strong>干实事</strong>的命令尽显其能，这正是<code>xargs</code>本身的价值所在。那么如何使用它呢？请看以下这个例子：</p>
 
-<p>```bash</p>
-
-<blockquote><p>echo a_1.json a_2.json | xargs -n 1 -I {} cp template.json {}
-```</p></blockquote>
+<pre><code class="bash">&gt; echo a_1.json a_2.json | xargs -n 1 -I {} cp template.json {}
+</code></pre>
 
 <p>执行以上命令后，可以看到<code>template.json</code>文件的所在目录下多了两个名字分别为<code>a_1.json、a_2.json</code>的文件，并且内容也和<code>template.json</code>一模一样。</p>
 
@@ -86,28 +78,24 @@
 
 <p>还是回到之前的问题，怎么批量生成序列文件呢？我们现在找到了批量执行<code>cp</code>命令的方法，现在的问题简化到如何生成序列字符串的问题。很简单，看如下例子:</p>
 
-<p>```bash</p>
+<pre><code class="bash">&gt; echo {1..10}
+1 2 3 4 5 6 7 8 9 10
 
-<blockquote><p>echo {1..10}
-1 2 3 4 5 6 7 8 9 10</p>
+&gt; echo {a..g}
+a b c d e f g
 
-<p>echo {a..g}
-a b c d e f g</p>
-
-<p>echo {a..d}_{1..4}.json
+&gt; echo {a..d}_{1..4}.json
 a_1.json a_2.json a_3.json a_4.json
 b_1.json b_2.json b_3.json b_4.json
 c_1.json c_2.json c_3.json c_4.json
 d_1.json d_2.json d_3.json d_4.json
-```</p></blockquote>
+</code></pre>
 
 <p>看到规律了吧？以下是在<code>template.json</code>文件所在目录的子目录<code>seqs</code>下生成序列文件的命令：</p>
 
-<p>```bash</p>
-
-<blockquote><p>mkdir -p seqs
-echo {a..d}_{1..4}.json | xargs -n 1 -I {} cp template.json seqs/{}
-```</p></blockquote>
+<pre><code class="bash">&gt; mkdir -p seqs
+&gt; echo {a..d}_{1..4}.json | xargs -n 1 -I {} cp template.json seqs/{}
+</code></pre>
 
 <h2>一些小实践</h2>
 
@@ -117,42 +105,33 @@ echo {a..d}_{1..4}.json | xargs -n 1 -I {} cp template.json seqs/{}
 
 <p>假如终端当前工作子目录为<code>works</code>，在该目录下有如下结构：</p>
 
-<p>```
-works
-  |<strong> source_files      [应用源文件放置目录]
-  |   |</strong> riddle           [我爱猜谜语]
-  |   |<strong> brain_twists     [脑筋急转弯]
-  |   |</strong> train_tickets    [火车票查询]
+<pre><code>works
+  |__ source_files      [应用源文件放置目录]
+  |   |__ riddle           [我爱猜谜语]
+  |   |__ brain_twists     [脑筋急转弯]
+  |   |__ train_tickets    [火车票查询]
   |
-  |<strong> package_files     [应用打包放置目录]
+  |__ package_files     [应用打包放置目录]
   |
-  |</strong> package_template  [打包模板结构文件目录]</p>
-
-<pre><code>  |__ draw
-  |   |__ icon
-  |   |__ poster
-  |__ assets
-      |__brolife    [应用放置根目录]
+  |__ package_template  [打包模板结构文件目录]
+      |__ draw
+      |   |__ icon
+      |   |__ poster
+      |__ assets
+          |__brolife    [应用放置根目录]
 </code></pre>
-
-<p>```</p>
 
 <p>我们要将<code>source_files</code>目录下的所有应用打包放置在<code>package_files</code>目录下，可执行如下命令：</p>
 
-<p>```bash</p>
+<pre><code class="bash"># 在应用打包目录下建立相应的应用文件夹
+&gt; ls source_files | xargs -n 1 -I {} mkdir -p package_files/{}
 
-<h1>在应用打包目录下建立相应的应用文件夹</h1>
+# 拷贝文件夹需要带上`-a`或`-pPR`选项表示递归拷贝
+&gt; ls source_files | xargs -n 1 -I {} cp -a package_temptate/* package_files/{}
 
-<blockquote><p>ls source_files | xargs -n 1 -I {} mkdir -p package_files/{}</p></blockquote>
-
-<h1>拷贝文件夹需要带上<code>-a</code>或<code>-pPR</code>选项表示递归拷贝</h1>
-
-<blockquote><p>ls source_files | xargs -n 1 -I {} cp -a package_temptate/* package_files/{}</p></blockquote>
-
-<h1>将应用拷贝至相应的<code>brolife</code>文件夹中</h1>
-
-<blockquote><p>ls source_files | xargs -n 1 -I {} cp -a source_files/{} package_files/{}/assets/brolife
-```</p></blockquote>
+# 将应用拷贝至相应的`brolife`文件夹中
+&gt; ls source_files | xargs -n 1 -I {} cp -a source_files/{} package_files/{}/assets/brolife
+</code></pre>
 
 <h3>2.应用解包</h3>
 
@@ -162,16 +141,12 @@ works
 
 <p>只拷贝出应用中的<code>.htm</code>文件，其他文件全部忽略，这项操作需要用到find命令，时间关系不允过多解释。下面是一个使用的小例子：</p>
 
-<p>```bash</p>
+<pre><code class="bash"># 查找当前目录及其子目录下所有以`.htm`后缀结尾的所有文件
+&gt; find . -name "*.htm" -type f
 
-<h1>查找当前目录及其子目录下所有以<code>.htm</code>后缀结尾的所有文件</h1>
-
-<blockquote><p>find . -name &ldquo;*.htm&rdquo; -type f</p></blockquote>
-
-<h1>查找<code>~myunlessor/Desktop/riddle</code>目录及其子目录下所有以<code>.jpg</code>或<code>.png</code>后缀结尾的文件</h1>
-
-<blockquote><p>find ~myunlessor/Desktop/riddle ( -name &ldquo;<em>.jpg&rdquo; -or -name &ldquo;</em>.png&rdquo; ) -type f
-```</p></blockquote>
+# 查找`~myunlessor/Desktop/riddle`目录及其子目录下所有以`.jpg`或`.png`后缀结尾的文件
+&gt; find ~myunlessor/Desktop/riddle \( -name "*.jpg" -or -name "*.png" \) -type f
+</code></pre>
 
 <h2>小结</h2>
 
@@ -181,7 +156,7 @@ works
 
 <p>以上所讲的文件批处理解决方案都依赖于*NIX环境的shell，但我们工作在windows平台上<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>，说这些有什么意义呢？没关系，我们有<a href="http://www.cygwin.com/">Cygwin</a>，它在windows平台下极力模拟Linux环境，让我们可以在windows下使用Linux的一些实用工具。它的标语是：</p>
 
-<blockquote><p>Get that Linux feeling &ndash; on Windows!</p></blockquote>
+<blockquote><p>Get that Linux feeling - on Windows!</p></blockquote>
 
 <p>猛击<a href="http://cygwin.com/setup.exe">这里</a>下载安装使用起来吧！</p>
 <div class="footnotes">

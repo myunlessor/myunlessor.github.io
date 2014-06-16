@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Underscore与Lodash的差异引发的思考]]></title>
+    <link href="http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/"/>
+    <updated>2014-06-18T22:24:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[one way to implement pagination folding logic ]]></title>
+    <link href="http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/"/>
+    <updated>2014-06-17T10:28:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浅尝ECMAScript 6]]></title>
@@ -57,14 +75,13 @@ traceur.options.experimental = true;
 
 <p><code>var</code>关键字声明的变量具有函数作用域或全局作用域，而通过<code>let</code>关键字将变量声明为块作用域，对比如下：</p>
 
-<p>```js
-// 在块(curly)作用域中声明并初始化变量
-{ var foo = &lsquo;foo&rsquo;; }
-{ let bar = &lsquo;bar&rsquo;; }</p>
+<pre><code class="js">// 在块(curly)作用域中声明并初始化变量
+{ var foo = 'foo'; }
+{ let bar = 'bar'; }
 
-<p>console.log(foo); // &ndash;> &lsquo;foo&rsquo;
+console.log(foo); // -&gt; 'foo'
 console.log(bar); // ReferenceError: bar is not defined
-```</p>
+</code></pre>
 
 <h3>2. 常量(Constants)</h3>
 
@@ -72,44 +89,39 @@ console.log(bar); // ReferenceError: bar is not defined
 
 <p>使用<code>const</code>关键字将变量声明为常量，规范要求<code>const</code>声明的常量具块作用域，某些浏览器目前将其实现为函数作用域或全局作用域。声明变量为常量时如果不赋值，某些浏览器会将该变量赋<code>undefined</code>值，而某些浏览器则直接报错。为常量重新赋值，某些浏览器会忽略新赋值，某些浏览器会报错。将引用类型（如数组或对象）声明为常量，并不影响引用类型的扩充行为：</p>
 
-<p>```js
-const noexist;             // Const must be initialized (IE)
-const foo = &lsquo;foo&rsquo;;
-foo = &lsquo;hoo&rsquo;;               // Assignment to const (IE)
-console.log(foo);          // &ndash;> &lsquo;foo&rsquo;</p>
+<pre><code class="js">const noexist;             // Const must be initialized (IE)
+const foo = 'foo';
+foo = 'hoo';               // Assignment to const (IE)
+console.log(foo);          // -&gt; 'foo'
 
-<p>// 常量引用类型并不影响对其自身的扩充(<code>augument</code>)
+// 常量引用类型并不影响对其自身的扩充(`augument`)
 const bar = [];
-bar.push(&lsquo;spam&rsquo;, &lsquo;eggs&rsquo;);
-console.log(bar.length);   // &ndash;> 2</p>
+bar.push('spam', 'eggs');
+console.log(bar.length);   // -&gt; 2
 
-<p>// 同上
+// 同上
 const baz = {};
-baz.spam = &lsquo;eggs&rsquo;;
-console.log(baz.spam);     // &ndash;> &lsquo;eggs&rsquo;
-```</p>
+baz.spam = 'eggs';
+console.log(baz.spam);     // -&gt; 'eggs'
+</code></pre>
 
 <h3>3. 默认参数(Default Parameters)</h3>
 
 <p>函数声明时可以为参数赋予默认值，这样函数调用时如果参数缺省(<code>undefined</code>)，则该参数会被赋予默认值，使用默认参数在一定程序上使函数声明更为直观，并且简化我们的代码。</p>
 
-<p>```js
-// 传统写法
+<pre><code class="js">// 传统写法
 function fill(container, liquid) {
-  if (typeof liquid === &lsquo;undefined&rsquo;) {</p>
-
-<pre><code>liquid = 'coffee';
-</code></pre>
-
-<p>  }
-  // blablabla&hellip;
-}</p>
-
-<p>// 新式写法
-function fill(container, liquid = &lsquo;coffee&rsquo;) {
-  // blablabla&hellip;
+  if (typeof liquid === 'undefined') {
+    liquid = 'coffee';
+  }
+  // blablabla...
 }
-```</p>
+
+// 新式写法
+function fill(container, liquid = 'coffee') {
+  // blablabla...
+}
+</code></pre>
 
 <h3>4. Rest和Spread操作符</h3>
 
@@ -117,149 +129,143 @@ function fill(container, liquid = &lsquo;coffee&rsquo;) {
 
 <p><code>rest</code>是将多值折叠为单值集合的过程，和<code>rest</code>相反，<code>spread</code>是将单值集合展开为多值的过程。很多语言都有对它的支持，语法略有差异，Python、Ruby和CoffeeScript将这种语法统称为<code>splats</code>，Python和Ruby用形如<code>*var</code>的语法来表达。CoffeeScript用形如<code>var...</code>的语法来表达，而ES6则用形如<code>...var</code>的语法来表达。</p>
 
-<p>```js
-// 1. rest
-function unary(&hellip;first) {
+<pre><code class="js">// 1. rest
+function unary(...first) {
   console.log(first);
-}</p>
+}
 
-<p>function binary(first, &hellip;rest) {
+function binary(first, ...rest) {
   console.log([first, rest]);
-}</p>
+}
 
-<p>unary(&lsquo;foo&rsquo;);                 // &ndash;> [&lsquo;foo&rsquo;]
-unary(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;);          // &ndash;> [&lsquo;foo&rsquo;, &lsquo;bar&rsquo;]</p>
+unary('foo');                 // -&gt; ['foo']
+unary('foo', 'bar');          // -&gt; ['foo', 'bar']
 
-<p>binary(&lsquo;foo&rsquo;);                // &ndash;> [&lsquo;foo&rsquo;, []]
-binary(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;, &lsquo;baz&rsquo;);  // &ndash;> [&lsquo;foo&rsquo;, [&lsquo;bar&rsquo;, &lsquo;baz&rsquo;]]</p>
+binary('foo');                // -&gt; ['foo', []]
+binary('foo', 'bar', 'baz');  // -&gt; ['foo', ['bar', 'baz']]
 
-<p>// rest实现
+// rest实现
 ;(function (window, undefined) {
-  var _slice = Array.prototype.slice;</p>
+  var _slice = Array.prototype.slice;
 
-<p>  function variadic(fn) {</p>
+  function variadic(fn) {
+    var numParams    = fn.length, // 形参个数
+        numNamedArgs = numParams - 1;
 
-<pre><code>var numParams    = fn.length, // 形参个数
-    numNamedArgs = numParams - 1;
 
+    return numParams &lt; 1 ? fn : function () {
+      var
+        numArgs             = arguments.length, // 实参个数
+        namedArgs           = _slice.call(arguments, 0, numNamedArgs),
+        numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
+        argPadding          = Array(numMissingNamedArgs),
+        variadicArgs        = _slice.call(arguments, numNamedArgs);
 
-return numParams &lt; 1 ? fn : function () {
-  var
-    numArgs             = arguments.length, // 实参个数
-    namedArgs           = _slice.call(arguments, 0, numNamedArgs),
-    numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
-    argPadding          = Array(numMissingNamedArgs),
-    variadicArgs        = _slice.call(arguments, numNamedArgs);
+      return fn.apply(this, namedArgs
+                              .concat(argPadding)
+                              .concat([variadicArgs]));
+    };
+  }
 
-  return fn.apply(this, namedArgs
-                          .concat(argPadding)
-                          .concat([variadicArgs]));
-};
+  window.variadic = variadic;
+}).call(this, this);
+
+// -&gt; ['why', 'hello', 'there']
+variadic(unary)('why', 'hello', 'there');
+
+// -&gt; ['why', ['hello', 'there']]
+variadic(binary)('why', 'hello', 'there');
+
+// ----------------------------------------------------
+
+// 2. spread
+var numbers = [1, 2, 3, 4, 5];
+
+// 传统写法
+var max = Math.max.apply(Math, number);
+
+var filled = numbers.slice(0);
+[].push.apply(filled, [6, 7, 8, 9, 10]);
+
+// 新式写法
+var max = Math.max(...number);
+var filled = [...numbers, 6, 7, 8, 9, 10]
 </code></pre>
-
-<p>  }</p>
-
-<p>  window.variadic = variadic;
-}).call(this, this);</p>
-
-<p>// &ndash;> [&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;]
-variadic(unary)(&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;);</p>
-
-<p>// &ndash;> [&lsquo;why&rsquo;, [&lsquo;hello&rsquo;, &lsquo;there&rsquo;]]
-variadic(binary)(&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;);</p>
-
-<p>// &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</p>
-
-<p>// 2. spread
-var numbers = [1, 2, 3, 4, 5];</p>
-
-<p>// 传统写法
-var max = Math.max.apply(Math, number);</p>
-
-<p>var filled = numbers.slice(0);
-[].push.apply(filled, [6, 7, 8, 9, 10]);</p>
-
-<p>// 新式写法
-var max = Math.max(&hellip;number);
-var filled = [&hellip;numbers, 6, 7, 8, 9, 10]
-```</p>
 
 <h3>5. 解构赋值(Destructuring Assignment)</h3>
 
 <p>如果你想从数组中拿取多个元素并赋予其他变量，或是从函数中返回多值，那么ES6提供的<code>解构赋值(Destructuring Assignment)</code>特性正是我们所需要的。</p>
 
-<p>```js
-// 1. 数组解构赋值
+<pre><code class="js">// 1. 数组解构赋值
 let a = 1, b = 2;
-[b, a] = [a, b];   // swap two variabls</p>
+[b, a] = [a, b];   // swap two variabls
 
-<p>console.log(a, b); // &ndash;> 2 1</p>
+console.log(a, b); // -&gt; 2 1
 
-<p>function dest() {
-  return [&lsquo;why&rsquo;, &lsquo;hello&rsquo;, &lsquo;there&rsquo;];
-}</p>
+function dest() {
+  return ['why', 'hello', 'there'];
+}
 
-<p>let [foo, bar, baz] = dest();</p>
+let [foo, bar, baz] = dest();
 
-<p>// &ndash;> &lsquo;why&rsquo; &lsquo;hello&rsquo; &lsquo;there&rsquo;
-console.log(foo, bar, baz);</p>
+// -&gt; 'why' 'hello' 'there'
+console.log(foo, bar, baz);
 
-<p>// 忽略不需要的值
-let [a, , c] = dest();</p>
+// 忽略不需要的值
+let [a, , c] = dest();
 
-<p>// &ndash;> &lsquo;why&rsquo; &lsquo;there&rsquo;
-console.log(a, c);</p>
+// -&gt; 'why' 'there'
+console.log(a, c);
 
-<p>// 2. 对象解构赋值
+// 2. 对象解构赋值
 let janeDoe = {
-  first: &lsquo;jane&rsquo;,
-  last: &lsquo;doe&rsquo;,
-  gender: &lsquo;female&rsquo;,
-  hobbies: [&lsquo;music&rsquo;, &lsquo;sports&rsquo;]
-};</p>
+  first: 'jane',
+  last: 'doe',
+  gender: 'female',
+  hobbies: ['music', 'sports']
+};
 
-<p>let { first: firstName, last: lastName } = janeDoe;</p>
+let { first: firstName, last: lastName } = janeDoe;
 
-<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
-console.log(firstName, lastName);</p>
+// -&gt; 'jane' 'doe'
+console.log(firstName, lastName);
 
-<p>let { first, last } = janeDoe;</p>
+let { first, last } = janeDoe;
 
-<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
-console.log(first, last);</p>
+// -&gt; 'jane' 'doe'
+console.log(first, last);
 
-<p>function whatever({ first: f, last: l }) {
+function whatever({ first: f, last: l }) {
   console.log(f, l);
-}</p>
+}
 
-<p>// &ndash;> &lsquo;jane&rsquo; &lsquo;doe&rsquo;
-whatever(janeDoe);</p>
+// -&gt; 'jane' 'doe'
+whatever(janeDoe);
 
-<p>function another({ gender, hobbies: [hob1, hob2] }) {
+function another({ gender, hobbies: [hob1, hob2] }) {
   console.log(gender, hob1, hob2);
-}</p>
+}
 
-<p>// &ndash;> &lsquo;female&rsquo; &lsquo;music&rsquo; &lsquo;sports&rsquo;
+// -&gt; 'female' 'music' 'sports'
 another(janeDoe);
-```</p>
+</code></pre>
 
 <h3>6. for…of 循环语句</h3>
 
 <p>ES6新引入了<code>for…of</code>循环语句，以往我们使用的<code>for..in</code>循环语句用于迭代对象的<code>属性(properties)</code>，而新式的for…of循环语句则用于迭代对象的<code>值(values)</code>。</p>
 
-<p>```js
-var numbers = [1, 2, 3, 4, 5];</p>
+<pre><code class="js">var numbers = [1, 2, 3, 4, 5];
 
-<p>// 传统写法
+// 传统写法
 numbers.forEach(function (number) {
   console.log(number);
-});</p>
+});
 
-<p>// 新式写法
+// 新式写法
 for (let number of numbers) {
   console.log(number);
 }
-```</p>
+</code></pre>
 
 <h3>7. 迭代器(Iterators)</h3>
 
@@ -269,140 +275,126 @@ for (let number of numbers) {
 
 <p>生成器可以创建迭代器，并且可以用它来创建自定义迭代对象。生成器异常强大，网上你可以找到它联合<code>Promises</code>一起使用的情形，它为ajax异步调用开启一个新的世界，一个没有<code>callbacks</code>，没有<code>then</code>的世界，它的强大会超乎你的想象。</p>
 
-<p>```js
-// 基本用法
+<pre><code class="js">// 基本用法
 function* numberGen() {
-  let limit = 3, i = 0;</p>
+  let limit = 3, i = 0;
 
-<p>  do {</p>
-
-<pre><code>yield i++;
-</code></pre>
-
-<p>  } while (i &lt; limit);
-}</p>
-
-<p>let iter = numberGen();</p>
-
-<p>// &ndash;> { value: 0, done: false }
-iter.next();</p>
-
-<p>// &ndash;> { value: 1, done: false }
-iter.next();</p>
-
-<p>// &ndash;> { value: 2, done: false }
-iter.next();</p>
-
-<p>// &ndash;> { value: undefined, done: true }
-iter.next();</p>
-
-<p>// 过滤偶数
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];</p>
-
-<p>function* even(numbers) {
-  for (let n of numbers) {</p>
-
-<pre><code>if (n % 2 === 0) {
-  yield n;
+  do {
+    yield i++;
+  } while (i &lt; limit);
 }
-</code></pre>
 
-<p>  }
-}</p>
+let iter = numberGen();
 
-<p>for (let n of even(numbers)) {
+// -&gt; { value: 0, done: false }
+iter.next();
+
+// -&gt; { value: 1, done: false }
+iter.next();
+
+// -&gt; { value: 2, done: false }
+iter.next();
+
+// -&gt; { value: undefined, done: true }
+iter.next();
+
+// 过滤偶数
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function* even(numbers) {
+  for (let n of numbers) {
+    if (n % 2 === 0) {
+      yield n;
+    }
+  }
+}
+
+for (let n of even(numbers)) {
   console.log(n);
-}</p>
-
-<p>// 延伸用法1
-let janeDoe = {
-  first: &lsquo;jane&rsquo;,
-  last: &lsquo;doe&rsquo;
-};</p>
-
-<p>function* iterObj(obj) {
-  for (let prop in obj) {</p>
-
-<pre><code>if (obj.hasOwnProperty(prop)) {
-  yield [prop, obj[prop]];
 }
-</code></pre>
 
-<p>  }
-}</p>
+// 延伸用法1
+let janeDoe = {
+  first: 'jane',
+  last: 'doe'
+};
 
-<p>// &ndash;> &ldquo;first: jane&rdquo;
-// &ndash;> &ldquo;last: doe&rdquo;
+function* iterObj(obj) {
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      yield [prop, obj[prop]];
+    }
+  }
+}
+
+// -&gt; "first: jane"
+// -&gt; "last: doe"
 for (let [key, value] of iterObj(janeDoe)) {
-  console.log([key, value].join(&lsquo;: &rsquo;));
-}</p>
+  console.log([key, value].join(': '));
+}
 
-<p>// 延伸用法2
+// 延伸用法2
 function Person(firstName, lastName) {
   this.firstName = firstName;
   this.lastName = lastName;
-}</p>
+}
 
-<p>Person.prototype.greeting = function (name) {
-  return &lsquo;Hello, &rsquo; + name;
-};</p>
+Person.prototype.greeting = function (name) {
+  return 'Hello, ' + name;
+};
 
-<p>// Person.prototype[Symbol.iterator]
-Person.prototype[&lsquo;@@iterator&rsquo;] = function* () {
-  for (let prop in this) {</p>
+// Person.prototype[Symbol.iterator]
+Person.prototype['@@iterator'] = function* () {
+  for (let prop in this) {
+    if (this.hasOwnProperty(prop)) {
+      yield [prop, this[prop]];
+    }
+  }
+};
 
-<pre><code>if (this.hasOwnProperty(prop)) {
-  yield [prop, this[prop]];
+let johndoe = new Person('john', 'doe');
+
+// -&gt; "first: john"
+// -&gt; "last: doe"
+for (let [key, value] of johndoe) {
+  console.log([key, value].join(': '));
 }
 </code></pre>
-
-<p>  }
-};</p>
-
-<p>let johndoe = new Person(&lsquo;john&rsquo;, &lsquo;doe&rsquo;);</p>
-
-<p>// &ndash;> &ldquo;first: john&rdquo;
-// &ndash;> &ldquo;last: doe&rdquo;
-for (let [key, value] of johndoe) {
-  console.log([key, value].join(&lsquo;: &rsquo;));
-}
-```</p>
 
 <h3>9. Comprehensions</h3>
 
 <p>Python最早引入了<code>List Comprehensions(列表推导)</code>的概念，这一特性深受程序员的喜爱，这一特性继而引申出<code>Dict Comprehensions</code>及<code>Generator Comprehensions</code>。CoffeeScript设计时也参考了Python，它也有<code>Comprehensions</code>的概念。而作为日渐流行的JavaScript，这么好的东西怎么能错过呢？自然而然地它也成为了JavaScript的标配。
 我们在操作数组的时候经常会使用<code>Array.prototype.map</code>和<code>Array.prototype.filter</code>方法，ES6为我们提供的<code>Comprehensions</code>简直可以称为这两个方法提供<code>语法糖(syntax sugar)</code>，其语法表达直白、简明、形象。</p>
 
-<p>```js
-let fruits = [&lsquo;apple&rsquo;, &lsquo;orange&rsquo;, &lsquo;banana&rsquo;];</p>
+<pre><code class="js">let fruits = ['apple', 'orange', 'banana'];
 
-<p>// 传统应用
+// 传统应用
 let ripeFruits = fruits.map(function (item) {
-  return &lsquo;ripe &rsquo; + item;
-});</p>
+  return 'ripe ' + item;
+});
 
-<p>let fruitsWithN = fruits.filter(function (item) {
-  return item.indexOf(&lsquo;n&rsquo;) > -1;
-});</p>
+let fruitsWithN = fruits.filter(function (item) {
+  return item.indexOf('n') &gt; -1;
+});
 
-<p>console.log(ripeFruits);
-console.log(fruitsWithN);</p>
+console.log(ripeFruits);
+console.log(fruitsWithN);
 
-<p>// 新式玩法
+// 新式玩法
 // 1. 数组推导(Array Comprehension)
-let ripeFruits2 = [&lsquo;ripe &rsquo; + item for (item of fruits)];
-let fruitsWithN2 = [item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1)];
-let ripeFruitsWithN = [&lsquo;ripe &rsquo; + item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1)];</p>
+let ripeFruits2 = ['ripe ' + item for (item of fruits)];
+let fruitsWithN2 = [item for (item of fruits) if (item.indexOf('n') &gt; -1)];
+let ripeFruitsWithN = ['ripe ' + item for (item of fruits) if (item.indexOf('n') &gt; -1)];
 
-<p>console.log(ripeFruits2);
+console.log(ripeFruits2);
 console.log(fruitsWithN2);
-console.log(ripeFruitsWithN);</p>
+console.log(ripeFruitsWithN);
 
-<p>// 2. 生成器推导(Generator Comprehension)
-let iter = (&lsquo;ripe &rsquo; + item for (item of fruits) if (item.indexOf(&lsquo;n&rsquo;) > -1));
-console.log(iter.next()); // &ndash;> &ldquo;ripe orange&rdquo;
-console.log(iter.next()); // &ndash;> &ldquo;ripe banana&rdquo;
-```</p>
+// 2. 生成器推导(Generator Comprehension)
+let iter = ('ripe ' + item for (item of fruits) if (item.indexOf('n') &gt; -1));
+console.log(iter.next()); // -&gt; "ripe orange"
+console.log(iter.next()); // -&gt; "ripe banana"
+</code></pre>
 
 <h3>10. 箭头函数(Arrow Functions)</h3>
 
@@ -425,92 +417,90 @@ console.log(iter.next()); // &ndash;> &ldquo;ripe banana&rdquo;
 <p>Python的作者是个数学家，所以这门语言早期就有了对<code>Set</code>的支持。现在，ES6也将<code>Set</code>纳为标配了。有了集合，数组去除已然不费吹灰之力了。
 更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/09/25/ecmascript-6-collections-part-1-sets/">这里</a>。</p>
 
-<p>```js
-// 创建集合实例
-let items = new Set([1, 2, 2, 3, 4, 3, 5, &lsquo;2&rsquo;]);</p>
+<pre><code class="js">// 创建集合实例
+let items = new Set([1, 2, 2, 3, 4, 3, 5, '2']);
 
-<p>// 判断指定元素是否在集合中
-console.log(items.has(&lsquo;2&rsquo;));</p>
+// 判断指定元素是否在集合中
+console.log(items.has('2'));
 
-<p>// 遍历集合元素
+// 遍历集合元素
 for (let item of items) {
   console.log(item);
-}</p>
+}
 
-<p>// 添加元素到集合中
-items.add(6);</p>
+// 添加元素到集合中
+items.add(6);
 
-<p>// 从集合中移除元素
-items.delete(1);</p>
+// 从集合中移除元素
+items.delete(1);
 
-<p>// 获取集合里元素个数
-console.log(items.size);</p>
+// 获取集合里元素个数
+console.log(items.size);
 
-<p>// 遍历集合元素
+// 遍历集合元素
 for (let item of items) {
   console.log(item);
-}</p>
+}
 
-<p>// 移除集合里所有元素
+// 移除集合里所有元素
 items.clear();
-```</p>
+</code></pre>
 
 <h3>2. 映射(Map)</h3>
 
 <p>以往我们都是使用字面对象构建键值对映射，ES6提供的<code>Map</code>结构提供了友好直白的API让我们可以更好地操纵键值对，就像<code>localStorge</code>一样，它使我们更好地在客户端保存数据。
 更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/10/09/ecmascript-6-collections-part-2-maps/">这里</a>。</p>
 
-<p>```js
-// 创建映射实例
-let stuff = new Map();</p>
+<pre><code class="js">// 创建映射实例
+let stuff = new Map();
 
-<p>// 设置键值对
-stuff.set(&lsquo;foo&rsquo;, &lsquo;bar&rsquo;)
+// 设置键值对
+stuff.set('foo', 'bar')
 // 你没看错，对象也可以作为Map的key
-stuff.set(document, document.createElement(&lsquo;div&rsquo;));</p>
+stuff.set(document, document.createElement('div'));
 
-<p>// 判断是否设置了指定键
-console.log(stuff.has(&lsquo;foo&rsquo;));</p>
+// 判断是否设置了指定键
+console.log(stuff.has('foo'));
 
-<p>// 获取键值对个数
-console.log(stuff.size);</p>
+// 获取键值对个数
+console.log(stuff.size);
 
-<p>// 获取指定键的值
-console.log(stuff.get(&lsquo;foo&rsquo;));</p>
+// 获取指定键的值
+console.log(stuff.get('foo'));
 
-<p>// 删除指定的键
-stuff.delete(&lsquo;foo&rsquo;);</p>
+// 删除指定的键
+stuff.delete('foo');
 
-<p>// 清除所有键
-stuff.clear();</p>
+// 清除所有键
+stuff.clear();
 
-<p>// 遍历键值对
+// 遍历键值对
 for (let item of stuff) {
   // key = item[0];
   // value = item[1];
   // do something
-}</p>
+}
 
-<p>// 同上
+// 同上
 for (let item of stuff.items()) {
   // do something
-}</p>
+}
 
-<p>// 同上(解构赋值)
+// 同上(解构赋值)
 for (let [key, value] of stuff) {
   // do something
-}</p>
+}
 
-<p>// 遍历所有键
+// 遍历所有键
 for (let key of stuff.keys()) {
   // do something
-}</p>
+}
 
-<p>// 遍历所有值
+// 遍历所有值
 for (let value of stuff.values()) {
   // do something
 }
-```</p>
+</code></pre>
 
 <h3>2. 弱映射(WeakMap)</h3>
 
@@ -521,157 +511,131 @@ for (let value of stuff.values()) {
 
 <p>由于JavaScript的异步编程的普遍应用，Promises尤显得重要。众望所归，ES6也把<code>Promises</code>写入草案中了。目前<code>Firefox 30+及Chrome33+</code>实现了<code>Promises</code>，加了这个<a href="https://github.com/jakearchibald/es6-promise">polyfill</a>，我们可以在所有现代浏览器中使用它。</p>
 
-<p>```js
-function get(url) {
-  return new Promise(function (resolve, reject) {</p>
+<pre><code class="js">function get(url) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
 
-<pre><code>var xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
 
-xhr.open('GET', url);
+    xhr.onload = function () {
+      var status = xhr.status;
 
-xhr.onload = function () {
-  var status = xhr.status;
+      if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
+        resolve(xhr.response);
+      } else {
+        reject(xhr.statusText);
+      }
+    };
 
-  if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
-    resolve(xhr.response);
-  } else {
-    reject(xhr.statusText);
-  }
-};
+    xhr.onerror = function () {
+      reject('Network error');
+    };
 
-xhr.onerror = function () {
-  reject('Network error');
-};
+    xhr.send(null);
+  });
+}
 
-xhr.send(null);
-</code></pre>
-
-<p>  });
-}</p>
-
-<p>function getJSON(url) {
+function getJSON(url) {
   return get(url).then(JSON.parse);
-}</p>
+}
 
-<p>// file1.txt: { &ldquo;message&rdquo;: &ldquo;This is the first file.&rdquo; }
-// file2.txt: { &ldquo;message&rdquo;: &ldquo;This is the second file.&rdquo; }
-// file3.txt: 404</p>
+// file1.txt: { "message": "This is the first file." }
+// file2.txt: { "message": "This is the second file." }
+// file3.txt: 404
 
-<p>let promise = getJSON(&lsquo;file1.txt&rsquo;);</p>
+let promise = getJSON('file1.txt');
 
-<p>promise
-  .then(function (obj) {</p>
-
-<pre><code>alert(obj.message);
-return getJSON('file2.txt');
-</code></pre>
-
-<p>  })
-  .then(function () {</p>
-
-<pre><code>alert(obj.message);
-return getJSON('file3.txt');
-</code></pre>
-
-<p>  })
-  .then(function (obj) {</p>
-
-<pre><code>alert(obj.message);
-</code></pre>
-
-<p>  })
+promise
+  .then(function (obj) {
+    alert(obj.message);
+    return getJSON('file2.txt');
+  })
+  .then(function () {
+    alert(obj.message);
+    return getJSON('file3.txt');
+  })
+  .then(function (obj) {
+    alert(obj.message);
+  })
   .catch(console.log);
-```</p>
+</code></pre>
 
 <h3>3. 虚拟对象(Proxies)</h3>
 
 <p><code>Proxies</code>实为虚拟对象，它为对象操纵添加了一道包装，使用它有点Ruby元编程的味道。更多关于<code>Proxies</code>的解释请参阅<a href="http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies">这里</a></p>
 
-<p>```js
-// 原型
+<pre><code class="js">// 原型
 let handler = {
-  get: function (proxy, name) {</p>
-
-<pre><code>console.log('Getter for ' + name);
-</code></pre>
-
-<p>  },</p>
-
-<p>  set: function (proxy, name, value) {</p>
-
-<pre><code>console.log('Setter for ' + name + ' and value of ' + value);
-</code></pre>
-
-<p>  },</p>
-
-<p>  has: function (name) {</p>
-
-<pre><code>console.log(name + ' is in the has trap.');
-</code></pre>
-
-<p>  }
-};</p>
-
-<p>var proxy = Proxy.create(handler);</p>
-
-<p>// 实例
-let createElement = (function () {
-  let specialProps = [&lsquo;id&rsquo;, &lsquo;className&rsquo;];</p>
-
-<p>  return function (tagName) {</p>
-
-<pre><code>let element = document.createElement(tagName);
-
-let p = Proxy.create({
   get: function (proxy, name) {
-    if (name === 'node') {
-      return element;
-    }
-
-    if (name in element) {
-      return element[name];
-    }
-
-    return element.getAttribute(name);
+    console.log('Getter for ' + name);
   },
 
   set: function (proxy, name, value) {
-    if (name === 'node') {
-      throw new Error('node cannot be set');
-    }
+    console.log('Setter for ' + name + ' and value of ' + value);
+  },
 
-    if (name in element) {
-      if (specialProps.indexOf(name) === -1) {
-        throw new Error(name + ' cannot be set');
-      }
-
-      element[name] = value;
-    } else {
-      element.setAttribute(name, value);
-    }
+  has: function (name) {
+    console.log(name + ' is in the has trap.');
   }
-});
+};
 
-return p;
-</code></pre>
+var proxy = Proxy.create(handler);
 
-<p>  };
-})();</p>
+// 实例
+let createElement = (function () {
+  let specialProps = ['id', 'className'];
 
-<p>let el = createElement(&lsquo;div&rsquo;); // proxy</p>
+  return function (tagName) {
+    let element = document.createElement(tagName);
 
-<p>el.id = &lsquo;proxyTest&rsquo;;
-el.className = &lsquo;first-class&rsquo;;
-el.classList.add(&lsquo;second-class&rsquo;);
-el.foo = &lsquo;bar&rsquo;;
-el[&lsquo;data-proxy-test&rsquo;] = true;</p>
+    let p = Proxy.create({
+      get: function (proxy, name) {
+        if (name === 'node') {
+          return element;
+        }
 
-<p>console.log(el.node);
+        if (name in element) {
+          return element[name];
+        }
+
+        return element.getAttribute(name);
+      },
+
+      set: function (proxy, name, value) {
+        if (name === 'node') {
+          throw new Error('node cannot be set');
+        }
+
+        if (name in element) {
+          if (specialProps.indexOf(name) === -1) {
+            throw new Error(name + ' cannot be set');
+          }
+
+          element[name] = value;
+        } else {
+          element.setAttribute(name, value);
+        }
+      }
+    });
+
+    return p;
+  };
+})();
+
+let el = createElement('div'); // proxy
+
+el.id = 'proxyTest';
+el.className = 'first-class';
+el.classList.add('second-class');
+el.foo = 'bar';
+el['data-proxy-test'] = true;
+
+console.log(el.node);
 console.log(el.id);
 console.log(el.className);
 console.log(el.foo);
-console.log(el[&lsquo;data-proxy-test&rsquo;]);
-```</p>
+console.log(el['data-proxy-test']);
+</code></pre>
 
 <h2>IV、尾声</h2>
 
@@ -700,127 +664,114 @@ console.log(el[&lsquo;data-proxy-test&rsquo;]);
 
 <p>以下代码是从工作中提炼出来的，在这4个case中两次调用<code>howdy()</code>函数时log打印值分别是什么？</p>
 
-<p>```js
-// closure caveat</p>
+<pre><code class="js">// closure caveat
 
-<p>// case 1
+// case 1
 ;(function (window, $, undefined) {
-  var $target;</p>
+  var $target;
 
-<p>  function howdy() {</p>
+  function howdy() {
+    var x = 'foo';
 
-<pre><code>var x = 'foo';
+    if (!$target) {
+      $target = $({})
+        .on('whatever', function () {
+          console.log(x);
+        })
+        .on('soga', function () {
+          x = 'bar';
+        });
 
-if (!$target) {
-  $target = $({})
-    .on('whatever', function () {
-      console.log(x);
-    })
-    .on('soga', function () {
-      x = 'bar';
-    });
+      $target.triggerHandler('soga');
+    }
 
-  $target.triggerHandler('soga');
-}
+    $target.triggerHandler('whatever');
+  }
 
-$target.triggerHandler('whatever');
-</code></pre>
-
-<p>  }</p>
-
-<p>  howdy();
   howdy();
-})(this, jQuery);</p>
-
-<p>// case 2
-;(function (window, $, undefined) {
-  var $target, x;</p>
-
-<p>  function howdy() {</p>
-
-<pre><code>x = 'foo';
-
-if (!$target) {
-  $target = $({})
-    .on('whatever', function () {
-      console.log(x);
-    })
-    .on('soga', function () {
-      x = 'bar';
-    });
-
-  $target.triggerHandler('soga');
-}
-
-$target.triggerHandler('whatever');
-</code></pre>
-
-<p>  }</p>
-
-<p>  howdy();
-  howdy();
-})(this, jQuery);</p>
-
-<p>// case 3
-;(function (window, $, undefined) {
-  var $target;</p>
-
-<p>  function howdy() {</p>
-
-<pre><code>var x = 'foo';
-
-if (!$target) {
-  $target = $({}).on('soga', function () {
-    x = 'bar';
-  });
-}
-
-$target
-  .off('whatever')
-  .on('whatever', function () {
-    console.log(x);
-  });
-
-$target.triggerHandler('soga');
-$target.triggerHandler('whatever');
-</code></pre>
-
-<p>  }</p>
-
-<p>  howdy();
-  howdy();
-})(this, jQuery);</p>
-
-<p>// case 4
-;(function (window, $, undefined) {
-  var $target, x;</p>
-
-<p>  function howdy() {</p>
-
-<pre><code>x = 'foo';
-
-if (!$target) {
-  $target = $({}).on('soga', function () {
-    x = 'bar';
-  });
-}
-
-$target
-  .off('whatever')
-  .on('whatever', function () {
-    console.log(x);
-  });
-
-$target.triggerHandler('soga');
-$target.triggerHandler('whatever');
-</code></pre>
-
-<p>  }</p>
-
-<p>  howdy();
   howdy();
 })(this, jQuery);
-```</p>
+
+// case 2
+;(function (window, $, undefined) {
+  var $target, x;
+
+  function howdy() {
+    x = 'foo';
+
+    if (!$target) {
+      $target = $({})
+        .on('whatever', function () {
+          console.log(x);
+        })
+        .on('soga', function () {
+          x = 'bar';
+        });
+
+      $target.triggerHandler('soga');
+    }
+
+    $target.triggerHandler('whatever');
+  }
+
+  howdy();
+  howdy();
+})(this, jQuery);
+
+// case 3
+;(function (window, $, undefined) {
+  var $target;
+
+  function howdy() {
+    var x = 'foo';
+
+    if (!$target) {
+      $target = $({}).on('soga', function () {
+        x = 'bar';
+      });
+    }
+
+    $target
+      .off('whatever')
+      .on('whatever', function () {
+        console.log(x);
+      });
+
+    $target.triggerHandler('soga');
+    $target.triggerHandler('whatever');
+  }
+
+  howdy();
+  howdy();
+})(this, jQuery);
+
+// case 4
+;(function (window, $, undefined) {
+  var $target, x;
+
+  function howdy() {
+    x = 'foo';
+
+    if (!$target) {
+      $target = $({}).on('soga', function () {
+        x = 'bar';
+      });
+    }
+
+    $target
+      .off('whatever')
+      .on('whatever', function () {
+        console.log(x);
+      });
+
+    $target.triggerHandler('soga');
+    $target.triggerHandler('whatever');
+  }
+
+  howdy();
+  howdy();
+})(this, jQuery);
+</code></pre>
 
 <p>总结：<code>prefer object properties to local variables when recording state!</code></p>
 ]]></content>
@@ -835,9 +786,8 @@ $target.triggerHandler('whatever');
 
 <p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：</p>
 
-<p><code>
-http://ued.campus.alibaba.com/quiz3/index.php
-</code></p>
+<pre><code>http://ued.campus.alibaba.com/quiz3/index.php
+</code></pre>
 
 <!-- more -->
 
@@ -848,55 +798,43 @@ http://ued.campus.alibaba.com/quiz3/index.php
 
 <p>F12键打开控制台，输入以下代码，密码显现，按不同顺序尝试密码即可通关。</p>
 
-<p><code>js
-[].forEach.call(Array(11).join('-'), powder.blow.bind(powder));
-</code></p>
+<pre><code class="js">[].forEach.call(Array(11).join('-'), powder.blow.bind(powder));
+</code></pre>
 
 <h2>第二关 —— 激光，前进的方向</h2>
 
 <p>该关主要调整id为ma和mb两挡板元素的位置和角度形成反射即可通关，在控制台输入以下代码即可：</p>
 
-<p>```js
-(function (doc) {
-  var mas = doc.getElementById(&lsquo;ma&rsquo;).style,</p>
+<pre><code class="js">(function (doc) {
+  var mas = doc.getElementById('ma').style,
+      mbs = doc.getElementById('mb').style;
 
-<pre><code>  mbs = doc.getElementById('mb').style;
-</code></pre>
+  mas.top = '550px';
+  mas.webkitTransform = 'rotate(-82deg)';
 
-<p>  mas.top = &lsquo;550px&rsquo;;
-  mas.webkitTransform = &lsquo;rotate(-82deg)&rsquo;;</p>
-
-<p>  mbs.top = &lsquo;430px&rsquo;;
-  mbs.webkitTransform = &lsquo;rotate(172deg)&rsquo;;
+  mbs.top = '430px';
+  mbs.webkitTransform = 'rotate(172deg)';
 }).call(this, document);
-```</p>
+</code></pre>
 
 <h2>第三关 —— 坐标，隐藏的线索</h2>
 
 <p>初看这个场景，看到三个定位角块，嗯这是二维码，但是是空白的，审查元素得知它是个canvas元素，需要画图将该二维码补充完整，在控制台输入以下代码完成：</p>
 
-<p>```js
-(function (ctx) {
-  [].filter.call(document.body.childNodes, function (node) {</p>
-
-<pre><code>return node.nodeType === 8;
+<pre><code class="js">(function (ctx) {
+  [].filter.call(document.body.childNodes, function (node) {
+    return node.nodeType === 8;
+  })[0].data.trim().split(' ').forEach(function (params) {
+    ctx.fillRect.apply(ctx, params.split(','));
+  });
+})(document.getElementById('qr-canvas').getContext('2d'));
 </code></pre>
-
-<p>  })[0].data.trim().split(&lsquo; &rsquo;).forEach(function (params) {</p>
-
-<pre><code>ctx.fillRect.apply(ctx, params.split(','));
-</code></pre>
-
-<p>  });
-})(document.getElementById(&lsquo;qr-canvas&rsquo;).getContext(&lsquo;2d&rsquo;));
-```</p>
 
 <h2>第四关 —— 图案，疯狂的猜测</h2>
 
 <p>本关类似于看图识字的游戏，在文本框输入图片对应的关键字即可，主要有以下这些：</p>
 
-<p><code>
-github
+<pre><code>github
 v
 css sprite
 stackoverflow
@@ -910,466 +848,59 @@ sublime text
 w3
 grunt
 npm
-</code></p>
+</code></pre>
 
 <h2>第五关 —— 寻找，无尽的房间</h2>
 
 <p>这关看得云里来雾里去，最开始一直更改url中查询字符串room的值，提示你不要人肉。控制台叫你用jquery通关，尝试许久，总结如下方法，在控制台运行后直接通关：</p>
 
-<p>```js
-(function ($, loc) {
-  var ready = false,</p>
+<pre><code class="js">(function ($, loc) {
+  var ready = false,
+      message = $('#message').text(),
+      t = query('t'),
+      url = '';
 
-<pre><code>  message = $('#message').text(),
-  t = query('t'),
-  url = '';
-</code></pre>
-
-<p>  function query(param) {</p>
-
-<pre><code>var match = RegExp('[?&amp;]' + param + '=([^&amp;]*)').exec(loc.href.split('#')[0]);
-return match &amp;&amp; decodeURIComponent(match[1].replace(/\+/g, ' '));
-</code></pre>
-
-<p>  }</p>
-
-<p>  (function yoda(next_room) {</p>
-
-<pre><code>$.get(loc.href.split('?')[0], {
-  t: t,
-  room: next_room
-}, function (resp) {
-  var msg = $('#message', resp).text(),
-      nextRoom = $('#next-room', resp).text();
-
-  console.log(message += msg);
-
-  if (ready) {
-    url += msg;
-  } else if (msg === '/quiz3/i') {
-    ready = !ready;
-    url += msg;
+  function query(param) {
+    var match = RegExp('[?&amp;]' + param + '=([^&amp;]*)').exec(loc.href.split('#')[0]);
+    return match &amp;&amp; decodeURIComponent(match[1].replace(/\+/g, ' '));
   }
 
-  if (nextRoom) {
-    yoda(nextRoom);
-  } else {
-    var nextUrl = loc.protocol + '//' + loc.host + url;
-    console.warn('点击进入下一关^_^: ' + nextUrl);
-    setTimeout(function () { loc.href = nextUrl; }, 5000);
-  }
-});
-</code></pre>
+  (function yoda(next_room) {
+    $.get(loc.href.split('?')[0], {
+      t: t,
+      room: next_room
+    }, function (resp) {
+      var msg = $('#message', resp).text(),
+          nextRoom = $('#next-room', resp).text();
 
-<p>  })($(&lsquo;#next-room&rsquo;).text());
+      console.log(message += msg);
+
+      if (ready) {
+        url += msg;
+      } else if (msg === '/quiz3/i') {
+        ready = !ready;
+        url += msg;
+      }
+
+      if (nextRoom) {
+        yoda(nextRoom);
+      } else {
+        var nextUrl = loc.protocol + '//' + loc.host + url;
+        console.warn('点击进入下一关^_^: ' + nextUrl);
+        setTimeout(function () { loc.href = nextUrl; }, 5000);
+      }
+    });
+  })($('#next-room').text());
 })(jQuery, location);
-```</p>
+</code></pre>
 
 <h2>第六关 —— 消除! 最后的任务</h2>
 
 <p>这关没想到什么好办法，浏览js文件<code>http://ued.campus.alibaba.com/quiz3/assets/js/step5.js</code>看到里面有<code>window.location</code>，于是直接在控制台输入如下代码，顺利通关：</p>
 
-<p><code>js
-var p = document.getElementById('page').getAttributeNode('data-p').nodeValue;
+<pre><code class="js">var p = document.getElementById('page').getAttributeNode('data-p').nodeValue;
 window.location = Base64.decode(p);
-</code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[import this 与恺撒密码]]></title>
-    <link href="http://myunlessor.me/blog/2013/06/04/import-this-and-caesar-cipher/"/>
-    <updated>2013-06-04T20:56:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/06/04/import-this-and-caesar-cipher</id>
-    <content type="html"><![CDATA[<p>学过<code>python</code>脚本语言的人都知道<code>python</code>中有一个叫<code>this</code>的模块（<code>module</code>）。该模块只做了件很简单的事，打印一段字符串，内容是有关python语言的一些禅语（也可以称它为<code>python</code>哲学）。</p>
-
-<!-- more -->
-
-
-<p>要显示它很简单，在<code>python</code>的<code>REPL</code>（<code>Read-Eval-Print Loop</code>）中键入<code>import this</code>，可以看到如下字符串:</p>
-
-<p>```
-The Zen of Python, by Tim Peters</p>
-
-<p>Beautiful is better than ugly.
-Explicit is better than implicit.
-Simple is better than complex.
-Complex is better than complicated.
-Flat is better than nested.
-Sparse is better than dense.
-Readability counts.
-Special cases aren&rsquo;t special enough to break the rules.
-Although practicality beats purity.
-Errors should never pass silently.
-Unless explicitly silenced.
-In the face of ambiguity, refuse the temptation to guess.
-There should be one&mdash; and preferably only one &mdash;obvious way to do it.
-Although that way may not be obvious at first unless you&rsquo;re Dutch.
-Now is better than never.
-Although never is often better than <em>right</em> now.
-If the implementation is hard to explain, it&rsquo;s a bad idea.
-If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
-```</p>
-
-<p>我想，这个模块应该是<code>python</code>里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>python哲学 (this.py)</span> <a href='/downloads/code/this.py'>下载</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;Gur Mra bs Clguba, ol Gvz Crgref</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">Ornhgvshy vf orggre guna htyl.</span>
-</span><span class='line'><span class="s">Rkcyvpvg vf orggre guna vzcyvpvg.</span>
-</span><span class='line'><span class="s">Fvzcyr vf orggre guna pbzcyrk.</span>
-</span><span class='line'><span class="s">Pbzcyrk vf orggre guna pbzcyvpngrq.</span>
-</span><span class='line'><span class="s">Syng vf orggre guna arfgrq.</span>
-</span><span class='line'><span class="s">Fcnefr vf orggre guna qrafr.</span>
-</span><span class='line'><span class="s">Ernqnovyvgl pbhagf.</span>
-</span><span class='line'><span class="s">Fcrpvny pnfrf nera&#39;g fcrpvny rabhtu gb oernx gur ehyrf.</span>
-</span><span class='line'><span class="s">Nygubhtu cenpgvpnyvgl orngf chevgl.</span>
-</span><span class='line'><span class="s">Reebef fubhyq arire cnff fvyragyl.</span>
-</span><span class='line'><span class="s">Hayrff rkcyvpvgyl fvyraprq.</span>
-</span><span class='line'><span class="s">Va gur snpr bs nzovthvgl, ershfr gur grzcgngvba gb thrff.</span>
-</span><span class='line'><span class="s">Gurer fubhyq or bar-- naq cersrenoyl bayl bar --boivbhf jnl gb qb vg.</span>
-</span><span class='line'><span class="s">Nygubhtu gung jnl znl abg or boivbhf ng svefg hayrff lbh&#39;er Qhgpu.</span>
-</span><span class='line'><span class="s">Abj vf orggre guna arire.</span>
-</span><span class='line'><span class="s">Nygubhtu arire vf bsgra orggre guna *evtug* abj.</span>
-</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf uneq gb rkcynva, vg&#39;f n onq vqrn.</span>
-</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf rnfl gb rkcynva, vg znl or n tbbq vqrn.</span>
-</span><span class='line'><span class="s">Anzrfcnprf ner bar ubaxvat terng vqrn -- yrg&#39;f qb zber bs gubfr!&quot;&quot;&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">97</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">d</span><span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">13</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>呈现在眼前的不是一段平淡无奇的print语句，而采用了恺撒密码算法（<code>Caesar cipher</code>）。以下内容摘自维基百科，详见<a href="http://goo.gl/n9Ldz">凯撒密码</a>:</p>
-
-<blockquote><p>在密码学中,恺撒密码(或称恺撒加密、恺撒变换、变换加密)是一种最简单且最广为人知的加密技术。它是一种替换加密的技 术,明文中的所有字母都在字母表上向后(或向前)按照一个固定数目进行偏移后被替换成密文。例如,当偏移量是3的时候,所有的字母A将被替换成 D,B变成E,以此类推。这个加密方法是以恺撒的名字命名的,当年恺撒曾用此方法与其将军们进行联系。<br>
-恺撒密码通常被作为其他更复杂的加密方法中的一个步骤,例如维吉尼尔密码。恺撒密码还在现代的 ROT13系统中被应用。但是 和所有的利用字母表进行替换的加密技术一样,恺撒密码非常容易被破解,而且在实际应用中也无法保证通信安全。</p></blockquote>
-
-<p>可以看到，恺撒密码的原理很简单，对每个字母按照同一偏移量映射为别的字母，这样就完成了简单的加密。</p>
-
-<p>看到<code>this</code>模块，我最大的感悟就是<code>python</code>语言优雅简洁的表达能力，我试过用<code>JavaScript</code>语言表达恺撒密码，实在为它感到汗颜。大概是因为<code>JavaScript</code>表达的废话太多，才催生了<code>CoffeeScript</code>这种比<code>JavaScript</code>更具表达力的语言吧。当然这得力于<code>CoffeeScript</code>大量借鉴<code>python、ruby</code>这种表达能力强的语言的语法才使然哩！</p>
-
-<p><code>this.py</code>中用到的取余运算符<code>%</code>有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：</p>
-
-<p>```js
-(function () {
-  var lower   = 10,</p>
-
-<pre><code>  upper   = 17,
-  current = 14;
 </code></pre>
-
-<p>  // 单位递增
-  function next() {</p>
-
-<pre><code>if (current &lt; upper) {
-  current += 1;
-} else {
-  current = lower;
-}
-return current;
-</code></pre>
-
-<p>  }</p>
-
-<p>  // 单位递减
-  function prev() {</p>
-
-<pre><code>if (current &gt; lower) {
-  current -= 1;
-} else {
-  current = upper;
-}
-return current;
-</code></pre>
-
-<p>  }</p>
-
-<p>  console.log(next()); // current = 15
-  console.log(next()); // current = 16
-  console.log(next()); // current = 17
-  console.log(next()); // current = 10
-}());
-```</p>
-
-<p>利用取余运算符<code>%</code>，我们可以将如上代码简化为如下（注意此时没有了<code>if</code>条件语句）:</p>
-
-<p>```js
-(function () {
-  var lower   = 10,</p>
-
-<pre><code>  upper   = 17,
-  dist    = upper - lower + 1,
-  current = 14;
-</code></pre>
-
-<p>  function next() {</p>
-
-<pre><code>return (current = lower + (current - lower + 1 + dist) % dist);
-</code></pre>
-
-<p>  }</p>
-
-<p>  function prev() {</p>
-
-<pre><code>return (current = lower + (current - lower - 1 + dist) % dist);
-</code></pre>
-
-<p>  }</p>
-
-<p>  console.log(prev()); // current = 13
-  console.log(prev()); // current = 12
-  console.log(prev()); // current = 11
-  console.log(prev()); // current = 10
-  console.log(prev()); // current = 17
-}());
-```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavaScript异步代码排程策略]]></title>
-    <link href="http://myunlessor.me/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/"/>
-    <updated>2013-06-04T19:06:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code</id>
-    <content type="html"><![CDATA[<h2>问题</h2>
-
-<p>写JavaScript脚本代码经常需要用到计时器(<code>window.setTimeout</code>)功能，先看如下代码片段：</p>
-
-<p>```js
-// 先解析，但延时1000ms
-setTimeout(function foo() {
-  console.log(&lsquo;foo&rsquo;);
-}, 1000);</p>
-
-<p>// 后解析，但延时100ms
-setTimeout(function bar() {
-  console.log(&lsquo;bar&rsquo;);
-}, 100);
-```</p>
-
-<!-- more -->
-
-
-<p>将该代码片段拷贝进Chrome浏览器的控制台(<code>Console</code>)中执行，可以发现在控制台中是先打印<code>bar</code>字符串，后打印<code>foo</code>字符串，也即是先执行了<code>bar</code>函数，后执行了<code>foo</code>函数。假如我们要让代码执行完<code>foo</code>函数后再执行<code>bar</code>函数，不难想到如下方法：</p>
-
-<p>```js
-setTimeout(function foo() {
-  console.log(&lsquo;foo&rsquo;);</p>
-
-<p>  setTimeout(function bar() {</p>
-
-<pre><code>console.log('bar');
-</code></pre>
-
-<p>  }, 100);
-}, 1000);
-```</p>
-
-<p>在控制台中测试发现这确实达到了我们的预期结果，但这种嵌套结构实在不优雅。当嵌套层级多时，代码可读性会变得相当差，试看如下代码片段：</p>
-
-<p>```js
-var foo = function () {
-  console.log(&lsquo;foo&rsquo;);
-};</p>
-
-<p>var muo = {
-  x: &lsquo;baz&rsquo;,
-  bar: function () {</p>
-
-<pre><code>console.log(this.x);
-</code></pre>
-
-<p>  }
-};</p>
-
-<p>var yell = {x: &lsquo;boo&rsquo;};</p>
-
-<p>var bear = function (x, y) {
-  console.log(x + y);
-};</p>
-
-<p>setTimeout(function () {
-  foo();</p>
-
-<p>  setTimeout(function () {</p>
-
-<pre><code>muo.bar();
-
-setTimeout(function () {
-  muo.bar.call(yell);
-
-  setTimeout(function () {
-    bear(10, 17);
-  }, 1);
-}, 10);
-</code></pre>
-
-<p>  }, 100);
-}, 1000);
-```</p>
-
-<p>相信没多少人喜欢读这种缺乏结构的代码。那么，有什么办法可以让上述代码变得优雅起来呢？这就涉及到异步代码排程的问题。</p>
-
-<h2>策略</h2>
-
-<p>在上述第一段代码中，<code>setTimeout</code>方法设定的延时在一定程度上可以看成是代码执行顺序的优先级，它打乱了先来后到的规则，延时短的比延时长的优先级高，在同一作用域内计时器代码执行的顺序与解析的顺序无关，这就产生了异步问题，可以类比为现实中的插队行为。我们这里要解决的就是这种异步排程问题，我们要确保先来后到的规则，先执行先被解析的代码，后执行后被解析的代码。</p>
-
-<p>我们知道，在银行窗口办理业务时，我们得先取票排队，先取票的先为之服务，后取票的后服务。当然，这里只考虑只有一个窗口的情况。</p>
-
-<p>类似的，要解决异步代码排程问题，我们可以把要执行的代码当成任务约束在队列中，先入队的先执行，后入队的后执行（即<code>FIFO</code>），且保证同一时间最多允许一个任务执行。基于以上分析，我们可以设计如下策略：</p>
-
-<p>```js
-var schedule = (function (self) {
-  var paused = false, // 标记状态</p>
-
-<pre><code>  queue  = [];     // 队列
-</code></pre>
-
-<p>  // 入队
-  self.join = function (fn, params) {</p>
-
-<pre><code>params = params || {};
-var args = [].concat(params.args);
-
-queue.push(function (_) {
-  _.pause();
-  setTimeout(function () {
-    fn.apply(params.context || null, args);
-    _.resume();
-  }, params.delay || 1);
-});
-
-return exec();
-</code></pre>
-
-<p>  };</p>
-
-<p>  self.pause = function () {</p>
-
-<pre><code>paused = true;  // 忙碌
-return this;
-</code></pre>
-
-<p>  };</p>
-
-<p>  // ready and call next
-  self.resume = function () {</p>
-
-<pre><code>paused = false; // 空闲
-setTimeout(exec, 1);
-return this;
-</code></pre>
-
-<p>  };</p>
-
-<p>  function exec() {</p>
-
-<pre><code>if (!paused &amp;&amp; queue.length) {
-  queue.shift()(self);  // 出队
-  if (!paused) self.resume();
-}
-return self;
-</code></pre>
-
-<p>  }</p>
-
-<p>  return self;
-}(schedule || {}));
-```</p>
-
-<p>有了以上设计的排程规则，我们可以将如上多嵌套代码优雅地表达为：</p>
-
-<p>```js
-var foo = function () {
-  console.log(&lsquo;foo&rsquo;);
-};</p>
-
-<p>var muo = {
-  x: &lsquo;baz&rsquo;,
-  bar: function () {</p>
-
-<pre><code>console.log(this.x);
-</code></pre>
-
-<p>  }
-};</p>
-
-<p>var yell = {x: &lsquo;boo&rsquo;};</p>
-
-<p>var bear = function (x, y) {
-  console.log(x + y);
-};</p>
-
-<p>schedule
-  .join(foo, {</p>
-
-<pre><code>delay: 1000 // 延时
-</code></pre>
-
-<p>  })
-  .join(muo.bar, {</p>
-
-<pre><code>delay: 100,
-context: muo // this解析上下文
-</code></pre>
-
-<p>  })
-  .join(muo.bar, {</p>
-
-<pre><code>delay: 10,
-context: yell // this解析上下文
-</code></pre>
-
-<p>  })
-  .join(bear, {</p>
-
-<pre><code>delay: 1,
-args: [10, 17] // 为bear函数提供参数
-</code></pre>
-
-<p>  });
-```</p>
-
-<h2>参考</h2>
-
-<ul>
-<li><a href="http://goo.gl/1A8ew">Secrets of the JavaScript Ninja</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

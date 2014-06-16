@@ -14,7 +14,7 @@
   <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
 
   
-  <meta name="description" content="引子 前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。 ">
+  <meta name="description" content="学过python脚本语言的人都知道python中有一个叫this的模块（module）。该模块只做了件很简单的事，打印一段字符串，内容是有关python语言的一些禅语（也可以称它为python哲学）。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -28,8 +28,7 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Silent Reverie" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <script type="text/javascript" src="/javascripts/link_open_in_blank.js"></script>
 
@@ -80,6 +79,117 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/04/import-this-and-caesar-cipher/">Import This 与恺撒密码</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-04T20:56:00+08:00" pubdate data-updated="true">2013年06月04日</time>
+        
+         | <a href="/blog/2013/06/04/import-this-and-caesar-cipher/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>学过<code>python</code>脚本语言的人都知道<code>python</code>中有一个叫<code>this</code>的模块（<code>module</code>）。该模块只做了件很简单的事，打印一段字符串，内容是有关python语言的一些禅语（也可以称它为<code>python</code>哲学）。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/06/04/import-this-and-caesar-cipher/">继续阅读 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/">JavaScript异步代码排程策略</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-04T19:06:00+08:00" pubdate data-updated="true">2013年06月04日</time>
+        
+         | <a href="/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>问题</h2>
+
+<p>写JavaScript脚本代码经常需要用到计时器(<code>window.setTimeout</code>)功能，先看如下代码片段：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// 先解析，但延时1000ms</span>
+</span><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 后解析，但延时100ms</span>
+</span><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span> <span class="nx">bar</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/">继续阅读 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -187,10 +297,18 @@
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (6)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (8)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">Underscore与Lodash的差异引发的思考</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/">One Way to Implement Pagination Folding Logic</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/03/01/venture-into-es6/">浅尝ECMAScript 6</a>
@@ -252,8 +370,10 @@
 <section>
   <h1>友情链接</h1>
   <ul>
-    <li><a href="http://goo.gl/ExJZ1">谢宗星博客</a></li>
-    <li><a href="http://goo.gl/bWE18">周梦康</a></li>
+    <li><a href="http://www.xiezongxing.com/">谢宗星博客</a></li>
+    <li><a href="http://mengkang.net/">周梦康</a></li>
+    <li><a href="http://bibodeng.sinaapp.com/">bibodeng</a></li>
+    <li><a href="http://www.mapleshaw.com/">chrome丁</a></li>
   </ul>
 </section>
 

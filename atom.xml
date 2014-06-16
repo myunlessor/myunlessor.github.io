@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Underscore与Lodash的差异引发的思考]]></title>
+    <link href="http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/"/>
+    <updated>2014-06-18T22:24:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[one way to implement pagination folding logic ]]></title>
+    <link href="http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/"/>
+    <updated>2014-06-17T10:28:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浅尝ECMAScript 6]]></title>
@@ -1519,7 +1537,7 @@
 
 <p>人类是一种社会性的动物，挂着这层身份，少不了真假善恶、虚情假意。既然是社会性的，免不了体制化。体制决定了人的行为。试着以体制外人的身份来看待人的行为，免不了许多呵呵。可你到底仍处于体制内，于是也免不了一番自嘲了。</p>
 
-<p>每个个体都是很奇妙的存在，有多少个体，就有多少内心在骚动。骚动的相互传播也就有了社会性。传播伴随着有害的和无害的，但每个人对有害和无害的定义不一样，这种差异性导致了所谓的平衡&mdash;&mdash;动荡的平衡是微妙的。</p>
+<p>每个个体都是很奇妙的存在，有多少个体，就有多少内心在骚动。骚动的相互传播也就有了社会性。传播伴随着有害的和无害的，但每个人对有害和无害的定义不一样，这种差异性导致了所谓的平衡&mdash;-动荡的平衡是微妙的。</p>
 
 <p>生和死是对反义词。如果生是天使，死即是恶魔。这种带入个人情感因素的类比，误解了对生死意义的评判，于是便有了个人偏见。好在每个人都有亲历生死的权利。</p>
 
@@ -2702,7 +2720,7 @@
 
 <h2>思路三(脚本)</h2>
 
-<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^&ndash;^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
+<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^-^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
 
 <figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='http://myunlessor.me/downloads/code/divide_slice.js'>下载</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -3041,7 +3059,7 @@ r
 
 <p>以上所讲的文件批处理解决方案都依赖于*NIX环境的shell，但我们工作在windows平台上<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>，说这些有什么意义呢？没关系，我们有<a href="http://www.cygwin.com/">Cygwin</a>，它在windows平台下极力模拟Linux环境，让我们可以在windows下使用Linux的一些实用工具。它的标语是：</p>
 
-<blockquote><p>Get that Linux feeling &ndash; on Windows!</p></blockquote>
+<blockquote><p>Get that Linux feeling - on Windows!</p></blockquote>
 
 <p>猛击<a href="http://cygwin.com/setup.exe">这里</a>下载安装使用起来吧！</p>
 <div class="footnotes">

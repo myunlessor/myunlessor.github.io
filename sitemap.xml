@@ -51,20 +51,30 @@
         <lastmod>2014-03-01T19:45:00+08:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/
+        </loc>
+        <lastmod>2014-06-17T00:40:45+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/</loc>
+        <lastmod>2014-06-17T00:40:48+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://myunlessor.me/404.html</loc>
         <lastmod>2013-05-20T20:16:54+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/about.html</loc>
-        <lastmod>2014-03-19T22:15:15+08:00</lastmod>
+        <lastmod>2014-06-17T00:22:06+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/archives/</loc>
-        <lastmod>2014-03-01T19:45:00+08:00</lastmod>
+        <lastmod>2014-06-17T00:40:48+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/</loc>
-        <lastmod>2014-03-01T19:45:00+08:00</lastmod>
+        <lastmod>2014-06-17T00:40:48+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/robots.txt</loc>

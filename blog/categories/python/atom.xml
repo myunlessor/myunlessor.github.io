@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: python | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -58,27 +58,23 @@
 
 <p>在文档中输入<code>pi</code>后按<code>tab</code>键触发后返回如下标签，此时高亮显示<code>300x240</code>，可以交互性地指定宽高了，然后<code>tab</code>键跳至第2个编辑点可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi100</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150x180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150X180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>废话不多说，最后附上相关代码：</p>
 
@@ -186,29 +182,28 @@
 
 <p>要显示它很简单，在<code>python</code>的<code>REPL</code>（<code>Read-Eval-Print Loop</code>）中键入<code>import this</code>，可以看到如下字符串:</p>
 
-<p>```
-The Zen of Python, by Tim Peters</p>
+<pre><code>The Zen of Python, by Tim Peters
 
-<p>Beautiful is better than ugly.
+Beautiful is better than ugly.
 Explicit is better than implicit.
 Simple is better than complex.
 Complex is better than complicated.
 Flat is better than nested.
 Sparse is better than dense.
 Readability counts.
-Special cases aren&rsquo;t special enough to break the rules.
+Special cases aren't special enough to break the rules.
 Although practicality beats purity.
 Errors should never pass silently.
 Unless explicitly silenced.
 In the face of ambiguity, refuse the temptation to guess.
-There should be one&mdash; and preferably only one &mdash;obvious way to do it.
-Although that way may not be obvious at first unless you&rsquo;re Dutch.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
 Now is better than never.
-Although never is often better than <em>right</em> now.
-If the implementation is hard to explain, it&rsquo;s a bad idea.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
 If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
-```</p>
+Namespaces are one honking great idea -- let's do more of those!
+</code></pre>
 
 <p>我想，这个模块应该是<code>python</code>里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
 
@@ -282,79 +277,61 @@ Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!
 
 <p><code>this.py</code>中用到的取余运算符<code>%</code>有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：</p>
 
-<p>```js
-(function () {
-  var lower   = 10,</p>
+<pre><code class="js">(function () {
+  var lower   = 10,
+      upper   = 17,
+      current = 14;
 
-<pre><code>  upper   = 17,
-  current = 14;
-</code></pre>
+  // 单位递增
+  function next() {
+    if (current &lt; upper) {
+      current += 1;
+    } else {
+      current = lower;
+    }
+    return current;
+  }
 
-<p>  // 单位递增
-  function next() {</p>
+  // 单位递减
+  function prev() {
+    if (current &gt; lower) {
+      current -= 1;
+    } else {
+      current = upper;
+    }
+    return current;
+  }
 
-<pre><code>if (current &lt; upper) {
-  current += 1;
-} else {
-  current = lower;
-}
-return current;
-</code></pre>
-
-<p>  }</p>
-
-<p>  // 单位递减
-  function prev() {</p>
-
-<pre><code>if (current &gt; lower) {
-  current -= 1;
-} else {
-  current = upper;
-}
-return current;
-</code></pre>
-
-<p>  }</p>
-
-<p>  console.log(next()); // current = 15
+  console.log(next()); // current = 15
   console.log(next()); // current = 16
   console.log(next()); // current = 17
   console.log(next()); // current = 10
 }());
-```</p>
+</code></pre>
 
 <p>利用取余运算符<code>%</code>，我们可以将如上代码简化为如下（注意此时没有了<code>if</code>条件语句）:</p>
 
-<p>```js
-(function () {
-  var lower   = 10,</p>
+<pre><code class="js">(function () {
+  var lower   = 10,
+      upper   = 17,
+      dist    = upper - lower + 1,
+      current = 14;
 
-<pre><code>  upper   = 17,
-  dist    = upper - lower + 1,
-  current = 14;
-</code></pre>
+  function next() {
+    return (current = lower + (current - lower + 1 + dist) % dist);
+  }
 
-<p>  function next() {</p>
+  function prev() {
+    return (current = lower + (current - lower - 1 + dist) % dist);
+  }
 
-<pre><code>return (current = lower + (current - lower + 1 + dist) % dist);
-</code></pre>
-
-<p>  }</p>
-
-<p>  function prev() {</p>
-
-<pre><code>return (current = lower + (current - lower - 1 + dist) % dist);
-</code></pre>
-
-<p>  }</p>
-
-<p>  console.log(prev()); // current = 13
+  console.log(prev()); // current = 13
   console.log(prev()); // current = 12
   console.log(prev()); // current = 11
   console.log(prev()); // current = 10
   console.log(prev()); // current = 17
 }());
-```</p>
+</code></pre>
 ]]></content>
   </entry>
   

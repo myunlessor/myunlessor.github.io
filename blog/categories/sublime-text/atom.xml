@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: sublime text | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/sublime-text/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -58,27 +58,23 @@
 
 <p>在文档中输入<code>pi</code>后按<code>tab</code>键触发后返回如下标签，此时高亮显示<code>300x240</code>，可以交互性地指定宽高了，然后<code>tab</code>键跳至第2个编辑点可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi100</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150x180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150X180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>废话不多说，最后附上相关代码：</p>
 
@@ -196,28 +192,23 @@
 
 <p>下面这个<code>snippet</code>我将它保存为<code>Packages/User/snippets/angle-delimiter.sublime-snippet</code>，你会注意到元素<code>snippet</code>中只包含<code>content</code>一个元素，在<code>content</code>中定义了两个跳转<code>编辑点(edit point)</code>，同时将环境变量<code>$SELECTION(文本选区)</code>作为<code>编辑点2($2)</code>的占位符。</p>
 
-<p><code>xml
-&lt;snippet&gt;
+<pre><code class="xml">&lt;snippet&gt;
   &lt;content&gt;&lt;![CDATA[
 &lt;%$1 ${2:$SELECTION} %&gt;
 ]]&gt;&lt;/content&gt;
 &lt;/snippet&gt;
-</code></p>
+</code></pre>
 
 <p>这样当我们选中文本(可以为空，单个或多个选区)后，触发该片段后就可以将选中文本包裹在<code>&lt;%</code>和<code>%&gt;</code>间，同时跳转到<code>编辑点1($1)</code>，可以选择性地添加<code>=</code>或<code>-</code>从而定义不同的<code>分隔符(delimiter)</code>。但是我并没有定义<code>tabTrigger</code>元素进行<code>tab</code>触发，原因是我们这里包含环境变量<code>$SELECTION(文本选区)</code>，使用<code>tabTrigger</code>无法达到片段包裹的目的，因此我们选择定义键盘快捷键来触发该片段，如下所示：</p>
 
-<p>```json
-{
-  &ldquo;keys&rdquo;: [&ldquo;super+k&rdquo;, &ldquo;super+5&rdquo;],
-  &ldquo;command&rdquo;: &ldquo;insert_snippet&rdquo;,
-  &ldquo;args&rdquo;: {</p>
-
-<pre><code>"name": "Packages/User/snippets/angle-delimiter.sublime-snippet"
-</code></pre>
-
-<p>  }
+<pre><code class="json">{
+  "keys": ["super+k", "super+5"],
+  "command": "insert_snippet",
+  "args": {
+    "name": "Packages/User/snippets/angle-delimiter.sublime-snippet"
+  }
 }
-```</p>
+</code></pre>
 
 <p>将此段代码加入到<code>Packages/User/Default (OSX).sublime-keymap</code>后，然后选中你想包裹的文本，此时先后按下快捷键<code>cmd + k</code>、及<code>cmd + 5</code>后可以触发该片段。Cool!</p>
 
@@ -227,43 +218,38 @@
 
 <p>比如我们需要在页面某个位置放置一个宽200高300的图片，只需要添加如下标签代码即可，如下所示：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/200/300" width="200" height="300" title="KITTEN: [200 x 300]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/200/300" width="200" height="300" title="KITTEN: [200 x 300]" alt="" /&gt;
+</code></pre>
 
 <p>然后<code>placekitten</code>会给我们返回一张<code>200 x 300</code>的猫咪图片，我们只要指定任意宽高就好了，so cutely it is!</p>
 
 <p>使用<code>Sublime Text Snippets</code>提供的正则区配替换特性，我们可以快速输出以上标签，使得图片占位更加称心如意。片段如下：</p>
 
-<p><code>xml
-&lt;snippet&gt;
+<pre><code class="xml">&lt;snippet&gt;
   &lt;content&gt;&lt;![CDATA[
 &lt;img src="http://placekitten.com/${1:300/240}"${2: width="${1/^\/?([^\/]+)\/?.*$/$1/}" height="${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}"} title="KITTEN: [${1/^\/?([^\/]+)\/?.*$/$1/} x ${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}]" alt="" /&gt;
 ]]&gt;&lt;/content&gt;
   &lt;tabTrigger&gt;kitten&lt;/tabTrigger&gt;
   &lt;scope&gt;text.html&lt;/scope&gt;
 &lt;/snippet&gt;
-</code></p>
+</code></pre>
 
 <p>将此片段保存到<code>Packages/User/snippets/placekitten.sublime-snippet</code>，然后在我们的html页面中敲入<code>kitten</code>后按<code>tab</code>键，输出标签如下：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/300/240" width="300" height="240" title="KITTEN: [300 x 240]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/300/240" width="300" height="240" title="KITTEN: [300 x 240]" alt="" /&gt;
+</code></pre>
 
 <p>此时<code>300/240</code>处于高亮显示，这是我们的第一个编辑点，在这个编辑点我们可以随意更改宽高值，可以看到<code>width</code>、<code>height</code>及<code>title</code>三个标签属性值跟着变化。</p>
 
 <p>比如替换为<code>250</code>，标签显示为：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/250" width="250" height="250" title="KITTEN: [250 x 250]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/250" width="250" height="250" title="KITTEN: [250 x 250]" alt="" /&gt;
+</code></pre>
 
 <p>替换为<code>400/300</code>，标签显示为：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/400/300" width="400" height="300" title="KITTEN: [400 x 300]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/400/300" width="400" height="300" title="KITTEN: [400 x 300]" alt="" /&gt;
+</code></pre>
 
 <p>如果我们不需要<code>width="xxx" height="xxx"</code>，这里按<code>tab</code>跳至第二个编辑点，按<code>delete</code>键即可删除，awesome!</p>
 ]]></content>
@@ -285,14 +271,13 @@
 
 <p>片段是通过普通的XML格式文件进行定义的，文件扩展名为<code>sublime-snippet</code>，自定义的片段一般存放在<code>Packages/User/snippets</code>目录下。通过菜单命令<code>Tools | New Snippet...</code>进行创建，统一格式如下：</p>
 
-<p><code>xml
-&lt;snippet&gt;
+<pre><code class="xml">&lt;snippet&gt;
   &lt;content&gt;&lt;![CDATA[]]&gt;&lt;/content&gt;
   &lt;tabTrigger&gt;&lt;/tabTrigger&gt;
   &lt;scope&gt;&lt;/scope&gt;
   &lt;description&gt;&lt;/description&gt;
 &lt;/snippet&gt;
-</code></p>
+</code></pre>
 
 <p><code>snippet</code>元素由以下4个元素构成：</p>
 
@@ -393,7 +378,7 @@
 
 <p>人类是一种社会性的动物，挂着这层身份，少不了真假善恶、虚情假意。既然是社会性的，免不了体制化。体制决定了人的行为。试着以体制外人的身份来看待人的行为，免不了许多呵呵。可你到底仍处于体制内，于是也免不了一番自嘲了。</p>
 
-<p>每个个体都是很奇妙的存在，有多少个体，就有多少内心在骚动。骚动的相互传播也就有了社会性。传播伴随着有害的和无害的，但每个人对有害和无害的定义不一样，这种差异性导致了所谓的平衡&mdash;&mdash;动荡的平衡是微妙的。</p>
+<p>每个个体都是很奇妙的存在，有多少个体，就有多少内心在骚动。骚动的相互传播也就有了社会性。传播伴随着有害的和无害的，但每个人对有害和无害的定义不一样，这种差异性导致了所谓的平衡&mdash;-动荡的平衡是微妙的。</p>
 
 <p>生和死是对反义词。如果生是天使，死即是恶魔。这种带入个人情感因素的类比，误解了对生死意义的评判，于是便有了个人偏见。好在每个人都有亲历生死的权利。</p>
 

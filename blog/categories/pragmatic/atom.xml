@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: pragmatic | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/pragmatic/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-03-19T22:16:46+08:00</updated>
+  <updated>2014-06-17T01:01:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -58,27 +58,23 @@
 
 <p>在文档中输入<code>pi</code>后按<code>tab</code>键触发后返回如下标签，此时高亮显示<code>300x240</code>，可以交互性地指定宽高了，然后<code>tab</code>键跳至第2个编辑点可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/300x240" width="300" height="240" title="PLACE.IT: [300 x 240]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi100</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/100x100" width="100" height="100" title="PLACE.IT: [100 x 100]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150x180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placehold.it/150x180" width="150" height="180" title="PLACE.IT: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>在文档中输入<code>pi150X180</code>后按<code>tab</code>键触发后返回如下标签，同时可选择是否保留<code>width</code>和<code>height</code>属性</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/150/180" width="150" height="180" title="KITTEN: [150 x 180]" alt="" /&gt;
+</code></pre>
 
 <p>废话不多说，最后附上相关代码：</p>
 
@@ -196,28 +192,23 @@
 
 <p>下面这个<code>snippet</code>我将它保存为<code>Packages/User/snippets/angle-delimiter.sublime-snippet</code>，你会注意到元素<code>snippet</code>中只包含<code>content</code>一个元素，在<code>content</code>中定义了两个跳转<code>编辑点(edit point)</code>，同时将环境变量<code>$SELECTION(文本选区)</code>作为<code>编辑点2($2)</code>的占位符。</p>
 
-<p><code>xml
-&lt;snippet&gt;
+<pre><code class="xml">&lt;snippet&gt;
   &lt;content&gt;&lt;![CDATA[
 &lt;%$1 ${2:$SELECTION} %&gt;
 ]]&gt;&lt;/content&gt;
 &lt;/snippet&gt;
-</code></p>
+</code></pre>
 
 <p>这样当我们选中文本(可以为空，单个或多个选区)后，触发该片段后就可以将选中文本包裹在<code>&lt;%</code>和<code>%&gt;</code>间，同时跳转到<code>编辑点1($1)</code>，可以选择性地添加<code>=</code>或<code>-</code>从而定义不同的<code>分隔符(delimiter)</code>。但是我并没有定义<code>tabTrigger</code>元素进行<code>tab</code>触发，原因是我们这里包含环境变量<code>$SELECTION(文本选区)</code>，使用<code>tabTrigger</code>无法达到片段包裹的目的，因此我们选择定义键盘快捷键来触发该片段，如下所示：</p>
 
-<p>```json
-{
-  &ldquo;keys&rdquo;: [&ldquo;super+k&rdquo;, &ldquo;super+5&rdquo;],
-  &ldquo;command&rdquo;: &ldquo;insert_snippet&rdquo;,
-  &ldquo;args&rdquo;: {</p>
-
-<pre><code>"name": "Packages/User/snippets/angle-delimiter.sublime-snippet"
-</code></pre>
-
-<p>  }
+<pre><code class="json">{
+  "keys": ["super+k", "super+5"],
+  "command": "insert_snippet",
+  "args": {
+    "name": "Packages/User/snippets/angle-delimiter.sublime-snippet"
+  }
 }
-```</p>
+</code></pre>
 
 <p>将此段代码加入到<code>Packages/User/Default (OSX).sublime-keymap</code>后，然后选中你想包裹的文本，此时先后按下快捷键<code>cmd + k</code>、及<code>cmd + 5</code>后可以触发该片段。Cool!</p>
 
@@ -227,43 +218,38 @@
 
 <p>比如我们需要在页面某个位置放置一个宽200高300的图片，只需要添加如下标签代码即可，如下所示：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/200/300" width="200" height="300" title="KITTEN: [200 x 300]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/200/300" width="200" height="300" title="KITTEN: [200 x 300]" alt="" /&gt;
+</code></pre>
 
 <p>然后<code>placekitten</code>会给我们返回一张<code>200 x 300</code>的猫咪图片，我们只要指定任意宽高就好了，so cutely it is!</p>
 
 <p>使用<code>Sublime Text Snippets</code>提供的正则区配替换特性，我们可以快速输出以上标签，使得图片占位更加称心如意。片段如下：</p>
 
-<p><code>xml
-&lt;snippet&gt;
+<pre><code class="xml">&lt;snippet&gt;
   &lt;content&gt;&lt;![CDATA[
 &lt;img src="http://placekitten.com/${1:300/240}"${2: width="${1/^\/?([^\/]+)\/?.*$/$1/}" height="${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}"} title="KITTEN: [${1/^\/?([^\/]+)\/?.*$/$1/} x ${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}]" alt="" /&gt;
 ]]&gt;&lt;/content&gt;
   &lt;tabTrigger&gt;kitten&lt;/tabTrigger&gt;
   &lt;scope&gt;text.html&lt;/scope&gt;
 &lt;/snippet&gt;
-</code></p>
+</code></pre>
 
 <p>将此片段保存到<code>Packages/User/snippets/placekitten.sublime-snippet</code>，然后在我们的html页面中敲入<code>kitten</code>后按<code>tab</code>键，输出标签如下：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/300/240" width="300" height="240" title="KITTEN: [300 x 240]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/300/240" width="300" height="240" title="KITTEN: [300 x 240]" alt="" /&gt;
+</code></pre>
 
 <p>此时<code>300/240</code>处于高亮显示，这是我们的第一个编辑点，在这个编辑点我们可以随意更改宽高值，可以看到<code>width</code>、<code>height</code>及<code>title</code>三个标签属性值跟着变化。</p>
 
 <p>比如替换为<code>250</code>，标签显示为：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/250" width="250" height="250" title="KITTEN: [250 x 250]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/250" width="250" height="250" title="KITTEN: [250 x 250]" alt="" /&gt;
+</code></pre>
 
 <p>替换为<code>400/300</code>，标签显示为：</p>
 
-<p><code>html
-&lt;img src="http://placekitten.com/400/300" width="400" height="300" title="KITTEN: [400 x 300]" alt="" /&gt;
-</code></p>
+<pre><code class="html">&lt;img src="http://placekitten.com/400/300" width="400" height="300" title="KITTEN: [400 x 300]" alt="" /&gt;
+</code></pre>
 
 <p>如果我们不需要<code>width="xxx" height="xxx"</code>，这里按<code>tab</code>跳至第二个编辑点，按<code>delete</code>键即可删除，awesome!</p>
 ]]></content>
@@ -381,78 +367,66 @@
 
 <p>写JavaScript脚本代码经常需要用到计时器(<code>window.setTimeout</code>)功能，先看如下代码片段：</p>
 
-<p>```js
-// 先解析，但延时1000ms
+<pre><code class="js">// 先解析，但延时1000ms
 setTimeout(function foo() {
-  console.log(&lsquo;foo&rsquo;);
-}, 1000);</p>
+  console.log('foo');
+}, 1000);
 
-<p>// 后解析，但延时100ms
+// 后解析，但延时100ms
 setTimeout(function bar() {
-  console.log(&lsquo;bar&rsquo;);
+  console.log('bar');
 }, 100);
-```</p>
+</code></pre>
 
 <!-- more -->
 
 
 <p>将该代码片段拷贝进Chrome浏览器的控制台(<code>Console</code>)中执行，可以发现在控制台中是先打印<code>bar</code>字符串，后打印<code>foo</code>字符串，也即是先执行了<code>bar</code>函数，后执行了<code>foo</code>函数。假如我们要让代码执行完<code>foo</code>函数后再执行<code>bar</code>函数，不难想到如下方法：</p>
 
-<p>```js
-setTimeout(function foo() {
-  console.log(&lsquo;foo&rsquo;);</p>
+<pre><code class="js">setTimeout(function foo() {
+  console.log('foo');
 
-<p>  setTimeout(function bar() {</p>
-
-<pre><code>console.log('bar');
-</code></pre>
-
-<p>  }, 100);
+  setTimeout(function bar() {
+    console.log('bar');
+  }, 100);
 }, 1000);
-```</p>
+</code></pre>
 
 <p>在控制台中测试发现这确实达到了我们的预期结果，但这种嵌套结构实在不优雅。当嵌套层级多时，代码可读性会变得相当差，试看如下代码片段：</p>
 
-<p>```js
-var foo = function () {
-  console.log(&lsquo;foo&rsquo;);
-};</p>
+<pre><code class="js">var foo = function () {
+  console.log('foo');
+};
 
-<p>var muo = {
-  x: &lsquo;baz&rsquo;,
-  bar: function () {</p>
+var muo = {
+  x: 'baz',
+  bar: function () {
+    console.log(this.x);
+  }
+};
 
-<pre><code>console.log(this.x);
-</code></pre>
+var yell = {x: 'boo'};
 
-<p>  }
-};</p>
-
-<p>var yell = {x: &lsquo;boo&rsquo;};</p>
-
-<p>var bear = function (x, y) {
+var bear = function (x, y) {
   console.log(x + y);
-};</p>
-
-<p>setTimeout(function () {
-  foo();</p>
-
-<p>  setTimeout(function () {</p>
-
-<pre><code>muo.bar();
+};
 
 setTimeout(function () {
-  muo.bar.call(yell);
+  foo();
 
   setTimeout(function () {
-    bear(10, 17);
-  }, 1);
-}, 10);
-</code></pre>
+    muo.bar();
 
-<p>  }, 100);
+    setTimeout(function () {
+      muo.bar.call(yell);
+
+      setTimeout(function () {
+        bear(10, 17);
+      }, 1);
+    }, 10);
+  }, 100);
 }, 1000);
-```</p>
+</code></pre>
 
 <p>相信没多少人喜欢读这种缺乏结构的代码。那么，有什么办法可以让上述代码变得优雅起来呢？这就涉及到异步代码排程的问题。</p>
 
@@ -464,117 +438,86 @@ setTimeout(function () {
 
 <p>类似的，要解决异步代码排程问题，我们可以把要执行的代码当成任务约束在队列中，先入队的先执行，后入队的后执行（即<code>FIFO</code>），且保证同一时间最多允许一个任务执行。基于以上分析，我们可以设计如下策略：</p>
 
-<p>```js
-var schedule = (function (self) {
-  var paused = false, // 标记状态</p>
+<pre><code class="js">var schedule = (function (self) {
+  var paused = false, // 标记状态
+      queue  = [];     // 队列
 
-<pre><code>  queue  = [];     // 队列
-</code></pre>
+  // 入队
+  self.join = function (fn, params) {
+    params = params || {};
+    var args = [].concat(params.args);
 
-<p>  // 入队
-  self.join = function (fn, params) {</p>
+    queue.push(function (_) {
+      _.pause();
+      setTimeout(function () {
+        fn.apply(params.context || null, args);
+        _.resume();
+      }, params.delay || 1);
+    });
 
-<pre><code>params = params || {};
-var args = [].concat(params.args);
+    return exec();
+  };
 
-queue.push(function (_) {
-  _.pause();
-  setTimeout(function () {
-    fn.apply(params.context || null, args);
-    _.resume();
-  }, params.delay || 1);
-});
+  self.pause = function () {
+    paused = true;  // 忙碌
+    return this;
+  };
 
-return exec();
-</code></pre>
+  // ready and call next
+  self.resume = function () {
+    paused = false; // 空闲
+    setTimeout(exec, 1);
+    return this;
+  };
 
-<p>  };</p>
+  function exec() {
+    if (!paused &amp;&amp; queue.length) {
+      queue.shift()(self);  // 出队
+      if (!paused) self.resume();
+    }
+    return self;
+  }
 
-<p>  self.pause = function () {</p>
-
-<pre><code>paused = true;  // 忙碌
-return this;
-</code></pre>
-
-<p>  };</p>
-
-<p>  // ready and call next
-  self.resume = function () {</p>
-
-<pre><code>paused = false; // 空闲
-setTimeout(exec, 1);
-return this;
-</code></pre>
-
-<p>  };</p>
-
-<p>  function exec() {</p>
-
-<pre><code>if (!paused &amp;&amp; queue.length) {
-  queue.shift()(self);  // 出队
-  if (!paused) self.resume();
-}
-return self;
-</code></pre>
-
-<p>  }</p>
-
-<p>  return self;
+  return self;
 }(schedule || {}));
-```</p>
+</code></pre>
 
 <p>有了以上设计的排程规则，我们可以将如上多嵌套代码优雅地表达为：</p>
 
-<p>```js
-var foo = function () {
-  console.log(&lsquo;foo&rsquo;);
-};</p>
+<pre><code class="js">var foo = function () {
+  console.log('foo');
+};
 
-<p>var muo = {
-  x: &lsquo;baz&rsquo;,
-  bar: function () {</p>
+var muo = {
+  x: 'baz',
+  bar: function () {
+    console.log(this.x);
+  }
+};
 
-<pre><code>console.log(this.x);
-</code></pre>
+var yell = {x: 'boo'};
 
-<p>  }
-};</p>
-
-<p>var yell = {x: &lsquo;boo&rsquo;};</p>
-
-<p>var bear = function (x, y) {
+var bear = function (x, y) {
   console.log(x + y);
-};</p>
+};
 
-<p>schedule
-  .join(foo, {</p>
-
-<pre><code>delay: 1000 // 延时
+schedule
+  .join(foo, {
+    delay: 1000 // 延时
+  })
+  .join(muo.bar, {
+    delay: 100,
+    context: muo // this解析上下文
+  })
+  .join(muo.bar, {
+    delay: 10,
+    context: yell // this解析上下文
+  })
+  .join(bear, {
+    delay: 1,
+    args: [10, 17] // 为bear函数提供参数
+  });
 </code></pre>
-
-<p>  })
-  .join(muo.bar, {</p>
-
-<pre><code>delay: 100,
-context: muo // this解析上下文
-</code></pre>
-
-<p>  })
-  .join(muo.bar, {</p>
-
-<pre><code>delay: 10,
-context: yell // this解析上下文
-</code></pre>
-
-<p>  })
-  .join(bear, {</p>
-
-<pre><code>delay: 1,
-args: [10, 17] // 为bear函数提供参数
-</code></pre>
-
-<p>  });
-```</p>
 
 <h2>参考</h2>
 
@@ -629,7 +572,7 @@ args: [10, 17] // 为bear函数提供参数
 
 <h2>思路三(脚本)</h2>
 
-<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^&ndash;^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
+<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^-^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='/downloads/code/divide_slice.js'>下载</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>

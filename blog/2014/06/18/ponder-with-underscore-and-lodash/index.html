@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Silent Reverie</title>
+  <title>Underscore与Lodash的差异引发的思考 - Silent Reverie</title>
   <meta name="author" content="俞乐">
 
   
@@ -14,8 +14,8 @@
   <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
 
   
-  <meta name="description" content="个人信息 E-mail: &#109;&#x79;&#x75;&#x6e;&#x6c;&#101;&#115;&#x73;&#111;&#x72;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#109;
-爱好: 互联网、电影、摄影、 &hellip;">
+  <meta name="description" content="
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://myunlessor.me/about.html">
+  <link rel="canonical" href="http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Silent Reverie" type="application/atom+xml">
@@ -79,30 +79,93 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
-  <h2>个人信息</h2>
+  <header>
+    
+      <h1 class="entry-title">Underscore与Lodash的差异引发的思考</h1>
+    
+    
+      <p class="meta">
+        
 
-<ul>
-<li>E-mail: <a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#58;&#x6d;&#x79;&#x75;&#x6e;&#x6c;&#101;&#x73;&#x73;&#x6f;&#114;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#109;">&#109;&#x79;&#x75;&#x6e;&#x6c;&#101;&#115;&#x73;&#111;&#x72;&#x40;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#109;</a></li>
-<li>爱好: 互联网、电影、摄影、户外运动</li>
-<li>座右铭: Aspire to create, create to Inspire!</li>
-</ul>
 
 
-<h2>常用工具</h2>
 
-<ul>
-<li>喜欢的语言: JavaScript、Python、Ruby</li>
-<li>编辑器: <a href="http://goo.gl/Frc2">Sublime Text 3</a>、<a href="http://www.ulyssesapp.com/">Ulysses</a></li>
-<li>Markdown预览: <a href="http://goo.gl/dmhu0">Marked</a></li>
-<li>FTP工具: <a href="https://panic.com/transmit/">Transmit</a></li>
-<li>其他: <a href="http://www.alfredapp.com/">Alfred</a>、<a href="https://incident57.com/codekit/">CodeKit</a>、<a href="http://kapeli.com/dash">Dash</a></li>
-</ul>
+
+
 
 
   
+
+
+<time datetime="2014-06-18T22:24:00+08:00" pubdate data-updated="true">2014年06月18日</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content">
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">俞乐</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-18T22:24:00+08:00" pubdate data-updated="true">2014年06月18日</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+
+  
+
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/" title="Previous Post: one way to implement pagination folding logic ">&laquo; one way to implement pagination folding logic </a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -215,7 +278,10 @@
       var disqus_shortname = 'myunlessor';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/';
+        var disqus_url = 'http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
