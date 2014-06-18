@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T01:49:45+08:00</updated>
+  <updated>2014-06-19T02:57:02+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[简单的分页折叠逻辑实现]]></title>
+    <link href="http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/"/>
+    <updated>2014-06-19T10:28:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic</id>
+    <content type="html"><![CDATA[<p>列表数据量过多时，常见有以下两种呈现方式：</p>
+
+<ul>
+<li>将数据列表分页呈现</li>
+<li>采用瀑布流形式加载数据</li>
+</ul>
+
+
+<p>这里我只想提下前者，即以分页方式呈现时分页折叠逻辑实现。</p>
+
+<p>以往遇到需要分页的需求时，我一般采用项目中已经写好的公用组件直接用，或者利用第三方插件。观察这类代码的实现，有一个共同点：分页折叠逻辑和分页标签渲染是揉合在一块执行的。最近自己尝试着写了一个分页折叠逻辑实现，我把这部分逻辑从分页标签渲染中抽取出来了——我先处理分页折叠逻辑、再进而渲染分页标签。</p>
+
+<h2>我的思考过程是这样的</h2>
+
+<p>假设我们的数据有15页，如果不考虑分页折叠逻辑的话，我们分页显示大概像这样：</p>
+
+<pre><code class="js">//=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+_.range(1, 15 + 1)
+</code></pre>
+
+<p>我们可以对以上这个数组遍历渲染为标签。然而我们的页面横向空间有限，分页过多时，我们不希望将每一页都显示为标签。我们需要将跟当前页不太相干的页号折叠起来，不管数据有多少页，只显示固定可视页就好。比如，当前页为第7页，且最多显示9个槽位，我们希望显示成这样：</p>
+
+<pre><code class="js">[1, '…', 5, 6, 7, 8, 9, '…', 15]
+</code></pre>
+
+<p>我们显示第一页、最末页以及与第7页相邻的页，其他页做折叠处理，即上述数组中的<code>…</code>。</p>
+
+<p>如果当前页是第2页呢？</p>
+
+<pre><code class="js">[1, 2, 3, 4, 5, 6, 7, '…', 15]
+</code></pre>
+
+<p>如果当前页是第12页呢？</p>
+
+<pre><code class="js">[1, '…', 9, 10, 11, 12, 13, 14, 15]
+</code></pre>
+
+<p>我们将分页折叠呈现用javascript的数组直接表示出来了，一切都很直观。既然这样，何不写个方法进行数组变换呢？我把这样的一个方法叫做<code>foldpages</code>：</p>
+
+<pre><code class="js">/**
+ * [foldpages description]
+ * @param  {[Array]}  pages    [未作变换的分页数组]
+ * @param  {[Number]} current  [当前显示页]
+ * @param  {[Number]} viewsize [分页显示槽位个数]
+ * @return {[Array]}           [分页折叠后的数组]
+ */
+function foldpages(pages, current, viewsize) {}
+
+var pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+var viewsize = 9;
+
+//=&gt; expected result: [1, '…', 5, 6, 7, 8, 9, '…', 15]
+foldpages(pages, 7, viewsize);
+
+//=&gt; expected result: [1, 2, 3, 4, 5, 6, 7, '…', 15]
+foldpages(pages, 2, viewsize);
+
+//=&gt; expected result: [1, '…', 9, 10, 11, 12, 13, 14, 15]
+foldpages(pages, 12, viewsize);
+</code></pre>
+
+<p>剩下的就是实现了！</p>
+
+<pre><code class="js">var foldpages = function (pages, current, viewsize) {
+  var ret  = [].concat(pages),
+      min  = 1,
+      max  = ret.length,
+      fold = '…',
+      remain;
+
+  if (max &lt;= viewsize) {
+    return ret;
+  }
+
+  viewsize = Math.max(5, viewsize || 7);
+  current  = Math.max(min, Math.min(current, max));
+  ret      = [current];
+  remain   = viewsize - 1;
+
+  while (true) {
+    var first = ret[0], last = ret[ret.length - 1];
+
+    if (first &gt; min)  {
+      ret.unshift(first - 1);
+      if (!--remain) break;
+    }
+
+    if (last &lt; max) {
+      ret.push(last + 1);
+      if (!--remain) break;
+    }
+  }
+
+  switch (true) {
+  case ret[0] === min:
+    ret.splice(ret.length - 2, 2, fold, max);
+    break;
+  case ret[ret.length - 1] === max:
+    ret.splice(0, 2, min, fold);
+    break;
+  default:
+    ret.splice(0, 2, min, fold);
+    ret.splice(ret.length - 2, 2, fold, max);
+    break;
+  }
+
+  return ret;
+};
+</code></pre>
+
+<p>最后再验证下。</p>
+
+<pre><code class="js">var TOTAL_PAGE = 15;
+var pages = _.range(1, TOTAL_PAGE + 1);
+
+_.each(_.range(6, 10 + 1), function (foldnum) {
+  console.log('当显示槽位个数为' + foldnum + '时，每一页的折叠显示如下:');
+
+  _.times(TOTAL_PAGE, function (index) {
+    console.log(++index, foldpages(pages, index, foldnum));
+  });
+
+  console.log('\n');
+});
+
+// =============================================
+// OUTPUT
+// =============================================
+
+/**
+
+当显示槽位个数为6时，每一页的折叠显示如下:
+1 [1, 2, 3, 4, "…", 15]
+2 [1, 2, 3, 4, "…", 15]
+3 [1, 2, 3, 4, "…", 15]
+4 [1, 2, 3, 4, "…", 15]
+5 [1, "…", 4, 5, "…", 15]
+6 [1, "…", 5, 6, "…", 15]
+7 [1, "…", 6, 7, "…", 15]
+8 [1, "…", 7, 8, "…", 15]
+9 [1, "…", 8, 9, "…", 15]
+10 [1, "…", 9, 10, "…", 15]
+11 [1, "…", 10, 11, "…", 15]
+12 [1, "…", 11, 12, "…", 15]
+13 [1, "…", 12, 13, 14, 15]
+14 [1, "…", 12, 13, 14, 15]
+15 [1, "…", 12, 13, 14, 15]
+
+当显示槽位个数为7时，每一页的折叠显示如下:
+1 [1, 2, 3, 4, 5, "…", 15]
+2 [1, 2, 3, 4, 5, "…", 15]
+3 [1, 2, 3, 4, 5, "…", 15]
+4 [1, 2, 3, 4, 5, "…", 15]
+5 [1, "…", 4, 5, 6, "…", 15]
+6 [1, "…", 5, 6, 7, "…", 15]
+7 [1, "…", 6, 7, 8, "…", 15]
+8 [1, "…", 7, 8, 9, "…", 15]
+9 [1, "…", 8, 9, 10, "…", 15]
+10 [1, "…", 9, 10, 11, "…", 15]
+11 [1, "…", 10, 11, 12, "…", 15]
+12 [1, "…", 11, 12, 13, 14, 15]
+13 [1, "…", 11, 12, 13, 14, 15]
+14 [1, "…", 11, 12, 13, 14, 15]
+15 [1, "…", 11, 12, 13, 14, 15]
+
+当显示槽位个数为8时，每一页的折叠显示如下:
+1 [1, 2, 3, 4, 5, 6, "…", 15]
+2 [1, 2, 3, 4, 5, 6, "…", 15]
+3 [1, 2, 3, 4, 5, 6, "…", 15]
+4 [1, 2, 3, 4, 5, 6, "…", 15]
+5 [1, 2, 3, 4, 5, 6, "…", 15]
+6 [1, "…", 4, 5, 6, 7, "…", 15]
+7 [1, "…", 5, 6, 7, 8, "…", 15]
+8 [1, "…", 6, 7, 8, 9, "…", 15]
+9 [1, "…", 7, 8, 9, 10, "…", 15]
+10 [1, "…", 8, 9, 10, 11, "…", 15]
+11 [1, "…", 9, 10, 11, 12, "…", 15]
+12 [1, "…", 10, 11, 12, 13, 14, 15]
+13 [1, "…", 10, 11, 12, 13, 14, 15]
+14 [1, "…", 10, 11, 12, 13, 14, 15]
+15 [1, "…", 10, 11, 12, 13, 14, 15]
+
+当显示槽位个数为9时，每一页的折叠显示如下:
+1 [1, 2, 3, 4, 5, 6, 7, "…", 15]
+2 [1, 2, 3, 4, 5, 6, 7, "…", 15]
+3 [1, 2, 3, 4, 5, 6, 7, "…", 15]
+4 [1, 2, 3, 4, 5, 6, 7, "…", 15]
+5 [1, 2, 3, 4, 5, 6, 7, "…", 15]
+6 [1, "…", 4, 5, 6, 7, 8, "…", 15]
+7 [1, "…", 5, 6, 7, 8, 9, "…", 15]
+8 [1, "…", 6, 7, 8, 9, 10, "…", 15]
+9 [1, "…", 7, 8, 9, 10, 11, "…", 15]
+10 [1, "…", 8, 9, 10, 11, 12, "…", 15]
+11 [1, "…", 9, 10, 11, 12, 13, 14, 15]
+12 [1, "…", 9, 10, 11, 12, 13, 14, 15]
+13 [1, "…", 9, 10, 11, 12, 13, 14, 15]
+14 [1, "…", 9, 10, 11, 12, 13, 14, 15]
+15 [1, "…", 9, 10, 11, 12, 13, 14, 15]
+
+当显示槽位个数为10时，每一页的折叠显示如下:
+1 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+2 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+3 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+4 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+5 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+6 [1, 2, 3, 4, 5, 6, 7, 8, "…", 15]
+7 [1, "…", 4, 5, 6, 7, 8, 9, "…", 15]
+8 [1, "…", 5, 6, 7, 8, 9, 10, "…", 15]
+9 [1, "…", 6, 7, 8, 9, 10, 11, "…", 15]
+10 [1, "…", 7, 8, 9, 10, 11, 12, "…", 15]
+11 [1, "…", 8, 9, 10, 11, 12, 13, 14, 15]
+12 [1, "…", 8, 9, 10, 11, 12, 13, 14, 15]
+13 [1, "…", 8, 9, 10, 11, 12, 13, 14, 15]
+14 [1, "…", 8, 9, 10, 11, 12, 13, 14, 15]
+15 [1, "…", 8, 9, 10, 11, 12, 13, 14, 15]
+
+*/
+</code></pre>
+
+<p>后记：想了好几种方式实现<code>foldpages</code>方法，天马行空的。然而，没有一种方式觉得很理想，包括贴在此处的这个！我想我是有代码洁癖症的，希望以后能想到更好的实现办法！这需要灵感：或是触类旁通的，或是恍然大悟的。</p>
+
+<pre><code class="js">var inspiration = _.result(aspiration, action);
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[由Underscore与Lodash的差异引发的思考]]></title>
@@ -205,10 +436,10 @@ _.map(ary, curry2( _.result )( 'trim' ));
 }
 
 //=&gt; ['first', 'second']
-take2('first', 'second', 'thrid');
+take2('first', 'second', 'third');
 
 //=&gt; ['first', 'second']
-take2('first', 'second', 'thrid', 'forth');
+take2('first', 'second', 'third', 'forth');
 </code></pre>
 
 <p>解决了过滤两个参数的问题，可是它有个瑕疵，它的输出是以数组形式返回的。如果这种输出直接作为另一个函数的输入，这将无法衔接起来，因为我们的接收方函数要求参数是单个单个传入，而不是给它灌入单个数组。于是，我们接下来需要某种能够将数组变换为单个单个参数传入接收方函数的方法。</p>
@@ -243,7 +474,7 @@ max_initial(8, 4, 15, 42, 23, 16);
 max_initial2(8, 4, 15, 42, 23, 16);
 </code></pre>
 
-<p>感谢<code>Function.prototype.apply</code>方法，我们成功地将参数过滤了，并传给了<code>max</code>，It Works！可是盯着它看下，怎么看怎么不舒服。再改进下吧～前面我们提到<code>_.compose</code>方法可以将参数输入输出串联起来，那再试图让<code>_.compose</code>介入进来吧！</p>
+<p>感谢<code>Function.prototype.apply</code>方法，我们成功地将参数过滤了，并传给了<code>max</code>，It Works！可是盯着它看下，怎么看怎么不舒服。还是再改进下吧～前面我们提到<code>_.compose</code>方法可以将参数输入输出串联起来，那再试图让<code>_.compose</code>介入进来吧！</p>
 
 <pre><code class="js">var max_initial3 = _.compose(max, take2);
 
@@ -336,7 +567,7 @@ take2(8, 4, 15, 42, 23, 16);
 take3(8, 4, 15, 42, 23, 16);
 </code></pre>
 
-<p>这回正常了！回到最初的问题，针对<code>max</code>函数，给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般的答案：</p>
+<p>这回正常了！回到最初的问题，针对<code>max</code>函数，给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般性的答案：</p>
 
 <pre><code class="js">var max_revamped = _.compose( splat(max), unsplat( _.partial(take, 3) ) );
 
@@ -355,21 +586,14 @@ max_revamped(8, 4, 15, 42, 23, 16);
 max_fancy(8, 4, 15, 42, 23, 16);
 </code></pre>
 
-<p>太过天马行空了，还是就此收笔吧！</p>
+<p>似乎偏离主旨了。。。太过天马行空了，还是就此收笔吧！</p>
 
 <h2>总结</h2>
 
 <p>函数式编程就像搭积木一样，像<code>_.identity</code>、<code>_.partial</code>、<code>_.compose</code>、<code>splat</code>、<code>unsplat</code>等都是职责单一的函数。别看它们简单，把它们当作积木看待，它们释放的是无尽的活力。
-越是简单的东西，蕴藏的越是更为无限的可能性。函数式编程是函数装配的艺术，是数据流动的艺术。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[howdy]]></title>
-    <link href="http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/"/>
-    <updated>2014-06-17T10:28:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2014/06/17/one-way-to-implement-pagination-folding-logic</id>
-    <content type="html"><![CDATA[
+越是简单的东西，蕴藏的越是更为无限的可能性。</p>
+
+<p>最后，我的感悟是：函数式编程以数据流动为导向，是函数装配的艺术。</p>
 ]]></content>
   </entry>
   

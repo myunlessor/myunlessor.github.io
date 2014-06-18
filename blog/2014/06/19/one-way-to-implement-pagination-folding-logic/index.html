@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Silent Reverie</title>
+  <title>简单的分页折叠逻辑实现 - Silent Reverie</title>
   <meta name="author" content="俞乐">
 
   
@@ -24,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://myunlessor.me">
+  <link rel="canonical" href="http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Silent Reverie" type="application/atom+xml">
@@ -78,15 +78,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/">简单的分页折叠逻辑实现</a></h1>
+      <h1 class="entry-title">简单的分页折叠逻辑实现</h1>
     
     
       <p class="meta">
@@ -104,14 +101,14 @@
 
 <time datetime="2014-06-19T10:28:00+08:00" pubdate data-updated="true">2014年06月19日</time>
         
-         | <a href="/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>列表数据量过多时，常见有以下两种呈现方式：</p>
+<div class="entry-content"><p>列表数据量过多时，常见有以下两种呈现方式：</p>
 
 <ul>
 <li>将数据列表分页呈现</li>
@@ -519,67 +516,16 @@
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">由Underscore与Lodash的差异引发的思考</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">俞乐</span></span>
 
-<time datetime="2014-06-18T22:24:00+08:00" pubdate data-updated="true">2014年06月18日</time>
-        
-         | <a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>自打接触<a href="http://underscorejs.org/">Underscore</a>以来就对其爱不释手，尔后又了解到<a href="http://lodash.com/">Lodash</a>。这两个类库为我们提供了一系列相当不错的跟函数式编程相关的方法。Underscore以API实现简洁著称。Lodash作为Underscore的后继者，除了对Underscore现有API功能使用上进行扩充外，更是添加了不少令人难忘的API，在性能上也更为出彩，而且还能根据需要构建自己的子集方法。相较而言，我更亲睐于Lodash，而且成了日常项目开发的标配。</p>
-
-<p>目前Lodash的最新版本是v2.4.1，功能上可以说完全是Underscore的超集。只要Underscore添加了啥新功能时，Lodash都会及时覆盖更新，以维护它一如既往超集的地位。然而，当Underscore更新到v1.6.0时，这个版本添加了一个很棒的功能，其为方法<code>_.partial</code>添加了占位符参数的支持（如果没猜错的话，这个特性应该是从<a href="http://osteele.com/sources/javascript/functional/">functional.js</a>中移植过来了）。自然地，希望Lodash也能很快地对<code>_.partial</code>做增强处理。可是，四个月过去了，Lodash似乎处于冬眠状态，一点都不见有动静。于是乎，到目前为止，Lodash的功能不足以完全覆盖Underscore了，于是也就有了这篇文章。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/03/01/venture-into-es6/">浅尝ECMAScript 6</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -591,384 +537,44 @@
   
 
 
-<time datetime="2014-03-01T10:43:00+08:00" pubdate data-updated="true">2014年03月01日</time>
-        
-         | <a href="/blog/2014/03/01/venture-into-es6/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>现在ECMAScript 6草案制定在不断地推进，浏览器们也在跟进实现，了解ES6的提供的诸多特性是势在必行的事了。</p>
-
-<p>有关浏览器们对ECMAScript 6草案的实现情况可参阅<a href="http://kangax.github.io/es5-compat-table/es6/">这里</a>。</p>
-
-<p>有关ES6的语言特性可参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures">这里</a>。</p>
-
-<p>目前对ES6实现较为充分的环境有<a href="https://github.com/google/traceur-compiler">Google Traceur Compiler</a>及<a href="http://nightly.mozilla.org/">Firefox Nightly</a>。</p>
-
-<p>有关<code>traceur compiler</code>的环境配置如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/bin/traceur.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/src/bootstrap.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'><span class="nx">traceur</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">experimental</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'>  <span class="c1">// blablabla...</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/03/01/venture-into-es6/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time datetime="2014-06-19T10:28:00+08:00" pubdate data-updated="true">2014年06月19日</time>
       
-  <header>
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2013/12/17/touch-sublime-text-plugins/">触摸Sublime Text Plugins</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+      <div class="sharing">
+  
 
   
 
-
-<time datetime="2013-12-17T21:02:00+08:00" pubdate data-updated="true">2013年12月17日</time>
-        
-         | <a href="/blog/2013/12/17/touch-sublime-text-plugins/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在<a href="/blog/2013/12/16/pragmatic-sublime-text-snippets/">Sublime Text Snippets实用技巧二则</a>一文中提到可以通过<code>Sublime Text</code>的<code>Snippets</code>功能快速在页面中插入图片占位符标签，本来在此基础上借助<code>Sublime Text</code>的<code>Plugins(插件)</code>功能进一步完善它。</p>
-
+  
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/17/touch-sublime-text-plugins/">继续阅读 &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/16/pragmatic-sublime-text-snippets/">Sublime Text Snippets实用技巧二则</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-16T18:22:00+08:00" pubdate data-updated="true">2013年12月16日</time>
-        
-         | <a href="/blog/2013/12/16/pragmatic-sublime-text-snippets/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>由于<code>Sublime Text Snippets</code>功能设计的强大和灵活性（TAB跳转、多编辑点多选区支持、正则匹配替换等），我们可以很方便地将它应用到各种能用上它的场合。</p>
-
-<p>关于<code>Sublime Text Snippets</code>的基本介绍可参见文章<a href="/blog/2013/12/15/embrace-sublime-text-snippets/">拥抱Sublime Text Snippets</a>以及该文章给出的参考文档。</p>
-
-<p>下面列举使用<code>snippet</code>的实用技巧，参详这两例子后，大可举一反三而为之。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/16/pragmatic-sublime-text-snippets/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/2014/06/18/ponder-with-underscore-and-lodash/" title="Previous Post: 由Underscore与Lodash的差异引发的思考">&laquo; 由Underscore与Lodash的差异引发的思考</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/15/embrace-sublime-text-snippets/">拥抱Sublime Text Snippets</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-15T17:07:00+08:00" pubdate data-updated="true">2013年12月15日</time>
-        
-         | <a href="/blog/2013/12/15/embrace-sublime-text-snippets/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>用过<code>Sublime Text</code>很长一段时间，对它的<code>Snippets(片段)</code>功能却是情有独钟。</p>
-
-<p>它的用法很简洁，在文档编辑点敲入定义的触发字符(<code>tabTrigger</code>)，然后按下<code>tab</code>键就可以输出预先定义的片段文字(<code>content</code>)。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/15/embrace-sublime-text-snippets/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/14/embrace-sublime-text/">情逗Sublime Text</a></h1>
-    
-    
-      <p class="meta">
-        
+    </p>
+  </footer>
+</article>
 
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-14T13:11:00+08:00" pubdate data-updated="true">2013年12月14日</time>
-        
-         | <a href="/blog/2013/12/14/embrace-sublime-text/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本是脑子里一闪而过的念头，停留之际，思绪暗涌，忽觉有必要整理下自己凌乱的思想了。</p>
-
-<p>一直想明白现实是什么，可又不愿去理解。它是抽象的，或是跟上帝一样，是一种虚无的存在。</p>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/14/embrace-sublime-text/">继续阅读 &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/09/closure-caveat-it-got-me/">闭包陷阱：我中招了！</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-09T21:37:00+08:00" pubdate data-updated="true">2013年12月09日</time>
-        
-         | <a href="/blog/2013/12/09/closure-caveat-it-got-me/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>一直以来我都以为自己对js的闭包功能掌握的还算可以，最近在工作中却实实在在地被闭包整了一回，特记录于斯，以为警戒！</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/09/closure-caveat-it-got-me/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/">淘宝前端之智勇大闯关第三季攻略</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-15T22:42:00+08:00" pubdate data-updated="true">2013年08月15日</time>
-        
-         | <a href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天在群里看到好多人都在玩这游戏，都玩得挺high，自己也点进链接玩了下，第一次玩这类游戏，觉得挺有意思的，遂记录下自己的玩法。</p>
-
-<p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>http://ued.campus.alibaba.com/quiz3/index.php</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/08/playing-zhao-cha-with-photoshop/">Photoshop趣味用法：玩转QQ找茬游戏</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-08T22:52:00+08:00" pubdate data-updated="true">2013年08月08日</time>
-        
-         | <a href="/blog/2013/08/08/playing-zhao-cha-with-photoshop/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>引子</h2>
-
-<p>相信不少童鞋都玩过QQ找茬游戏，游戏规则很简单：在2～4人的房间里，随机几组图片，每组图片分2张，找出每组图片中5处不同的地方，在规定的时间内谁找的茬多算谁赢。玩这个游戏的第一感觉就是各种眼花缭乱，我接受自己没有火眼金睛这一事实，在每组图规定的时间能平均能找出3个茬算是幸运之至了（我运气一向很差，无论做什么）。这样下来战绩总是令人沮丧，胜率老是上不去。尽管这些都是虚的，但心里多有不甘，于是就想到了一种投机取巧的办法——让Photoshop来充当自己的眼睛，自己则当指挥^_^。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/08/08/playing-zhao-cha-with-photoshop/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">所有文章</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -1056,6 +662,7 @@
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -1070,7 +677,10 @@
       var disqus_shortname = 'myunlessor';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/';
+        var disqus_url = 'http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

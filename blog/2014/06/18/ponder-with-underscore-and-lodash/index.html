@@ -391,10 +391,10 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">//=&gt; [&#39;first&#39;, &#39;second&#39;]</span>
-</span><span class='line'><span class="nx">take2</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;thrid&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">take2</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">//=&gt; [&#39;first&#39;, &#39;second&#39;]</span>
-</span><span class='line'><span class="nx">take2</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;thrid&#39;</span><span class="p">,</span> <span class="s1">&#39;forth&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">take2</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">,</span> <span class="s1">&#39;forth&#39;</span><span class="p">);</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -451,7 +451,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>感谢<code>Function.prototype.apply</code>方法，我们成功地将参数过滤了，并传给了<code>max</code>，It Works！可是盯着它看下，怎么看怎么不舒服。再改进下吧～前面我们提到<code>_.compose</code>方法可以将参数输入输出串联起来，那再试图让<code>_.compose</code>介入进来吧！</p>
+<p>感谢<code>Function.prototype.apply</code>方法，我们成功地将参数过滤了，并传给了<code>max</code>，It Works！可是盯着它看下，怎么看怎么不舒服。还是再改进下吧～前面我们提到<code>_.compose</code>方法可以将参数输入输出串联起来，那再试图让<code>_.compose</code>介入进来吧！</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -609,7 +609,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>这回正常了！回到最初的问题，针对<code>max</code>函数，给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般的答案：</p>
+<p>这回正常了！回到最初的问题，针对<code>max</code>函数，给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般性的答案：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -641,12 +641,14 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>太过天马行空了，还是就此收笔吧！</p>
+<p>似乎偏离主旨了。。。太过天马行空了，还是就此收笔吧！</p>
 
 <h2>总结</h2>
 
 <p>函数式编程就像搭积木一样，像<code>_.identity</code>、<code>_.partial</code>、<code>_.compose</code>、<code>splat</code>、<code>unsplat</code>等都是职责单一的函数。别看它们简单，把它们当作积木看待，它们释放的是无尽的活力。
-越是简单的东西，蕴藏的越是更为无限的可能性。函数式编程是函数装配的艺术，是数据流动的艺术。</p>
+越是简单的东西，蕴藏的越是更为无限的可能性。</p>
+
+<p>最后，我的感悟是：函数式编程以数据流动为导向，是函数装配的艺术。</p>
 </div>
 
 
@@ -683,8 +685,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/" title="Previous Post: howdy">&laquo; howdy</a>
+        <a class="basic-alignment left" href="/blog/2014/03/01/venture-into-es6/" title="Previous Post: 浅尝ECMAScript 6">&laquo; 浅尝ECMAScript 6</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/" title="Next Post: 简单的分页折叠逻辑实现">简单的分页折叠逻辑实现 &raquo;</a>
       
     </p>
   </footer>
@@ -708,11 +712,11 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">由Underscore与Lodash的差异引发的思考</a>
+        <a href="/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/">简单的分页折叠逻辑实现</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/06/17/one-way-to-implement-pagination-folding-logic/">Howdy</a>
+        <a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">由Underscore与Lodash的差异引发的思考</a>
       </li>
     
       <li class="post">
