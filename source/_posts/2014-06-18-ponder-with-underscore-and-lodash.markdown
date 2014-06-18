@@ -154,6 +154,7 @@ _.identity('I', 'FOOL', 'YOU');   //=> 'I'
 假设`f`和`g`是两函数，`f`函数调用后的输出作为`g`函数的输入，其中`x`是`f`的输入值，则以下等式是成立的：
 
 ```js
+//=> true
 _.isEqual( g(f(x)), _.compose(g, f)(x) );
 ```
 
@@ -201,6 +202,187 @@ _.map(ary, _.compose( _.partialRight( _.result, 'trim' ), _.identity ));
 // Underscore & Lodash
 _.map(ary, curry2( _.result )( 'trim' ));
 ```
+
+延伸拓展
+---------------
+
+前面提到了`_.identity`方法，如果换种角度来看，可以把它当作参数过滤器使用。可是它是有局限性的，它只能过滤第一个参数。假如某种情况下我要过滤出输入参数的前两个参数，这回该怎么办？我们知道函数只能返回一个值，要返回多个值的话，则可以将多个值以数组形式返回。以下是过滤前两个参数的代码：
+
+```js
+function take2(first, second) {
+  return [first, second];
+}
+
+//=> ['first', 'second']
+take2('first', 'second', 'thrid');
+
+//=> ['first', 'second']
+take2('first', 'second', 'thrid', 'forth');
+```
+
+解决了过滤两个参数的问题，可是它有个瑕疵，它的输出是以数组形式返回的。如果这种输出直接作为另一个函数的输入，这将无法衔接起来，因为我们的接收方函数要求参数是单个单个传入，而不是给它灌入单个数组。于是，我们接下来需要某种能够将数组变换为单个单个参数传入接收方函数的方法。
+
+先看以下举例：
+
+```js
+function max(/* args */) {
+  return Math.max.apply(Math, arguments);
+}
+
+//=> 42
+max(8, 4, 15, 42, 23, 16);
+```
+
+`max`方法很简单，它返回任意输入Number型参数的最大值。给它输入的单个单个参数依次是`8, 4, 15, 42, 23, 16`。现在假设我只想知道输入参数的前两个哪个最大。我们脑海里首先闪过的可能是如下答案：
+
+```js
+function max_initial(first, second) {
+  return max(first, second);
+}
+
+//=> 8
+max_initial(8, 4, 15, 42, 23, 16);
+```
+
+看起来还不错！但我们前面定义了专门充当“参数过滤器”的函数`take2`，让我们试图将它介入其中，像如下那样：
+
+```js
+function max_initial2(/* args */) {
+  return max.apply(null, take2.apply(null, arguments));
+}
+
+//=> 8
+max_initial2(8, 4, 15, 42, 23, 16);
+```
+
+感谢`Function.prototype.apply`方法，我们成功地将参数过滤了，并传给了`max`，It Works！可是盯着它看下，怎么看怎么不舒服。再改进下吧～前面我们提到`_.compose`方法可以将参数输入输出串联起来，那再试图让`_.compose`介入进来吧！
+
+```js
+var max_initial3 = _.compose(max, take2);
+
+//=> NaN
+max_initial3(8, 4, 15, 42, 23, 16);
+```
+Does it work？Nope！Why？`max_initial3`函数执行实际等价于如下代码：
+
+```js
+//=> [8, 4]
+var result = take2(8, 4, 15, 42, 23, 16);
+
+//=> NaN
+max(result);
+```
+
+我们将`take2`执行后返回的数组值直接传递给了`max`，而`max`需接收的是单个单个的参数。由于接口的不一致，我们的尝试失败了。既然接口不一致，我们何不制造个`适配器(Adapter)`以适配接口呢！我们需要什么样的适配器？我们需要将数组参数转化为单个单个参数的适配器——我们需要`splat`适配器：
+
+```js
+function splat(fun) {
+  return function (array) {
+    return fun.apply(null, array);
+  };
+}
+
+var maxAdapted = splat(max);
+
+//=> 8
+maxAdapted([8, 4]);
+```
+
+Looks pretty neat, doesn't it?有了适配器后，我们再用`_.compose`将它们衔接起来：
+
+```js
+var max_initial4 = _.compose(splat(max), take2);
+
+//=> 8
+max_initial4(8, 4, 15, 42, 23, 16);
+```
+
+瞧，它又正常工作了，多亏了`splat`适配器。适配器用于适配不同的接口，以此将不同的接口衔接起来，它的职责是单一的，因此也可以复用。
+
+现在我们有了将数组参数转化为单个单个参数的`splat`适配器。反过来，我们何不再制造个将单个单个参数转化为数组参数的适配器呢？我们估且叫它`unsplat`吧！
+
+```js
+function unsplat(fun) {
+  return function () {
+    return fun.call(null, [].slice.call(arguments));
+  };
+}
+
+// 既然我们使用Underscore或Lodash，我们何不写成这样呢！
+function unsplat(fun) {
+  return function () {
+    return fun.call(null, _.toArray(arguments));
+  };
+}
+```
+
+`unsplat`能用在什么地方呢？Let's have a try!
+
+前面我们定义有`take2`，我们何不定义个更一般的`take`函数呢？
+
+```js
+function take(n, array) {
+  return array.slice(0, n);
+}
+
+//=> [8, 4]
+take(2, [8, 4, 15, 42, 23, 16]);
+```
+
+有了更一般的`take`函数，我们就可以基于它生成过滤任意多个前置参数的“参数过滤器”函数了。
+
+```js
+var take2 = _.partial(take, 2);
+var take3 = _.partial(take, 3);
+
+//=> [8, 4]
+take2([8, 4, 15, 42, 23, 16]);
+
+//=> [8, 4, 15]
+take3([8, 4, 15, 42, 23, 16]);
+```
+
+这不对！之前我们调用`take2`的时候传递给它的是单个单个的参数，可是这回调用时传递的却是数组参数。不行，我们需要适配器，我们需要将单个单个参数转化为数组参数的适配器——我们需要`unsplat`适配器！
+
+```js
+var take2 = unsplat(_.partial(take, 2));
+var take3 = unsplat(_.partial(take, 3));
+
+//=> [8, 4]
+take2(8, 4, 15, 42, 23, 16);
+
+//=> [8, 4, 15]
+take3(8, 4, 15, 42, 23, 16);
+```
+
+这回正常了！回到最初的问题，针对`max`函数，给它输入的单个单个参数依次是`8, 4, 15, 42, 23, 16`。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般的答案：
+
+```js
+var max_revamped = _.compose( splat(max), unsplat( _.partial(take, 3) ) );
+
+//=> 15
+max_revamped(8, 4, 15, 42, 23, 16);
+```
+
+Now everything is under control! 如果我们了解`_.wrap`方法，我们可以做的更疯狂：
+
+```js
+var max_fancy = _.compose(
+  _.wrap( max, splat )(),
+  _.wrap( _.partial(take, 3), unsplat )()
+);
+
+//=> 15
+max_fancy(8, 4, 15, 42, 23, 16);
+```
+
+太过天马行空了，还是就此收笔吧！
+
+总结
+---------------
+
+函数式编程就像搭积木一样，像`_.identity`、`_.partial`、`_.compose`、`splat`、`unsplat`等都是职责单一的函数。别看它们简单，把它们当作积木看待，它们释放的是无尽的活力。
+越是简单的东西，蕴藏的越是更为无限的可能性。函数式编程是函数装配的艺术，是数据流动的艺术。
 
 
 [underscore.js]: http://underscorejs.org/
