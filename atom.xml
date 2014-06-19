@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T02:58:50+08:00</updated>
+  <updated>2014-06-19T22:56:27+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -26,14 +26,14 @@
 </ul>
 
 
-<p>这里我只想提下前者，即以分页方式呈现时分页折叠逻辑实现。</p>
+<p>本文单讲前者，即以分页方式呈现时分页折叠逻辑实现。</p>
 
-<p>以往遇到需要分页的需求时，我一般采用项目中已经写好的公用组件直接用，或者利用第三方插件。观察这类代码的实现，有一个共同点：分页折叠逻辑和分页标签渲染是揉合在一块执行的。最近自己尝试着写了一个分页折叠逻辑实现，我把这部分逻辑从分页标签渲染中抽取出来了——我先处理分页折叠逻辑、再进而渲染分页标签。</p>
+<p>以往遇到需要分页的需求时，我一般采用项目中已经写好的公用组件直接用，或者利用第三方插件。观察这类代码的实现，有一个共同点：分页折叠逻辑和分页标签渲染是揉合在一块执行的。最近自己尝试着写了一个分页折叠逻辑实现，我把这部分逻辑从分页标签渲染中抽取出来了——我先处理分页折叠逻辑、再进而渲染分页标签。这么做有个好处：分页折叠逻辑和分页渲染处理实现解耦、职责区分，分页折叠逻辑代码的更换不会影响随后的渲染。</p>
 
 <!-- more -->
 
 
-<h2>我的思考过程是这样的</h2>
+<h2>思考过程</h2>
 
 <p>假设我们的数据有15页，如果不考虑分页折叠逻辑的话，我们分页显示大概像这样：</p>
 
@@ -47,23 +47,23 @@
 <p>我们可以对以上这个数组遍历渲染为标签。然而我们的页面横向空间有限，分页过多时，我们不希望将每一页都显示为标签。我们需要将跟当前页不太相干的页号折叠起来，不管数据有多少页，只显示固定可视页就好。比如，当前页为第7页，且最多显示9个槽位，我们希望显示成这样：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>我们显示第一页、最末页以及与第7页相邻的页，其他页做折叠处理，即上述数组中的<code>…</code>。</p>
+<p>我们显示第一页、最末页以及与第7页相邻的页，其他页做折叠处理，即上述数组中的<code>…</code>，并且当前页显示为数字字符串以区分非当前页。</p>
 
 <p>如果当前页是第2页呢？</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>如果当前页是第12页呢？</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -159,24 +159,28 @@
 <span class='line-number'>43</span>
 <span class='line-number'>44</span>
 <span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">foldpages</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">pages</span><span class="p">,</span> <span class="nx">current</span><span class="p">,</span> <span class="nx">viewsize</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">ret</span>  <span class="o">=</span> <span class="p">[].</span><span class="nx">concat</span><span class="p">(</span><span class="nx">pages</span><span class="p">),</span>
 </span><span class='line'>      <span class="nx">min</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span class='line'>      <span class="nx">max</span>  <span class="o">=</span> <span class="nx">ret</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">fold</span> <span class="o">=</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">dots</span> <span class="o">=</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span>
 </span><span class='line'>      <span class="nx">remain</span><span class="p">;</span>
 </span><span class='line'>
+</span><span class='line'>  <span class="nx">current</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">max</span><span class="p">));</span>
+</span><span class='line'>
 </span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">max</span> <span class="o">&lt;=</span> <span class="nx">viewsize</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">ret</span><span class="p">[</span><span class="nx">current</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">current</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="nx">viewsize</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="nx">viewsize</span> <span class="o">||</span> <span class="mi">7</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">current</span>  <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">max</span><span class="p">));</span>
-</span><span class='line'>  <span class="nx">ret</span>      <span class="o">=</span> <span class="p">[</span><span class="nx">current</span><span class="p">];</span>
+</span><span class='line'>  <span class="nx">ret</span>      <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="nx">current</span><span class="p">];</span>
 </span><span class='line'>  <span class="nx">remain</span>   <span class="o">=</span> <span class="nx">viewsize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">first</span> <span class="o">=</span> <span class="nx">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">last</span> <span class="o">=</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">first</span> <span class="o">=</span> <span class="o">+</span><span class="nx">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">last</span> <span class="o">=</span> <span class="o">+</span><span class="nx">ret</span><span class="p">[</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">first</span> <span class="o">&gt;</span> <span class="nx">min</span><span class="p">)</span>  <span class="p">{</span>
 </span><span class='line'>      <span class="nx">ret</span><span class="p">.</span><span class="nx">unshift</span><span class="p">(</span><span class="nx">first</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
@@ -190,15 +194,15 @@
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">switch</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">case</span> <span class="nx">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="nx">min</span><span class="o">:</span>
-</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">fold</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">case</span> <span class="o">+</span><span class="nx">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="nx">min</span><span class="o">:</span>
+</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">dots</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
 </span><span class='line'>    <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">case</span> <span class="nx">ret</span><span class="p">[</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="nx">max</span><span class="o">:</span>
-</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">fold</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">case</span> <span class="o">+</span><span class="nx">ret</span><span class="p">[</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="nx">max</span><span class="o">:</span>
+</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">dots</span><span class="p">);</span>
 </span><span class='line'>    <span class="k">break</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">default</span><span class="o">:</span>
-</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">fold</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">fold</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">dots</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ret</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">ret</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">dots</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
 </span><span class='line'>    <span class="k">break</span><span class="p">;</span>
 </span><span class='line'>  <span class="p">}</span>
 </span><span class='line'>
@@ -312,8 +316,6 @@
 <span class='line-number'>101</span>
 <span class='line-number'>102</span>
 <span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">TOTAL_PAGE</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">pages</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">TOTAL_PAGE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
 </span><span class='line'>
@@ -332,95 +334,261 @@
 </span><span class='line'><span class="c1">// =============================================</span>
 </span><span class='line'>
 </span><span class='line'><span class="cm">/**</span>
-</span><span class='line'>
 </span><span class='line'><span class="cm">当显示槽位个数为6时，每一页的折叠显示如下:</span>
-</span><span class='line'><span class="cm">1 [1, 2, 3, 4, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">2 [1, 2, 3, 4, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">3 [1, 2, 3, 4, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">4 [1, 2, 3, 4, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">5 [1, &quot;…&quot;, 4, 5, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">6 [1, &quot;…&quot;, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">7 [1, &quot;…&quot;, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">8 [1, &quot;…&quot;, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">9 [1, &quot;…&quot;, 8, 9, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 9, 10, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 10, 11, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 11, 12, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm"> 1 [&quot;1&quot;, 2, 3, 4, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 2 [1, &quot;2&quot;, 3, 4, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 3 [1, 2, &quot;3&quot;, 4, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 4 [1, 2, 3, &quot;4&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 5 [1, &quot;…&quot;, 4, &quot;5&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 6 [1, &quot;…&quot;, 5, &quot;6&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 7 [1, &quot;…&quot;, 6, &quot;7&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 8 [1, &quot;…&quot;, 7, &quot;8&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 9 [1, &quot;…&quot;, 8, &quot;9&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 9, &quot;10&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 10, &quot;11&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 11, &quot;12&quot;, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 12, &quot;13&quot;, 14, 15]</span>
+</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 12, 13, &quot;14&quot;, 15]</span>
+</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 12, 13, 14, &quot;15&quot;]</span>
 </span><span class='line'>
 </span><span class='line'><span class="cm">当显示槽位个数为7时，每一页的折叠显示如下:</span>
-</span><span class='line'><span class="cm">1 [1, 2, 3, 4, 5, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">2 [1, 2, 3, 4, 5, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">3 [1, 2, 3, 4, 5, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">4 [1, 2, 3, 4, 5, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">5 [1, &quot;…&quot;, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">6 [1, &quot;…&quot;, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">7 [1, &quot;…&quot;, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">8 [1, &quot;…&quot;, 7, 8, 9, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">9 [1, &quot;…&quot;, 8, 9, 10, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 9, 10, 11, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 10, 11, 12, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 11, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm"> 1 [&quot;1&quot;, 2, 3, 4, 5, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 2 [1, &quot;2&quot;, 3, 4, 5, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 3 [1, 2, &quot;3&quot;, 4, 5, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 4 [1, 2, 3, &quot;4&quot;, 5, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 5 [1, &quot;…&quot;, 4, &quot;5&quot;, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 6 [1, &quot;…&quot;, 5, &quot;6&quot;, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 7 [1, &quot;…&quot;, 6, &quot;7&quot;, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 8 [1, &quot;…&quot;, 7, &quot;8&quot;, 9, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 9 [1, &quot;…&quot;, 8, &quot;9&quot;, 10, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 9, &quot;10&quot;, 11, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 10, &quot;11&quot;, 12, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 11, &quot;12&quot;, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 11, 12, &quot;13&quot;, 14, 15]</span>
+</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 11, 12, 13, &quot;14&quot;, 15]</span>
+</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 11, 12, 13, 14, &quot;15&quot;]</span>
 </span><span class='line'>
 </span><span class='line'><span class="cm">当显示槽位个数为8时，每一页的折叠显示如下:</span>
-</span><span class='line'><span class="cm">1 [1, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">2 [1, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">3 [1, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">4 [1, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">5 [1, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">6 [1, &quot;…&quot;, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">7 [1, &quot;…&quot;, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">8 [1, &quot;…&quot;, 6, 7, 8, 9, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">9 [1, &quot;…&quot;, 7, 8, 9, 10, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 8, 9, 10, 11, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 9, 10, 11, 12, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 10, 11, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm"> 1 [&quot;1&quot;, 2, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 2 [1, &quot;2&quot;, 3, 4, 5, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 3 [1, 2, &quot;3&quot;, 4, 5, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 4 [1, 2, 3, &quot;4&quot;, 5, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 5 [1, 2, 3, 4, &quot;5&quot;, 6, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 6 [1, &quot;…&quot;, 4, 5, &quot;6&quot;, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 7 [1, &quot;…&quot;, 5, 6, &quot;7&quot;, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 8 [1, &quot;…&quot;, 6, 7, &quot;8&quot;, 9, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 9 [1, &quot;…&quot;, 7, 8, &quot;9&quot;, 10, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 8, 9, &quot;10&quot;, 11, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 9, 10, &quot;11&quot;, 12, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 10, 11, &quot;12&quot;, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 10, 11, 12, &quot;13&quot;, 14, 15]</span>
+</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 10, 11, 12, 13, &quot;14&quot;, 15]</span>
+</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 10, 11, 12, 13, 14, &quot;15&quot;]</span>
 </span><span class='line'>
 </span><span class='line'><span class="cm">当显示槽位个数为9时，每一页的折叠显示如下:</span>
-</span><span class='line'><span class="cm">1 [1, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">2 [1, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">3 [1, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">4 [1, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">5 [1, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">6 [1, &quot;…&quot;, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">7 [1, &quot;…&quot;, 5, 6, 7, 8, 9, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">8 [1, &quot;…&quot;, 6, 7, 8, 9, 10, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">9 [1, &quot;…&quot;, 7, 8, 9, 10, 11, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 8, 9, 10, 11, 12, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm"> 1 [&quot;1&quot;, 2, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 2 [1, &quot;2&quot;, 3, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 3 [1, 2, &quot;3&quot;, 4, 5, 6, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 4 [1, 2, 3, &quot;4&quot;, 5, 6, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 5 [1, 2, 3, 4, &quot;5&quot;, 6, 7, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 6 [1, &quot;…&quot;, 4, 5, &quot;6&quot;, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 7 [1, &quot;…&quot;, 5, 6, &quot;7&quot;, 8, 9, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 8 [1, &quot;…&quot;, 6, 7, &quot;8&quot;, 9, 10, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 9 [1, &quot;…&quot;, 7, 8, &quot;9&quot;, 10, 11, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 8, 9, &quot;10&quot;, 11, 12, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 9, 10, &quot;11&quot;, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 9, 10, 11, &quot;12&quot;, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 9, 10, 11, 12, &quot;13&quot;, 14, 15]</span>
+</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 9, 10, 11, 12, 13, &quot;14&quot;, 15]</span>
+</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 9, 10, 11, 12, 13, 14, &quot;15&quot;]</span>
 </span><span class='line'>
 </span><span class='line'><span class="cm">当显示槽位个数为10时，每一页的折叠显示如下:</span>
-</span><span class='line'><span class="cm">1 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">2 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">3 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">4 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">5 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">6 [1, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">7 [1, &quot;…&quot;, 4, 5, 6, 7, 8, 9, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">8 [1, &quot;…&quot;, 5, 6, 7, 8, 9, 10, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">9 [1, &quot;…&quot;, 6, 7, 8, 9, 10, 11, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 7, 8, 9, 10, 11, 12, &quot;…&quot;, 15]</span>
-</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, 15]</span>
-</span><span class='line'>
+</span><span class='line'><span class="cm"> 1 [&quot;1&quot;, 2, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 2 [1, &quot;2&quot;, 3, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 3 [1, 2, &quot;3&quot;, 4, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 4 [1, 2, 3, &quot;4&quot;, 5, 6, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 5 [1, 2, 3, 4, &quot;5&quot;, 6, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 6 [1, 2, 3, 4, 5, &quot;6&quot;, 7, 8, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 7 [1, &quot;…&quot;, 4, 5, 6, &quot;7&quot;, 8, 9, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 8 [1, &quot;…&quot;, 5, 6, 7, &quot;8&quot;, 9, 10, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm"> 9 [1, &quot;…&quot;, 6, 7, 8, &quot;9&quot;, 10, 11, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">10 [1, &quot;…&quot;, 7, 8, 9, &quot;10&quot;, 11, 12, &quot;…&quot;, 15]</span>
+</span><span class='line'><span class="cm">11 [1, &quot;…&quot;, 8, 9, 10, &quot;11&quot;, 12, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">12 [1, &quot;…&quot;, 8, 9, 10, 11, &quot;12&quot;, 13, 14, 15]</span>
+</span><span class='line'><span class="cm">13 [1, &quot;…&quot;, 8, 9, 10, 11, 12, &quot;13&quot;, 14, 15]</span>
+</span><span class='line'><span class="cm">14 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, &quot;14&quot;, 15]</span>
+</span><span class='line'><span class="cm">15 [1, &quot;…&quot;, 8, 9, 10, 11, 12, 13, 14, &quot;15&quot;]</span>
 </span><span class='line'><span class="cm">*/</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>分页折叠逻辑实现好了，接下的的分页渲染就信手拈来，不费吹灰之力了！</p>
+
+<h2>渲染分页</h2>
+
+<p>直接上代码吧！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">renderpages</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">pages</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">pages</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">page</span> <span class="o">===</span> <span class="o">+</span><span class="nx">page</span><span class="o">:</span> <span class="k">return</span> <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">page</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nx">page</span> <span class="o">==</span>  <span class="o">+</span><span class="nx">page</span><span class="o">:</span> <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;current&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">page</span> <span class="o">+</span> <span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">default</span><span class="o">:</span>             <span class="k">return</span> <span class="s1">&#39;&lt;span&gt;&#39;</span> <span class="o">+</span> <span class="nx">page</span> <span class="o">+</span> <span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">renderpages</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//=&gt;  &#39;&lt;a href=&quot;javascript:;&quot;&gt;1&lt;/a&gt;&#39; +</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;span&gt;…&lt;/span&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;5&lt;/a&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;6&lt;/a&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;span class=&quot;current&quot;&gt;7&lt;/span&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;8&lt;/a&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;9&lt;/a&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;span&gt;…&lt;/span&gt;&#39;</span> <span class="o">+</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;15&lt;/a&gt;&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到分页渲染时没有了分页折叠逻辑的干扰，代码清晰而简明了。我们一般都习惯把复杂的东西简单化。当然，要想要简单的事情变复杂化也是可行的。不信，我们以分页渲染为例，看能够将它复杂化到什么程度。</p>
+
+<h2>简单的事情复杂化</h2>
+
+<p>仍是直接上代码的方式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">existy</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">x</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">truthy</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">x</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">existy</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">cat</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">head</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">first</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">existy</span><span class="p">(</span><span class="nx">head</span><span class="p">)</span> <span class="o">?</span>
+</span><span class='line'>         <span class="nx">head</span><span class="p">.</span><span class="nx">concat</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">rest</span><span class="p">(</span><span class="nx">arguments</span><span class="p">))</span> <span class="o">:</span> <span class="p">[];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">tail</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cat</span><span class="p">([</span><span class="nx">head</span><span class="p">],</span> <span class="nx">_</span><span class="p">.</span><span class="nx">toArray</span><span class="p">(</span><span class="nx">tail</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//=&gt; [4, 8, 15, 16, 23, 42]</span>
+</span><span class='line'><span class="nx">cat</span><span class="p">([</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//=&gt; [4, 8, 15, 16, 23, 42]</span>
+</span><span class='line'><span class="nx">construct</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">dispatch</span><span class="p">(</span><span class="cm">/* funs */</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">funs</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">toArray</span><span class="p">(</span><span class="nx">arguments</span><span class="p">),</span> <span class="nx">size</span> <span class="o">=</span> <span class="nx">funs</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span> <span class="cm">/*, args */</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">,</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">rest</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_</span><span class="p">.</span><span class="nx">detect</span><span class="p">(</span><span class="nx">funs</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fun</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">ret</span> <span class="o">=</span> <span class="nx">fun</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">fun</span><span class="p">,</span> <span class="nx">construct</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">args</span><span class="p">));</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">existy</span><span class="p">(</span><span class="nx">ret</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">whilst</span><span class="p">(</span><span class="nx">cond</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">truthy</span><span class="p">(</span><span class="nx">cond</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="o">?</span> <span class="nx">action</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">:</span> <span class="kc">undefined</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">renderer</span> <span class="o">=</span> <span class="nx">dispatch</span><span class="p">(</span>
+</span><span class='line'>  <span class="nx">whilst</span><span class="p">(</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">x</span> <span class="o">===</span> <span class="o">+</span><span class="nx">x</span><span class="p">;</span> <span class="p">},</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">x</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&#39;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="p">),</span>
+</span><span class='line'>  <span class="nx">whilst</span><span class="p">(</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">x</span> <span class="o">==</span> <span class="o">+</span><span class="nx">x</span><span class="p">;</span> <span class="p">},</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;&lt;span class=&quot;current&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">x</span> <span class="o">+</span> <span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="p">),</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">&#39;&lt;span&gt;&#39;</span> <span class="o">+</span> <span class="nx">x</span> <span class="o">+</span> <span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="nx">renderer</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上展示了如何用函数式编程方式把简单的事情复杂化。不过，它已背离了本文的宗旨，还是就此打住吧！</p>
 
 <p>后记：想了好几种方式实现<code>foldpages</code>方法，天马行空的。然而，没有一种方式觉得很理想，包括贴在此处的这个！我想我是有代码洁癖症的，希望以后能想到更好的实现办法！这需要灵感：或是触类旁通的，或是恍然大悟的。</p>
 
@@ -970,7 +1138,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>似乎偏离主旨了。。。太过天马行空了，还是就此收笔吧！</p>
+<p>太过天马行空了，似乎偏离主旨了。。。还是就此收笔吧！</p>
 
 <h2>总结</h2>
 
