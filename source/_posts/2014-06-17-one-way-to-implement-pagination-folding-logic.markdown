@@ -251,7 +251,8 @@ var renderpages = function (pages) {
 
 renderpages([1, '…', 5, 6, '7', 8, 9, '…', 15]);
 
-//=>  '<a href="javascript:;">1</a>' +
+//=============== OUTPUT ============>
+      '<a href="javascript:;">1</a>' +
       '<span>…</span>' +
       '<a href="javascript:;">5</a>' +
       '<a href="javascript:;">6</a>' +
