@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T22:56:27+08:00</updated>
+  <updated>2014-06-19T22:59:12+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -258,7 +258,8 @@ _.each(_.range(6, 10 + 1), function (foldnum) {
 
 renderpages([1, '…', 5, 6, '7', 8, 9, '…', 15]);
 
-//=&gt;  '&lt;a href="javascript:;"&gt;1&lt;/a&gt;' +
+//=============== OUTPUT ============&gt;
+      '&lt;a href="javascript:;"&gt;1&lt;/a&gt;' +
       '&lt;span&gt;…&lt;/span&gt;' +
       '&lt;a href="javascript:;"&gt;5&lt;/a&gt;' +
       '&lt;a href="javascript:;"&gt;6&lt;/a&gt;' +

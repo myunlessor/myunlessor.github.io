@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T22:56:27+08:00</updated>
+  <updated>2014-06-19T22:59:12+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -449,6 +449,7 @@
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
+<span class='line-number'>22</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">renderpages</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">pages</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">pages</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
@@ -461,7 +462,8 @@
 </span><span class='line'>
 </span><span class='line'><span class="nx">renderpages</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;…&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">]);</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//=&gt;  &#39;&lt;a href=&quot;javascript:;&quot;&gt;1&lt;/a&gt;&#39; +</span>
+</span><span class='line'><span class="c1">//=============== OUTPUT ============&gt;</span>
+</span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;1&lt;/a&gt;&#39;</span> <span class="o">+</span>
 </span><span class='line'>      <span class="s1">&#39;&lt;span&gt;…&lt;/span&gt;&#39;</span> <span class="o">+</span>
 </span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;5&lt;/a&gt;&#39;</span> <span class="o">+</span>
 </span><span class='line'>      <span class="s1">&#39;&lt;a href=&quot;javascript:;&quot;&gt;6&lt;/a&gt;&#39;</span> <span class="o">+</span>
