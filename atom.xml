@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T22:59:12+08:00</updated>
+  <updated>2014-08-19T23:19:13+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用jQuery实现简单的自定义事件功能]]></title>
+    <link href="http://myunlessor.me/blog/2014/08/19/simple-custom-events-using-jquery/"/>
+    <updated>2014-08-19T22:06:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/08/19/simple-custom-events-using-jquery</id>
+    <content type="html"><![CDATA[<p>众所周知，页面元素的交互离不开javascript的事件模型，DOM元素对事件有原生的支持。而事件并不是javascript语言本身的固有功能，它是一种模式，通常被叫做<code>发布/订阅(publish/subscribe)</code>模式。这种模式可以很好地令代码解耦，寥寥数十行的javascript原生代码就可以实现简单的事件模型，但要实现复杂又易用的事件模型并不是件简单的事。而如果项目使用jQuery类库的话，我们可以在它实现的事件模型基础上做一定的封装，实现简单的自定义事件功能。</p>
+
+<!-- more -->
+
+
+<p>既然jQuery实现有事件模型，为什么我们还要另外再整一套呢？jQuery实现的事件方法(像<code>on、off、trigger</code>等)都是绑定在jQuery包装集对象上的，如果我们想为普通的字面对象或通过构造函数实例化的对象添加事件，显然jQuery提供的那套事件模型不能直接拿来用。如果我们细微地思考下就知道，对jQuery的事件模型稍加包装可以直接应用到普通对象上——jQuery包装集可以包装任意对象，包括字面对象及实例化对象等。</p>
+
+<p>以下是使用jQuery实现的<code>发布/订阅(publish/subscribe)</code>模式。</p>
+
+<h2>全局静态事件实现</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">!</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">$</span><span class="p">({});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">subscribe</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">o</span><span class="p">.</span><span class="nx">on</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">unsubscribe</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">o</span><span class="p">.</span><span class="nx">off</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">publish</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">o</span><span class="p">.</span><span class="nx">trigger</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">})(</span><span class="nx">jQuery</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="s1">&#39;howdy&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//=&gt; [&quot;one&quot;, &quot;two&quot;]</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;howdy&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">]]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>适配一般对象的自定义事件实现</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">pubsub</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">_$</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">__$</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__$</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">on</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">on</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">(),</span> <span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">one</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">one</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">(),</span> <span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">off</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">off</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">(),</span> <span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">emit</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">trigger</span><span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="p">[</span><span class="nx">data</span><span class="p">])[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// =====================</span>
+</span><span class='line'><span class="c1">// 字面对象添加自定义事件</span>
+</span><span class='line'><span class="c1">// =====================</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">pubsub</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">obj</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">on</span><span class="p">({</span>
+</span><span class='line'>    <span class="s1">&#39;hello&#39;</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//=&gt; &#39;how are you today?&#39;</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="s1">&#39;bye&#39;</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//=&gt; &#39;good night!&#39;</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">})</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;how are you today?&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;bye&#39;</span><span class="p">,</span> <span class="s1">&#39;good night!&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// =====================</span>
+</span><span class='line'><span class="c1">// 实例化对象添加自定义事件</span>
+</span><span class='line'><span class="c1">// =====================</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 构造函数</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Foo</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 将事件方法添加到构造函数的原型上</span>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="nx">pubsub</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 实例化对象</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;howdy.with.namespace&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//=&gt; { spam: &quot;one&quot;, eggs: &quot;two&quot; }</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;howdy&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="s1">&#39;spam&#39;</span><span class="o">:</span> <span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;eggs&#39;</span><span class="o">:</span> <span class="s1">&#39;two&#39;</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过以上代码我们可以看到，编写区区几行代码，我们就实现了适配一般对象的复杂易用的事件模型，它具有jQuery事件模型一切强大的功能。另外，我们注意到改造后的事件模型和Backbone实现的事件模型特别相似。另外，如果采用ES6环境，上述代码还可继续简化。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">pubsub</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">_$</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">__$</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">__$</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">on</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">on</span><span class="p">(...</span><span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">one</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">one</span><span class="p">(...</span><span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">off</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">off</span><span class="p">(...</span><span class="nx">arguments</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">emit</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_$</span><span class="p">().</span><span class="nx">trigger</span><span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="p">[</span><span class="nx">data</span><span class="p">])[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>END</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[简单的分页折叠逻辑实现]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-06-19T22:59:12+08:00</updated>
+  <updated>2014-08-19T23:19:13+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,135 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[使用jQuery实现简单的自定义事件功能]]></title>
+    <link href="http://myunlessor.me/blog/2014/08/19/simple-custom-events-using-jquery/"/>
+    <updated>2014-08-19T22:06:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2014/08/19/simple-custom-events-using-jquery</id>
+    <content type="html"><![CDATA[<p>众所周知，页面元素的交互离不开javascript的事件模型，DOM元素对事件有原生的支持。而事件并不是javascript语言本身的固有功能，它是一种模式，通常被叫做<code>发布/订阅(publish/subscribe)</code>模式。这种模式可以很好地令代码解耦，寥寥数十行的javascript原生代码就可以实现简单的事件模型，但要实现复杂又易用的事件模型并不是件简单的事。而如果项目使用jQuery类库的话，我们可以在它实现的事件模型基础上做一定的封装，实现简单的自定义事件功能。</p>
+
+<!-- more -->
+
+
+<p>既然jQuery实现有事件模型，为什么我们还要另外再整一套呢？jQuery实现的事件方法(像<code>on、off、trigger</code>等)都是绑定在jQuery包装集对象上的，如果我们想为普通的字面对象或通过构造函数实例化的对象添加事件，显然jQuery提供的那套事件模型不能直接拿来用。如果我们细微地思考下就知道，对jQuery的事件模型稍加包装可以直接应用到普通对象上——jQuery包装集可以包装任意对象，包括字面对象及实例化对象等。</p>
+
+<p>以下是使用jQuery实现的<code>发布/订阅(publish/subscribe)</code>模式。</p>
+
+<h2>全局静态事件实现</h2>
+
+<pre><code class="js">!(function ($) {
+  var o = $({});
+
+  $.subscribe = function () {
+    o.on.apply(o, arguments);
+  };
+
+  $.unsubscribe = function () {
+    o.off.apply(o, arguments);
+  };
+
+  $.publish = function () {
+    o.trigger.apply(o, arguments);
+  };
+})(jQuery);
+
+// 使用
+$.subscribe('howdy', function (e, data) {
+  //=&gt; ["one", "two"]
+  console.log(data);
+});
+
+$.publish('howdy', [['one', 'two']]);
+</code></pre>
+
+<h2>适配一般对象的自定义事件实现</h2>
+
+<pre><code class="js">var pubsub = {
+  _$: function () {
+    return this.__$ || (this.__$ = $(this));
+  },
+  on: function () {
+    return this._$().on.apply(this._$(), arguments)[0];
+  },
+  one: function () {
+    return this._$().one.apply(this._$(), arguments)[0];
+  },
+  off: function () {
+    return this._$().off.apply(this._$(), arguments)[0];
+  },
+  emit: function (events, data) {
+    return this._$().trigger(events, [data])[0];
+  }
+};
+
+// 使用
+
+// =====================
+// 字面对象添加自定义事件
+// =====================
+var obj = {};
+$.extend(obj, pubsub);
+
+obj
+  .on({
+    'hello': function (e, data) {
+      //=&gt; 'how are you today?'
+      console.log(data);
+    },
+    'bye': function (e, data) {
+      //=&gt; 'good night!'
+      console.log(data);
+    }
+  })
+  .emit('hello', 'how are you today?')
+  .emit('bye', 'good night!');
+
+// =====================
+// 实例化对象添加自定义事件
+// =====================
+
+// 构造函数
+var Foo = function () {};
+
+// 将事件方法添加到构造函数的原型上
+$.extend(Foo.prototype, pubsub);
+
+// 实例化对象
+var foo = new Foo();
+
+foo.on('howdy.with.namespace', function (e, data) {
+  //=&gt; { spam: "one", eggs: "two" }
+  console.log(data);
+});
+
+foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
+</code></pre>
+
+<p>通过以上代码我们可以看到，编写区区几行代码，我们就实现了适配一般对象的复杂易用的事件模型，它具有jQuery事件模型一切强大的功能。另外，我们注意到改造后的事件模型和Backbone实现的事件模型特别相似。另外，如果采用ES6环境，上述代码还可继续简化。</p>
+
+<pre><code class="js">var pubsub = {
+  _$: function () {
+    return this.__$ || (this.__$ = $(this));
+  },
+  on: function () {
+    return this._$().on(...arguments)[0];
+  },
+  one: function () {
+    return this._$().one(...arguments)[0];
+  },
+  off: function () {
+    return this._$().off(...arguments)[0];
+  },
+  emit: function (events, data) {
+    return this._$().trigger(events, [data])[0];
+  }
+};
+</code></pre>
+
+<p>END</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[简单的分页折叠逻辑实现]]></title>
@@ -1436,133 +1565,6 @@ console.log(el['data-proxy-test']);
 </code></pre>
 
 <p>总结：<code>prefer object properties to local variables when recording state!</code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[淘宝前端之智勇大闯关第三季攻略]]></title>
-    <link href="http://myunlessor.me/blog/2013/08/15/alibaba-ued-quiz3-strategy/"/>
-    <updated>2013-08-15T22:42:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/08/15/alibaba-ued-quiz3-strategy</id>
-    <content type="html"><![CDATA[<p>今天在群里看到好多人都在玩这游戏，都玩得挺high，自己也点进链接玩了下，第一次玩这类游戏，觉得挺有意思的，遂记录下自己的玩法。</p>
-
-<p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：</p>
-
-<pre><code>http://ued.campus.alibaba.com/quiz3/index.php
-</code></pre>
-
-<!-- more -->
-
-
-<p>该游戏一共有6关。</p>
-
-<h2>第一关 —— 突破，带锁的门</h2>
-
-<p>F12键打开控制台，输入以下代码，密码显现，按不同顺序尝试密码即可通关。</p>
-
-<pre><code class="js">[].forEach.call(Array(11).join('-'), powder.blow.bind(powder));
-</code></pre>
-
-<h2>第二关 —— 激光，前进的方向</h2>
-
-<p>该关主要调整id为ma和mb两挡板元素的位置和角度形成反射即可通关，在控制台输入以下代码即可：</p>
-
-<pre><code class="js">(function (doc) {
-  var mas = doc.getElementById('ma').style,
-      mbs = doc.getElementById('mb').style;
-
-  mas.top = '550px';
-  mas.webkitTransform = 'rotate(-82deg)';
-
-  mbs.top = '430px';
-  mbs.webkitTransform = 'rotate(172deg)';
-}).call(this, document);
-</code></pre>
-
-<h2>第三关 —— 坐标，隐藏的线索</h2>
-
-<p>初看这个场景，看到三个定位角块，嗯这是二维码，但是是空白的，审查元素得知它是个canvas元素，需要画图将该二维码补充完整，在控制台输入以下代码完成：</p>
-
-<pre><code class="js">(function (ctx) {
-  [].filter.call(document.body.childNodes, function (node) {
-    return node.nodeType === 8;
-  })[0].data.trim().split(' ').forEach(function (params) {
-    ctx.fillRect.apply(ctx, params.split(','));
-  });
-})(document.getElementById('qr-canvas').getContext('2d'));
-</code></pre>
-
-<h2>第四关 —— 图案，疯狂的猜测</h2>
-
-<p>本关类似于看图识字的游戏，在文本框输入图片对应的关键字即可，主要有以下这些：</p>
-
-<pre><code>github
-v
-css sprite
-stackoverflow
-underscore
-jade
-ubuntu
-php
-less
-wordpress
-sublime text
-w3
-grunt
-npm
-</code></pre>
-
-<h2>第五关 —— 寻找，无尽的房间</h2>
-
-<p>这关看得云里来雾里去，最开始一直更改url中查询字符串room的值，提示你不要人肉。控制台叫你用jquery通关，尝试许久，总结如下方法，在控制台运行后直接通关：</p>
-
-<pre><code class="js">(function ($, loc) {
-  var ready = false,
-      message = $('#message').text(),
-      t = query('t'),
-      url = '';
-
-  function query(param) {
-    var match = RegExp('[?&amp;]' + param + '=([^&amp;]*)').exec(loc.href.split('#')[0]);
-    return match &amp;&amp; decodeURIComponent(match[1].replace(/\+/g, ' '));
-  }
-
-  (function yoda(next_room) {
-    $.get(loc.href.split('?')[0], {
-      t: t,
-      room: next_room
-    }, function (resp) {
-      var msg = $('#message', resp).text(),
-          nextRoom = $('#next-room', resp).text();
-
-      console.log(message += msg);
-
-      if (ready) {
-        url += msg;
-      } else if (msg === '/quiz3/i') {
-        ready = !ready;
-        url += msg;
-      }
-
-      if (nextRoom) {
-        yoda(nextRoom);
-      } else {
-        var nextUrl = loc.protocol + '//' + loc.host + url;
-        console.warn('点击进入下一关^_^: ' + nextUrl);
-        setTimeout(function () { loc.href = nextUrl; }, 5000);
-      }
-    });
-  })($('#next-room').text());
-})(jQuery, location);
-</code></pre>
-
-<h2>第六关 —— 消除! 最后的任务</h2>
-
-<p>这关没想到什么好办法，浏览js文件<code>http://ued.campus.alibaba.com/quiz3/assets/js/step5.js</code>看到里面有<code>window.location</code>，于是直接在控制台输入如下代码，顺利通关：</p>
-
-<pre><code class="js">var p = document.getElementById('page').getAttributeNode('data-p').nodeValue;
-window.location = Base64.decode(p);
-</code></pre>
 ]]></content>
   </entry>
   
