@@ -14,7 +14,10 @@
   <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
 
   
-  <meta name="description" content="众所周知，页面元素的交互离不开javascript的事件模型，DOM元素对事件有原生的支持。而事件并不是javascript语言本身的固有功能，它是一种模式，通常被叫做发布/订阅(publish/subscribe)模式。这种模式可以很好地令代码解耦， &hellip;">
+  <meta name="description" content=" 有人叫她“熟食铺子”，因为只有熟食店会把那许多颜色暖热的肉公开陈列；
+又有人叫她“真理”，因为据说“真理是赤裸裸的”；
+而鲍小姐并未一丝不挂，所以他们修正为“局部的真理”。
+　　　　　　　　　　　　　　　　　　　　　　　　　《围城》 — 钱钟书 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +82,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-11-18T21:32:00+08:00" pubdate data-updated="true">2015年11月18日</time>
+        
+         | <a href="/blog/2015/11/18/scoped-reality/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote>
+  <p>有人叫她“熟食铺子”，因为只有熟食店会把那许多颜色暖热的肉公开陈列；
+又有人叫她“真理”，因为据说“真理是赤裸裸的”；
+而鲍小姐并未一丝不挂，所以他们修正为“局部的真理”。
+　　　　　　　　　　　　　　　　　　　　　　　　　《围城》 — 钱钟书</p>
+</blockquote>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/11/18/scoped-reality/">继续阅读 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -156,10 +207,9 @@
   <div class="entry-content"><p>列表数据量过多时，常见有以下两种呈现方式：</p>
 
 <ul>
-<li>将数据列表分页呈现</li>
-<li>采用瀑布流形式加载数据</li>
+  <li>将数据列表分页呈现</li>
+  <li>采用瀑布流形式加载数据</li>
 </ul>
-
 
 <p>本文单讲前者，即以分页方式呈现时分页折叠逻辑实现。</p>
 
@@ -261,26 +311,23 @@
 
 <p>有关<code>traceur compiler</code>的环境配置如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/bin/traceur.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/src/bootstrap.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'><span class="nx">traceur</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">experimental</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'>  <span class="c1">// blablabla...</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/bin/traceur.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://traceur-compiler.googlecode.com/git/src/bootstrap.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line"><span class="nx">traceur</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">experimental</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line">  <span class="c1">// blablabla...</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 </div>
   
@@ -516,57 +563,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/">淘宝前端之智勇大闯关第三季攻略</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-15T22:42:00+08:00" pubdate data-updated="true">2013年08月15日</time>
-        
-         | <a href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今天在群里看到好多人都在玩这游戏，都玩得挺high，自己也点进链接玩了下，第一次玩这类游戏，觉得挺有意思的，遂记录下自己的玩法。</p>
-
-<p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>http://ued.campus.alibaba.com/quiz3/index.php</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -579,10 +575,14 @@
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (9)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (10)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/19/simple-custom-events-using-jquery/">使用jQuery实现简单的自定义事件功能</a>
@@ -669,7 +669,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 俞乐 -
+  Copyright &copy; 2015 - 俞乐 -
   <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

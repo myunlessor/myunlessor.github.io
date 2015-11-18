@@ -112,203 +112,192 @@ http://ued.campus.alibaba.com/quiz3/index.php 该游戏一共有6关。 第一�
 
 <p>首先，<a href="http://ued.campus.alibaba.com/quiz3/index.php">游戏链接</a>如下：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>http://ued.campus.alibaba.com/quiz3/index.php</span></code></pre></td></tr></table></div></figure>
-
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">http://ued.campus.alibaba.com/quiz3/index.php</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <!-- more -->
 
-
 <p>该游戏一共有6关。</p>
 
-<h2>第一关 —— 突破，带锁的门</h2>
+<h2 id="section">第一关 —— 突破，带锁的门</h2>
 
 <p>F12键打开控制台，输入以下代码，密码显现，按不同顺序尝试密码即可通关。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">[].</span><span class="nx">forEach</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nb">Array</span><span class="p">(</span><span class="mi">11</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="nx">powder</span><span class="p">.</span><span class="nx">blow</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">powder</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">[].</span><span class="nx">forEach</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nb">Array</span><span class="p">(</span><span class="mi">11</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="nx">powder</span><span class="p">.</span><span class="nx">blow</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">powder</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>第二关 —— 激光，前进的方向</h2>
+<h2 id="section-1">第二关 —— 激光，前进的方向</h2>
 
 <p>该关主要调整id为ma和mb两挡板元素的位置和角度形成反射即可通关，在控制台输入以下代码即可：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">mas</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;ma&#39;</span><span class="p">).</span><span class="nx">style</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">mbs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;mb&#39;</span><span class="p">).</span><span class="nx">style</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">mas</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="s1">&#39;550px&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">mas</span><span class="p">.</span><span class="nx">webkitTransform</span> <span class="o">=</span> <span class="s1">&#39;rotate(-82deg)&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">mbs</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="s1">&#39;430px&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">mbs</span><span class="p">.</span><span class="nx">webkitTransform</span> <span class="o">=</span> <span class="s1">&#39;rotate(172deg)&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nb">document</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">mas</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;ma&#39;</span><span class="p">).</span><span class="nx">style</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">mbs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;mb&#39;</span><span class="p">).</span><span class="nx">style</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">mas</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="s1">&#39;550px&#39;</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">mas</span><span class="p">.</span><span class="nx">webkitTransform</span> <span class="o">=</span> <span class="s1">&#39;rotate(-82deg)&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">mbs</span><span class="p">.</span><span class="nx">top</span> <span class="o">=</span> <span class="s1">&#39;430px&#39;</span><span class="p">;</span>
+</span><span class="line">  <span class="nx">mbs</span><span class="p">.</span><span class="nx">webkitTransform</span> <span class="o">=</span> <span class="s1">&#39;rotate(172deg)&#39;</span><span class="p">;</span>
+</span><span class="line"><span class="p">}).</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nb">document</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>第三关 —— 坐标，隐藏的线索</h2>
+<h2 id="section-2">第三关 —— 坐标，隐藏的线索</h2>
 
 <p>初看这个场景，看到三个定位角块，嗯这是二维码，但是是空白的，审查元素得知它是个canvas元素，需要画图将该二维码补充完整，在控制台输入以下代码完成：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">ctx</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="p">[].</span><span class="nx">filter</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">node</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">===</span> <span class="mi">8</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">})[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">trim</span><span class="p">().</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">params</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">})(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;qr-canvas&#39;</span><span class="p">).</span><span class="nx">getContext</span><span class="p">(</span><span class="s1">&#39;2d&#39;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">ctx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="p">[].</span><span class="nx">filter</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">node</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">===</span> <span class="mi">8</span><span class="p">;</span>
+</span><span class="line">  <span class="p">})[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">trim</span><span class="p">().</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">ctx</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">params</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">));</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">})(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;qr-canvas&#39;</span><span class="p">).</span><span class="nx">getContext</span><span class="p">(</span><span class="s1">&#39;2d&#39;</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>第四关 —— 图案，疯狂的猜测</h2>
+<h2 id="section-3">第四关 —— 图案，疯狂的猜测</h2>
 
 <p>本关类似于看图识字的游戏，在文本框输入图片对应的关键字即可，主要有以下这些：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">github</span>
-</span><span class='line'><span class="nx">v</span>
-</span><span class='line'><span class="nx">css</span> <span class="nx">sprite</span>
-</span><span class='line'><span class="nx">stackoverflow</span>
-</span><span class='line'><span class="nx">underscore</span>
-</span><span class='line'><span class="nx">jade</span>
-</span><span class='line'><span class="nx">ubuntu</span>
-</span><span class='line'><span class="nx">php</span>
-</span><span class='line'><span class="nx">less</span>
-</span><span class='line'><span class="nx">wordpress</span>
-</span><span class='line'><span class="nx">sublime</span> <span class="nx">text</span>
-</span><span class='line'><span class="nx">w3</span>
-</span><span class='line'><span class="nx">grunt</span>
-</span><span class='line'><span class="nx">npm</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">github</span>
+</span><span class="line"><span class="nx">v</span>
+</span><span class="line"><span class="nx">css</span> <span class="nx">sprite</span>
+</span><span class="line"><span class="nx">stackoverflow</span>
+</span><span class="line"><span class="nx">underscore</span>
+</span><span class="line"><span class="nx">jade</span>
+</span><span class="line"><span class="nx">ubuntu</span>
+</span><span class="line"><span class="nx">php</span>
+</span><span class="line"><span class="nx">less</span>
+</span><span class="line"><span class="nx">wordpress</span>
+</span><span class="line"><span class="nx">sublime</span> <span class="nx">text</span>
+</span><span class="line"><span class="nx">w3</span>
+</span><span class="line"><span class="nx">grunt</span>
+</span><span class="line"><span class="nx">npm</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>第五关 —— 寻找，无尽的房间</h2>
+<h2 id="section-4">第五关 —— 寻找，无尽的房间</h2>
 
 <p>这关看得云里来雾里去，最开始一直更改url中查询字符串room的值，提示你不要人肉。控制台叫你用jquery通关，尝试许久，总结如下方法，在控制台运行后直接通关：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">loc</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">ready</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">message</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#message&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(),</span>
-</span><span class='line'>      <span class="nx">t</span> <span class="o">=</span> <span class="nx">query</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">),</span>
-</span><span class='line'>      <span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">query</span><span class="p">(</span><span class="nx">param</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;[?&amp;]&#39;</span> <span class="o">+</span> <span class="nx">param</span> <span class="o">+</span> <span class="s1">&#39;=([^&amp;]*)&#39;</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">href</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">match</span> <span class="o">&amp;&amp;</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\+/g</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">(</span><span class="kd">function</span> <span class="nx">yoda</span><span class="p">(</span><span class="nx">next_room</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">href</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">t</span><span class="o">:</span> <span class="nx">t</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">room</span><span class="o">:</span> <span class="nx">next_room</span>
-</span><span class='line'>    <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#message&#39;</span><span class="p">,</span> <span class="nx">resp</span><span class="p">).</span><span class="nx">text</span><span class="p">(),</span>
-</span><span class='line'>          <span class="nx">nextRoom</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#next-room&#39;</span><span class="p">,</span> <span class="nx">resp</span><span class="p">).</span><span class="nx">text</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">ready</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">url</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;/quiz3/i&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">ready</span> <span class="o">=</span> <span class="o">!</span><span class="nx">ready</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">url</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">nextRoom</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">yoda</span><span class="p">(</span><span class="nx">nextRoom</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">nextUrl</span> <span class="o">=</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="nx">url</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">&#39;点击进入下一关^_^: &#39;</span> <span class="o">+</span> <span class="nx">nextUrl</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">nextUrl</span><span class="p">;</span> <span class="p">},</span> <span class="mi">5000</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>  <span class="p">})(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#next-room&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">());</span>
-</span><span class='line'><span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">location</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">loc</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">ready</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">message</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#message&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">(),</span>
+</span><span class="line">      <span class="nx">t</span> <span class="o">=</span> <span class="nx">query</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">),</span>
+</span><span class="line">      <span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">function</span> <span class="nx">query</span><span class="p">(</span><span class="nx">param</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">&#39;[?&amp;]&#39;</span> <span class="o">+</span> <span class="nx">param</span> <span class="o">+</span> <span class="s1">&#39;=([^&amp;]*)&#39;</span><span class="p">).</span><span class="nx">exec</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">href</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">match</span> <span class="o">&amp;&amp;</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\+/g</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">));</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="p">(</span><span class="kd">function</span> <span class="nx">yoda</span><span class="p">(</span><span class="nx">next_room</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">href</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">t</span><span class="o">:</span> <span class="nx">t</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">room</span><span class="o">:</span> <span class="nx">next_room</span>
+</span><span class="line">    <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#message&#39;</span><span class="p">,</span> <span class="nx">resp</span><span class="p">).</span><span class="nx">text</span><span class="p">(),</span>
+</span><span class="line">          <span class="nx">nextRoom</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#next-room&#39;</span><span class="p">,</span> <span class="nx">resp</span><span class="p">).</span><span class="nx">text</span><span class="p">();</span>
+</span><span class="line">
+</span><span class="line">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">if</span> <span class="p">(</span><span class="nx">ready</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">url</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">;</span>
+</span><span class="line">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">msg</span> <span class="o">===</span> <span class="s1">&#39;/quiz3/i&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">ready</span> <span class="o">=</span> <span class="o">!</span><span class="nx">ready</span><span class="p">;</span>
+</span><span class="line">        <span class="nx">url</span> <span class="o">+=</span> <span class="nx">msg</span><span class="p">;</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">if</span> <span class="p">(</span><span class="nx">nextRoom</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="nx">yoda</span><span class="p">(</span><span class="nx">nextRoom</span><span class="p">);</span>
+</span><span class="line">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">nextUrl</span> <span class="o">=</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="nx">url</span><span class="p">;</span>
+</span><span class="line">        <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">&#39;点击进入下一关^_^: &#39;</span> <span class="o">+</span> <span class="nx">nextUrl</span><span class="p">);</span>
+</span><span class="line">        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">nextUrl</span><span class="p">;</span> <span class="p">},</span> <span class="mi">5000</span><span class="p">);</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="p">});</span>
+</span><span class="line">  <span class="p">})(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#next-room&#39;</span><span class="p">).</span><span class="nx">text</span><span class="p">());</span>
+</span><span class="line"><span class="p">})(</span><span class="nx">jQuery</span><span class="p">,</span> <span class="nx">location</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-
-<h2>第六关 —— 消除! 最后的任务</h2>
+<h2 id="section-5">第六关 —— 消除! 最后的任务</h2>
 
 <p>这关没想到什么好办法，浏览js文件<code>http://ued.campus.alibaba.com/quiz3/assets/js/step5.js</code>看到里面有<code>window.location</code>，于是直接在控制台输入如下代码，顺利通关：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">).</span><span class="nx">getAttributeNode</span><span class="p">(</span><span class="s1">&#39;data-p&#39;</span><span class="p">).</span><span class="nx">nodeValue</span><span class="p">;</span>
-</span><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">location</span> <span class="o">=</span> <span class="nx">Base64</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;page&#39;</span><span class="p">).</span><span class="nx">getAttributeNode</span><span class="p">(</span><span class="s1">&#39;data-p&#39;</span><span class="p">).</span><span class="nx">nodeValue</span><span class="p">;</span>
+</span><span class="line"><span class="nb">window</span><span class="p">.</span><span class="nx">location</span> <span class="o">=</span> <span class="nx">Base64</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 </div>
 
@@ -376,10 +365,14 @@ http://ued.campus.alibaba.com/quiz3/index.php 该游戏一共有6关。 第一�
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (9)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (10)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/19/simple-custom-events-using-jquery/">使用jQuery实现简单的自定义事件功能</a>
@@ -467,7 +460,7 @@ http://ued.campus.alibaba.com/quiz3/index.php 该游戏一共有6关。 第一�
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 俞乐 -
+  Copyright &copy; 2015 - 俞乐 -
   <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

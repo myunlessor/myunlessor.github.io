@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: jquery | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/jquery/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-08-19T23:19:13+08:00</updated>
+  <updated>2015-11-19T00:02:53+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -22,104 +22,106 @@
 
 <!-- more -->
 
-
 <p>既然jQuery实现有事件模型，为什么我们还要另外再整一套呢？jQuery实现的事件方法(像<code>on、off、trigger</code>等)都是绑定在jQuery包装集对象上的，如果我们想为普通的字面对象或通过构造函数实例化的对象添加事件，显然jQuery提供的那套事件模型不能直接拿来用。如果我们细微地思考下就知道，对jQuery的事件模型稍加包装可以直接应用到普通对象上——jQuery包装集可以包装任意对象，包括字面对象及实例化对象等。</p>
 
 <p>以下是使用jQuery实现的<code>发布/订阅(publish/subscribe)</code>模式。</p>
 
-<h2>全局静态事件实现</h2>
+<h2 id="section">全局静态事件实现</h2>
 
-<pre><code class="js">!(function ($) {
-  var o = $({});
+<p>```js
+!(function ($) {
+  var o = $({});</p>
 
-  $.subscribe = function () {
+<p>$.subscribe = function () {
     o.on.apply(o, arguments);
-  };
+  };</p>
 
-  $.unsubscribe = function () {
+<p>$.unsubscribe = function () {
     o.off.apply(o, arguments);
-  };
+  };</p>
 
-  $.publish = function () {
+<p>$.publish = function () {
     o.trigger.apply(o, arguments);
   };
-})(jQuery);
+})(jQuery);</p>
 
-// 使用
-$.subscribe('howdy', function (e, data) {
-  //=&gt; ["one", "two"]
+<p>// 使用
+$.subscribe(‘howdy’, function (e, data) {
+  //=&gt; [“one”, “two”]
   console.log(data);
-});
+});</p>
 
-$.publish('howdy', [['one', 'two']]);
-</code></pre>
+<p>$.publish(‘howdy’, [[‘one’, ‘two’]]);
+```</p>
 
-<h2>适配一般对象的自定义事件实现</h2>
+<h2 id="section-1">适配一般对象的自定义事件实现</h2>
 
-<pre><code class="js">var pubsub = {
-  _$: function () {
-    return this.__$ || (this.__$ = $(this));
+<p>```js
+var pubsub = {
+  <em>$: function () {
+    return this.<strong>$ || (this.</strong>$ = $(this));
   },
   on: function () {
-    return this._$().on.apply(this._$(), arguments)[0];
+    return this.</em>$().on.apply(this.<em>$(), arguments)[0];
   },
   one: function () {
-    return this._$().one.apply(this._$(), arguments)[0];
+    return this.</em>$().one.apply(this.<em>$(), arguments)[0];
   },
   off: function () {
-    return this._$().off.apply(this._$(), arguments)[0];
+    return this.</em>$().off.apply(this.<em>$(), arguments)[0];
   },
   emit: function (events, data) {
-    return this._$().trigger(events, [data])[0];
+    return this.</em>$().trigger(events, [data])[0];
   }
-};
+};</p>
 
-// 使用
+<p>// 使用</p>
 
-// =====================
+<p>// =====================
 // 字面对象添加自定义事件
 // =====================
 var obj = {};
-$.extend(obj, pubsub);
+$.extend(obj, pubsub);</p>
 
-obj
+<p>obj
   .on({
-    'hello': function (e, data) {
-      //=&gt; 'how are you today?'
+    ‘hello’: function (e, data) {
+      //=&gt; ‘how are you today?’
       console.log(data);
     },
-    'bye': function (e, data) {
-      //=&gt; 'good night!'
+    ‘bye’: function (e, data) {
+      //=&gt; ‘good night!’
       console.log(data);
     }
   })
-  .emit('hello', 'how are you today?')
-  .emit('bye', 'good night!');
+  .emit(‘hello’, ‘how are you today?’)
+  .emit(‘bye’, ‘good night!’);</p>
 
-// =====================
+<p>// =====================
 // 实例化对象添加自定义事件
-// =====================
+// =====================</p>
 
-// 构造函数
-var Foo = function () {};
+<p>// 构造函数
+var Foo = function () {};</p>
 
-// 将事件方法添加到构造函数的原型上
-$.extend(Foo.prototype, pubsub);
+<p>// 将事件方法添加到构造函数的原型上
+$.extend(Foo.prototype, pubsub);</p>
 
-// 实例化对象
-var foo = new Foo();
+<p>// 实例化对象
+var foo = new Foo();</p>
 
-foo.on('howdy.with.namespace', function (e, data) {
-  //=&gt; { spam: "one", eggs: "two" }
+<p>foo.on(‘howdy.with.namespace’, function (e, data) {
+  //=&gt; { spam: “one”, eggs: “two” }
   console.log(data);
-});
+});</p>
 
-foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
-</code></pre>
+<p>foo.emit(‘howdy’, { ‘spam’: ‘one’, ‘eggs’: ‘two’ });
+```</p>
 
 <p>通过以上代码我们可以看到，编写区区几行代码，我们就实现了适配一般对象的复杂易用的事件模型，它具有jQuery事件模型一切强大的功能。另外，我们注意到改造后的事件模型和Backbone实现的事件模型特别相似。另外，如果采用ES6环境，上述代码还可继续简化。</p>
 
-<pre><code class="js">var pubsub = {
+<p><code>js
+var pubsub = {
   _$: function () {
     return this.__$ || (this.__$ = $(this));
   },
@@ -136,9 +138,10 @@ foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
     return this._$().trigger(events, [data])[0];
   }
 };
-</code></pre>
+</code></p>
 
 <p>END</p>
+
 ]]></content>
   </entry>
   

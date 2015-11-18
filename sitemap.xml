@@ -2,86 +2,90 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://myunlessor.me/blog/2013/05/19/file-batch-stuff/</loc>
-        <lastmod>2013-06-05T19:05:37+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/</loc>
-        <lastmod>2013-08-30T23:54:18+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://myunlessor.me/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/
         </loc>
-        <lastmod>2013-06-05T00:05:35+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/06/04/import-this-and-caesar-cipher/</loc>
-        <lastmod>2013-06-05T00:10:48+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop/</loc>
-        <lastmod>2013-08-09T01:30:19+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/08/15/alibaba-ued-quiz3-strategy/</loc>
-        <lastmod>2013-08-18T20:44:59+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/12/09/closure-caveat-it-got-me/</loc>
-        <lastmod>2013-12-09T21:57:28+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/12/14/embrace-sublime-text/</loc>
-        <lastmod>2013-12-14T18:24:20+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/12/15/embrace-sublime-text-snippets/</loc>
-        <lastmod>2013-12-14T18:25:49+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/12/16/pragmatic-sublime-text-snippets/</loc>
-        <lastmod>2013-12-16T22:01:02+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2013/12/17/touch-sublime-text-plugins/</loc>
-        <lastmod>2013-12-16T22:19:22+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2014/03/01/venture-into-es6/</loc>
-        <lastmod>2014-03-01T19:45:00+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2014/06/18/ponder-with-underscore-and-lodash/</loc>
-        <lastmod>2014-06-19T22:28:07+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>
             http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/
         </loc>
-        <lastmod>2014-06-19T22:59:03+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/2014/08/19/simple-custom-events-using-jquery/</loc>
-        <lastmod>2014-08-19T23:18:11+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://myunlessor.me/blog/2015/11/18/scoped-reality/</loc>
+        <lastmod>2015-11-19T00:02:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/404.html</loc>
-        <lastmod>2013-05-20T20:16:54+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/about.html</loc>
-        <lastmod>2014-06-17T00:22:06+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/blog/archives/</loc>
-        <lastmod>2014-08-19T23:18:11+08:00</lastmod>
+        <lastmod>2015-11-19T00:02:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/</loc>
-        <lastmod>2014-08-19T23:18:11+08:00</lastmod>
+        <lastmod>2015-11-19T00:02:11+08:00</lastmod>
     </url>
     <url>
         <loc>http://myunlessor.me/robots.txt</loc>
-        <lastmod>2013-05-19T09:13:50+08:00</lastmod>
+        <lastmod>2015-11-18T23:40:14+08:00</lastmod>
     </url>
 </urlset>

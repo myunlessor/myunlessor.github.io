@@ -115,8 +115,7 @@
 
 <!-- more -->
 
-
-<h2>一、选区片段包裹</h2>
+<h2 id="section">一、选区片段包裹</h2>
 
 <p>现在前端开发环境少不了模板系统的使用，诣如<a href="https://github.com/janl/mustache.js">Mustache</a>、<a href="http://handlebarsjs.com/">Handlebars</a>、<a href="http://underscorejs.org/#template">Underscore</a>和<a href="http://lodash.com/docs#template">Lo-Dash</a>等。</p>
 
@@ -124,96 +123,90 @@
 
 <p>下面这个<code>snippet</code>我将它保存为<code>Packages/User/snippets/angle-delimiter.sublime-snippet</code>，你会注意到元素<code>snippet</code>中只包含<code>content</code>一个元素，在<code>content</code>中定义了两个跳转<code>编辑点(edit point)</code>，同时将环境变量<code>$SELECTION(文本选区)</code>作为<code>编辑点2($2)</code>的占位符。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;snippet&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;content&gt;</span><span class="cp">&lt;![CDATA[</span>
-</span><span class='line'><span class="cp">&lt;%$1 ${2:$SELECTION} %&gt;</span>
-</span><span class='line'><span class="cp">]]&gt;</span><span class="nt">&lt;/content&gt;</span>
-</span><span class='line'><span class="nt">&lt;/snippet&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;snippet&gt;</span>
+</span><span class="line">  <span class="nt">&lt;content&gt;</span><span class="cp">&lt;![CDATA[</span>
+</span><span class="line"><span class="cp">&lt;%$1 ${2:$SELECTION} %&gt;</span>
+</span><span class="line"><span class="cp">]]&gt;</span><span class="nt">&lt;/content&gt;</span>
+</span><span class="line"><span class="nt">&lt;/snippet&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>这样当我们选中文本(可以为空，单个或多个选区)后，触发该片段后就可以将选中文本包裹在<code>&lt;%</code>和<code>%&gt;</code>间，同时跳转到<code>编辑点1($1)</code>，可以选择性地添加<code>=</code>或<code>-</code>从而定义不同的<code>分隔符(delimiter)</code>。但是我并没有定义<code>tabTrigger</code>元素进行<code>tab</code>触发，原因是我们这里包含环境变量<code>$SELECTION(文本选区)</code>，使用<code>tabTrigger</code>无法达到片段包裹的目的，因此我们选择定义键盘快捷键来触发该片段，如下所示：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nt">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;super+k&quot;</span><span class="p">,</span> <span class="s2">&quot;super+5&quot;</span><span class="p">],</span>
-</span><span class='line'>  <span class="nt">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;insert_snippet&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Packages/User/snippets/angle-delimiter.sublime-snippet&quot;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="json"><span class="line"><span class="p">{</span>
+</span><span class="line">  <span class="nt">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;super+k&quot;</span><span class="p">,</span> <span class="s2">&quot;super+5&quot;</span><span class="p">],</span>
+</span><span class="line">  <span class="nt">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;insert_snippet&quot;</span><span class="p">,</span>
+</span><span class="line">  <span class="nt">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Packages/User/snippets/angle-delimiter.sublime-snippet&quot;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>将此段代码加入到<code>Packages/User/Default (OSX).sublime-keymap</code>后，然后选中你想包裹的文本，此时先后按下快捷键<code>cmd + k</code>、及<code>cmd + 5</code>后可以触发该片段。Cool!</p>
 
-<h2>二、正则匹配替换</h2>
+<h2 id="section-1">二、正则匹配替换</h2>
 
 <p>有时候我们进行页面重构的时候，需要使用占位图片进行临时布局。<a href="http://placekitten.com/">placekitten</a>提供了一个快速而简单的服务帮我们完成此目的。</p>
 
 <p>比如我们需要在页面某个位置放置一个宽200高300的图片，只需要添加如下标签代码即可，如下所示：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/200/300&quot;</span> <span class="na">width=</span><span class="s">&quot;200&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [200 x 300]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/200/300&quot;</span> <span class="na">width=</span><span class="s">&quot;200&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [200 x 300]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>然后<code>placekitten</code>会给我们返回一张<code>200 x 300</code>的猫咪图片，我们只要指定任意宽高就好了，so cutely it is!</p>
 
 <p>使用<code>Sublime Text Snippets</code>提供的正则区配替换特性，我们可以快速输出以上标签，使得图片占位更加称心如意。片段如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;snippet&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;content&gt;</span><span class="cp">&lt;![CDATA[</span>
-</span><span class='line'><span class="cp">&lt;img src=&quot;http://placekitten.com/${1:300/240}&quot;${2: width=&quot;${1/^\/?([^\/]+)\/?.*$/$1/}&quot; height=&quot;${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}&quot;} title=&quot;KITTEN: [${1/^\/?([^\/]+)\/?.*$/$1/} x ${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}]&quot; alt=&quot;&quot; /&gt;</span>
-</span><span class='line'><span class="cp">]]&gt;</span><span class="nt">&lt;/content&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;tabTrigger&gt;</span>kitten<span class="nt">&lt;/tabTrigger&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;scope&gt;</span>text.html<span class="nt">&lt;/scope&gt;</span>
-</span><span class='line'><span class="nt">&lt;/snippet&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;snippet&gt;</span>
+</span><span class="line">  <span class="nt">&lt;content&gt;</span><span class="cp">&lt;![CDATA[</span>
+</span><span class="line"><span class="cp">&lt;img src=&quot;http://placekitten.com/${1:300/240}&quot;${2: width=&quot;${1/^\/?([^\/]+)\/?.*$/$1/}&quot; height=&quot;${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}&quot;} title=&quot;KITTEN: [${1/^\/?([^\/]+)\/?.*$/$1/} x ${1/^([^\/]*?)\/?([^\/]+)\/?$/$2/}]&quot; alt=&quot;&quot; /&gt;</span>
+</span><span class="line"><span class="cp">]]&gt;</span><span class="nt">&lt;/content&gt;</span>
+</span><span class="line">  <span class="nt">&lt;tabTrigger&gt;</span>kitten<span class="nt">&lt;/tabTrigger&gt;</span>
+</span><span class="line">  <span class="nt">&lt;scope&gt;</span>text.html<span class="nt">&lt;/scope&gt;</span>
+</span><span class="line"><span class="nt">&lt;/snippet&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>将此片段保存到<code>Packages/User/snippets/placekitten.sublime-snippet</code>，然后在我们的html页面中敲入<code>kitten</code>后按<code>tab</code>键，输出标签如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/300/240&quot;</span> <span class="na">width=</span><span class="s">&quot;300&quot;</span> <span class="na">height=</span><span class="s">&quot;240&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [300 x 240]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/300/240&quot;</span> <span class="na">width=</span><span class="s">&quot;300&quot;</span> <span class="na">height=</span><span class="s">&quot;240&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [300 x 240]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>此时<code>300/240</code>处于高亮显示，这是我们的第一个编辑点，在这个编辑点我们可以随意更改宽高值，可以看到<code>width</code>、<code>height</code>及<code>title</code>三个标签属性值跟着变化。</p>
 
 <p>比如替换为<code>250</code>，标签显示为：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/250&quot;</span> <span class="na">width=</span><span class="s">&quot;250&quot;</span> <span class="na">height=</span><span class="s">&quot;250&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [250 x 250]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/250&quot;</span> <span class="na">width=</span><span class="s">&quot;250&quot;</span> <span class="na">height=</span><span class="s">&quot;250&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [250 x 250]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>替换为<code>400/300</code>，标签显示为：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/400/300&quot;</span> <span class="na">width=</span><span class="s">&quot;400&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [400 x 300]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;http://placekitten.com/400/300&quot;</span> <span class="na">width=</span><span class="s">&quot;400&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">title=</span><span class="s">&quot;KITTEN: [400 x 300]&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
+<p>如果我们不需要<code> width="xxx" height="xxx"</code>，这里按<code>tab</code>跳至第二个编辑点，按<code>delete</code>键即可删除，awesome!</p>
 
-<p>如果我们不需要<code>width="xxx" height="xxx"</code>，这里按<code>tab</code>跳至第二个编辑点，按<code>delete</code>键即可删除，awesome!</p>
 </div>
 
 
@@ -280,10 +273,14 @@
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (9)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (10)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/19/simple-custom-events-using-jquery/">使用jQuery实现简单的自定义事件功能</a>
@@ -371,7 +368,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 俞乐 -
+  Copyright &copy; 2015 - 俞乐 -
   <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

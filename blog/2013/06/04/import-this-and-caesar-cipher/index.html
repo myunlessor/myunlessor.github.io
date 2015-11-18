@@ -111,119 +111,118 @@
 
 <!-- more -->
 
-
 <p>要显示它很简单，在<code>python</code>的<code>REPL</code>（<code>Read-Eval-Print Loop</code>）中键入<code>import this</code>，可以看到如下字符串:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>The Zen of Python, by Tim Peters
-</span><span class='line'>
-</span><span class='line'>Beautiful is better than ugly.
-</span><span class='line'>Explicit is better than implicit.
-</span><span class='line'>Simple is better than complex.
-</span><span class='line'>Complex is better than complicated.
-</span><span class='line'>Flat is better than nested.
-</span><span class='line'>Sparse is better than dense.
-</span><span class='line'>Readability counts.
-</span><span class='line'>Special cases aren't special enough to break the rules.
-</span><span class='line'>Although practicality beats purity.
-</span><span class='line'>Errors should never pass silently.
-</span><span class='line'>Unless explicitly silenced.
-</span><span class='line'>In the face of ambiguity, refuse the temptation to guess.
-</span><span class='line'>There should be one-- and preferably only one --obvious way to do it.
-</span><span class='line'>Although that way may not be obvious at first unless you're Dutch.
-</span><span class='line'>Now is better than never.
-</span><span class='line'>Although never is often better than *right* now.
-</span><span class='line'>If the implementation is hard to explain, it's a bad idea.
-</span><span class='line'>If the implementation is easy to explain, it may be a good idea.
-</span><span class='line'>Namespaces are one honking great idea -- let's do more of those!</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">The Zen of Python, by Tim Peters
+</span><span class="line">
+</span><span class="line">Beautiful is better than ugly.
+</span><span class="line">Explicit is better than implicit.
+</span><span class="line">Simple is better than complex.
+</span><span class="line">Complex is better than complicated.
+</span><span class="line">Flat is better than nested.
+</span><span class="line">Sparse is better than dense.
+</span><span class="line">Readability counts.
+</span><span class="line">Special cases aren't special enough to break the rules.
+</span><span class="line">Although practicality beats purity.
+</span><span class="line">Errors should never pass silently.
+</span><span class="line">Unless explicitly silenced.
+</span><span class="line">In the face of ambiguity, refuse the temptation to guess.
+</span><span class="line">There should be one-- and preferably only one --obvious way to do it.
+</span><span class="line">Although that way may not be obvious at first unless you're Dutch.
+</span><span class="line">Now is better than never.
+</span><span class="line">Although never is often better than *right* now.
+</span><span class="line">If the implementation is hard to explain, it's a bad idea.
+</span><span class="line">If the implementation is easy to explain, it may be a good idea.
+</span><span class="line">Namespaces are one honking great idea -- let's do more of those!</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>我想，这个模块应该是<code>python</code>里最简单、也最特殊的模块罢！出于好奇，查看了下这个模块的源码，如下所示：</p>
 
-<figure class='code'><figcaption><span>python哲学 (this.py)</span> <a href='/downloads/code/this.py'>下载</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;Gur Mra bs Clguba, ol Gvz Crgref</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">Ornhgvshy vf orggre guna htyl.</span>
-</span><span class='line'><span class="s">Rkcyvpvg vf orggre guna vzcyvpvg.</span>
-</span><span class='line'><span class="s">Fvzcyr vf orggre guna pbzcyrk.</span>
-</span><span class='line'><span class="s">Pbzcyrk vf orggre guna pbzcyvpngrq.</span>
-</span><span class='line'><span class="s">Syng vf orggre guna arfgrq.</span>
-</span><span class='line'><span class="s">Fcnefr vf orggre guna qrafr.</span>
-</span><span class='line'><span class="s">Ernqnovyvgl pbhagf.</span>
-</span><span class='line'><span class="s">Fcrpvny pnfrf nera&#39;g fcrpvny rabhtu gb oernx gur ehyrf.</span>
-</span><span class='line'><span class="s">Nygubhtu cenpgvpnyvgl orngf chevgl.</span>
-</span><span class='line'><span class="s">Reebef fubhyq arire cnff fvyragyl.</span>
-</span><span class='line'><span class="s">Hayrff rkcyvpvgyl fvyraprq.</span>
-</span><span class='line'><span class="s">Va gur snpr bs nzovthvgl, ershfr gur grzcgngvba gb thrff.</span>
-</span><span class='line'><span class="s">Gurer fubhyq or bar-- naq cersrenoyl bayl bar --boivbhf jnl gb qb vg.</span>
-</span><span class='line'><span class="s">Nygubhtu gung jnl znl abg or boivbhf ng svefg hayrff lbh&#39;er Qhgpu.</span>
-</span><span class='line'><span class="s">Abj vf orggre guna arire.</span>
-</span><span class='line'><span class="s">Nygubhtu arire vf bsgra orggre guna *evtug* abj.</span>
-</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf uneq gb rkcynva, vg&#39;f n onq vqrn.</span>
-</span><span class='line'><span class="s">Vs gur vzcyrzragngvba vf rnfl gb rkcynva, vg znl or n tbbq vqrn.</span>
-</span><span class='line'><span class="s">Anzrfcnprf ner bar ubaxvat terng vqrn -- yrg&#39;f qb zber bs gubfr!&quot;&quot;&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span class='line'><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">97</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">d</span><span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">13</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>python哲学 (this.py)</span> <a href="/downloads/code/this.py">下载</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+</pre></td><td class="code"><pre><code class="py"><span class="line"><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;Gur Mra bs Clguba, ol Gvz Crgref</span>
+</span><span class="line">
+</span><span class="line"><span class="s">Ornhgvshy vf orggre guna htyl.</span>
+</span><span class="line"><span class="s">Rkcyvpvg vf orggre guna vzcyvpvg.</span>
+</span><span class="line"><span class="s">Fvzcyr vf orggre guna pbzcyrk.</span>
+</span><span class="line"><span class="s">Pbzcyrk vf orggre guna pbzcyvpngrq.</span>
+</span><span class="line"><span class="s">Syng vf orggre guna arfgrq.</span>
+</span><span class="line"><span class="s">Fcnefr vf orggre guna qrafr.</span>
+</span><span class="line"><span class="s">Ernqnovyvgl pbhagf.</span>
+</span><span class="line"><span class="s">Fcrpvny pnfrf nera&#39;g fcrpvny rabhtu gb oernx gur ehyrf.</span>
+</span><span class="line"><span class="s">Nygubhtu cenpgvpnyvgl orngf chevgl.</span>
+</span><span class="line"><span class="s">Reebef fubhyq arire cnff fvyragyl.</span>
+</span><span class="line"><span class="s">Hayrff rkcyvpvgyl fvyraprq.</span>
+</span><span class="line"><span class="s">Va gur snpr bs nzovthvgl, ershfr gur grzcgngvba gb thrff.</span>
+</span><span class="line"><span class="s">Gurer fubhyq or bar-- naq cersrenoyl bayl bar --boivbhf jnl gb qb vg.</span>
+</span><span class="line"><span class="s">Nygubhtu gung jnl znl abg or boivbhf ng svefg hayrff lbh&#39;er Qhgpu.</span>
+</span><span class="line"><span class="s">Abj vf orggre guna arire.</span>
+</span><span class="line"><span class="s">Nygubhtu arire vf bsgra orggre guna *evtug* abj.</span>
+</span><span class="line"><span class="s">Vs gur vzcyrzragngvba vf uneq gb rkcynva, vg&#39;f n onq vqrn.</span>
+</span><span class="line"><span class="s">Vs gur vzcyrzragngvba vf rnfl gb rkcynva, vg znl or n tbbq vqrn.</span>
+</span><span class="line"><span class="s">Anzrfcnprf ner bar ubaxvat terng vqrn -- yrg&#39;f qb zber bs gubfr!&quot;&quot;&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class="line"><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">97</span><span class="p">):</span>
+</span><span class="line">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">):</span>
+</span><span class="line">        <span class="n">d</span><span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">13</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>呈现在眼前的不是一段平淡无奇的print语句，而采用了恺撒密码算法（<code>Caesar cipher</code>）。以下内容摘自维基百科，详见<a href="http://goo.gl/n9Ldz">凯撒密码</a>:</p>
 
-<blockquote><p>在密码学中,恺撒密码(或称恺撒加密、恺撒变换、变换加密)是一种最简单且最广为人知的加密技术。它是一种替换加密的技 术,明文中的所有字母都在字母表上向后(或向前)按照一个固定数目进行偏移后被替换成密文。例如,当偏移量是3的时候,所有的字母A将被替换成 D,B变成E,以此类推。这个加密方法是以恺撒的名字命名的,当年恺撒曾用此方法与其将军们进行联系。<br>
-恺撒密码通常被作为其他更复杂的加密方法中的一个步骤,例如维吉尼尔密码。恺撒密码还在现代的 ROT13系统中被应用。但是 和所有的利用字母表进行替换的加密技术一样,恺撒密码非常容易被破解,而且在实际应用中也无法保证通信安全。</p></blockquote>
+<blockquote>
+  <p>在密码学中,恺撒密码(或称恺撒加密、恺撒变换、变换加密)是一种最简单且最广为人知的加密技术。它是一种替换加密的技 术,明文中的所有字母都在字母表上向后(或向前)按照一个固定数目进行偏移后被替换成密文。例如,当偏移量是3的时候,所有的字母A将被替换成 D,B变成E,以此类推。这个加密方法是以恺撒的名字命名的,当年恺撒曾用此方法与其将军们进行联系。<br />
+恺撒密码通常被作为其他更复杂的加密方法中的一个步骤,例如维吉尼尔密码。恺撒密码还在现代的 ROT13系统中被应用。但是 和所有的利用字母表进行替换的加密技术一样,恺撒密码非常容易被破解,而且在实际应用中也无法保证通信安全。</p>
+</blockquote>
 
 <p>可以看到，恺撒密码的原理很简单，对每个字母按照同一偏移量映射为别的字母，这样就完成了简单的加密。</p>
 
@@ -231,114 +230,111 @@
 
 <p><code>this.py</code>中用到的取余运算符<code>%</code>有一个很值得学习的技巧，比如我们想让一个变量在某个上限和下限范围内递增或递减，我们一般会写这样的代码：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">lower</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">upper</span>   <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// 单位递增</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">next</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&lt;</span> <span class="nx">upper</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">current</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// 单位递减</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">prev</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&gt;</span> <span class="nx">lower</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">=</span> <span class="nx">upper</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">current</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 15</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 16</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 17</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 10</span>
-</span><span class='line'><span class="p">}());</span>
-</span></code></pre></td></tr></table></div></figure>
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">lower</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">upper</span>   <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 单位递增</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">next</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&lt;</span> <span class="nx">upper</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">current</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 单位递减</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">prev</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&gt;</span> <span class="nx">lower</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">=</span> <span class="nx">upper</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">current</span><span class="p">;</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 15</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 16</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 17</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// current = 10</span>
+</span><span class="line"><span class="p">}());</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>利用取余运算符<code>%</code>，我们可以将如上代码简化为如下（注意此时没有了<code>if</code>条件语句）:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">lower</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">upper</span>   <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">dist</span>    <span class="o">=</span> <span class="nx">upper</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">current</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">next</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span> <span class="o">+</span> <span class="p">(</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="nx">dist</span><span class="p">)</span> <span class="o">%</span> <span class="nx">dist</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">prev</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span> <span class="o">+</span> <span class="p">(</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="nx">dist</span><span class="p">)</span> <span class="o">%</span> <span class="nx">dist</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 13</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 12</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 11</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 10</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 17</span>
-</span><span class='line'><span class="p">}());</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">lower</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">upper</span>   <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">dist</span>    <span class="o">=</span> <span class="nx">upper</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class="line">      <span class="nx">current</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">function</span> <span class="nx">next</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="p">(</span><span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span> <span class="o">+</span> <span class="p">(</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="nx">dist</span><span class="p">)</span> <span class="o">%</span> <span class="nx">dist</span><span class="p">);</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">function</span> <span class="nx">prev</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="p">(</span><span class="nx">current</span> <span class="o">=</span> <span class="nx">lower</span> <span class="o">+</span> <span class="p">(</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">lower</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="nx">dist</span><span class="p">)</span> <span class="o">%</span> <span class="nx">dist</span><span class="p">);</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 13</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 12</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 11</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 10</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">prev</span><span class="p">());</span> <span class="c1">// current = 17</span>
+</span><span class="line"><span class="p">}());</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 </div>
 
@@ -406,10 +402,14 @@
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (9)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (10)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/08/19/simple-custom-events-using-jquery/">使用jQuery实现简单的自定义事件功能</a>
@@ -497,7 +497,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 俞乐 -
+  Copyright &copy; 2015 - 俞乐 -
   <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

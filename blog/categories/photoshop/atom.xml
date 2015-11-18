@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: photoshop | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/photoshop/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-08-19T23:19:13+08:00</updated>
+  <updated>2015-11-19T00:02:53+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -18,16 +18,15 @@
     <link href="http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop/"/>
     <updated>2013-08-08T22:52:00+08:00</updated>
     <id>http://myunlessor.me/blog/2013/08/08/playing-zhao-cha-with-photoshop</id>
-    <content type="html"><![CDATA[<h2>引子</h2>
+    <content type="html"><![CDATA[<h2 id="section">引子</h2>
 
 <p>相信不少童鞋都玩过QQ找茬游戏，游戏规则很简单：在2～4人的房间里，随机几组图片，每组图片分2张，找出每组图片中5处不同的地方，在规定的时间内谁找的茬多算谁赢。玩这个游戏的第一感觉就是各种眼花缭乱，我接受自己没有火眼金睛这一事实，在每组图规定的时间能平均能找出3个茬算是幸运之至了（我运气一向很差，无论做什么）。这样下来战绩总是令人沮丧，胜率老是上不去。尽管这些都是虚的，但心里多有不甘，于是就想到了一种投机取巧的办法——让Photoshop来充当自己的眼睛，自己则当指挥^_^。</p>
 
 <!-- more -->
 
-
 <p>其实最初用这方法玩找茬游戏还是三年前的事情了，只是近两天不知怎的突然心血来潮，有心将它记录下来留作纪念已矣。</p>
 
-<h2>正文</h2>
+<h2 id="section-1">正文</h2>
 
 <p>原理呢其实挺简单，找茬嘛就是找两张图的差异，这可是Photoshop最擅长做的事情啦（这也是我想到用它的原因）。在游戏过程中用Photoshop找茬需要解决的关键问题是如何做到迅速地让茬茬尽收眼底，显然Photoshop的Action最能胜任此类事情了。</p>
 
@@ -54,28 +53,25 @@
 <p><img class="left" src="/images/muo_img/zhaocha/zhaocha_action.png"></p>
 
 <ul>
-<li>粘贴：将通过<code>Alt + Print Screen</code>快捷键截取的游戏窗口粘贴到打开的<code>x.png</code>图片中作为图层</li>
-<li>图层对位：移动图层的位置使左张茬图完全显示在画布中</li>
-<li>复制图层：<code>Ctrl + J</code>复制图层到新的图层</li>
-<li>全选：<code>Ctrl + A</code>选区选中整个画布</li>
-<li>右对齐新复制的图层</li>
-<li>取消选择：<code>Ctrl + D</code>取消选区</li>
-<li>设置新复制图层的叠加模式为<code>Difference</code></li>
-<li>移位新复制图层使右张茬图与左张茬图重叠得到Solution所示效果</li>
+  <li>粘贴：将通过<code>Alt + Print Screen</code>快捷键截取的游戏窗口粘贴到打开的<code>x.png</code>图片中作为图层</li>
+  <li>图层对位：移动图层的位置使左张茬图完全显示在画布中</li>
+  <li>复制图层：<code>Ctrl + J</code>复制图层到新的图层</li>
+  <li>全选：<code>Ctrl + A</code>选区选中整个画布</li>
+  <li>右对齐新复制的图层</li>
+  <li>取消选择：<code>Ctrl + D</code>取消选区</li>
+  <li>设置新复制图层的叠加模式为<code>Difference</code></li>
+  <li>移位新复制图层使右张茬图与左张茬图重叠得到Solution所示效果</li>
 </ul>
 
-
-<p style="clear:both"></p>
-
+<p style="clear:both" />
 
 <p>动作准备好后，玩游戏就是机械运动了：</p>
 
 <ul>
-<li><code>Alt + Print Screen</code> 截取游戏窗口</li>
-<li>切换到Photoshop执行脚本</li>
-<li>点点点点点、然后换图继续执行第一步</li>
+  <li><code>Alt + Print Screen</code> 截取游戏窗口</li>
+  <li>切换到Photoshop执行脚本</li>
+  <li>点点点点点、然后换图继续执行第一步</li>
 </ul>
-
 
 <p>当然为了方便可以为动作设置快捷键。</p>
 
@@ -84,35 +80,32 @@
 <p><img src="/images/muo_img/zhaocha/script_events_manager_panel.png"></p>
 
 <ul>
-<li>勾选<code>Enable Events to Run Scripts/Actions</code></li>
-<li><code>Photoshop Event</code>下拉框选择<code>Add an Event…</code>添加自定义事件</li>
-<li>在打开的<code>Add an Event</code>弹出框中
-
-<ul>
-<li><code>Event Name</code>文本框填入<code>Revert</code></li>
-<li><code>Descriptive Label</code>文本框填入<code>Rvrt</code></li>
-<li>点击<code>OK</code>按钮完成添加</li>
+  <li>勾选<code>Enable Events to Run Scripts/Actions</code></li>
+  <li><code>Photoshop Event</code>下拉框选择<code>Add an Event…</code>添加自定义事件</li>
+  <li>在打开的<code>Add an Event</code>弹出框中
+    <ul>
+      <li><code>Event Name</code>文本框填入<code>Revert</code></li>
+      <li><code>Descriptive Label</code>文本框填入<code>Rvrt</code></li>
+      <li>点击<code>OK</code>按钮完成添加</li>
+    </ul>
+  </li>
+  <li><code>Photoshop Event</code>下拉框选择刚刚添加的<code>Event</code>事件</li>
+  <li>选中单选框<code>Action</code>，然后选择之前刚录制的动作</li>
 </ul>
-</li>
-<li><code>Photoshop Event</code>下拉框选择刚刚添加的<code>Event</code>事件</li>
-<li>选中单选框<code>Action</code>，然后选择之前刚录制的动作</li>
-</ul>
-
 
 <p>这时候<code>Alt + Print Screen</code> + <code>F12</code>的<code>“REPL”</code>完成，一切妥妥的、一切都变得机械！</p>
 
-<h2>尾声</h2>
+<h2 id="section-2">尾声</h2>
 
 <p>当我利用这投机取巧的办法再次投入战斗时，真是屡试不爽、所向披靡。一相比较，游戏里的辅助道具实在弱爆了。我并不认为我这种玩法叫开挂，作弊一说也算勉强的了，晓之以理的讲法叫扬长避短、不亦乐乎。尽管缺失了些游戏的趣味性，但心理上得到的满足感却更强，这就够了。游戏说白了就是图个开心，每个人从中汲取开心的因子不一罢了。同时这也算是我用Photoshop比较有趣味的一种玩法吧！</p>
 
 <p>P.S.：行文着实仓促!</p>
 
-<h2>参考</h2>
+<h2 id="section-3">参考</h2>
 
 <ol>
-<li><a href="http://tinyurl.com/kwmfjj9">Photoshop Programming Guide</a></li>
+  <li><a href="http://tinyurl.com/kwmfjj9">Photoshop Programming Guide</a></li>
 </ol>
-
 ]]></content>
   </entry>
   
@@ -121,44 +114,43 @@
     <link href="http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/"/>
     <updated>2013-05-20T20:31:00+08:00</updated>
     <id>http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts</id>
-    <content type="html"><![CDATA[<h2>引子</h2>
+    <content type="html"><![CDATA[<h2 id="section">引子</h2>
 
 <p>前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。</p>
 
 <!-- more -->
 
-
-<h2>思路一(动作)</h2>
+<h2 id="section-1">思路一(动作)</h2>
 
 <p>我们切图一般都在<code>photoshop</code>中完成。以往我遇到这种大量的重复性工作时，我绝对不会坐以待毙，我会想方设法，不达目的绝不罢休。通常面对这种问题时，我首先想到的就是生成一个<code>action</code>(动作)，然后利用它批量完成。</p>
 
 <p>该<code>action</code>(动作)的大致思路是将各宫格图片分散到不同的图层中，然后便可以通过菜单命令<code>File | Scripts | Export Layers to Files…</code>将图层一一导出为文件，具体如下：</p>
 
 <ul>
-<li>计算一张图片的三等分宽高，生成并保存选区</li>
-<li>将选区定位在图片左上角，然后通过菜单命令<code>Layer | New | Layer via Cut(Copy)</code>将该区域隔离到新的图层</li>
-<li>重新载入选区，移位选区至新的位置，执行第二步同样命令</li>
-<li>重复执行第三步，直到图片九等分分散在不同图层</li>
+  <li>计算一张图片的三等分宽高，生成并保存选区</li>
+  <li>将选区定位在图片左上角，然后通过菜单命令<code>Layer | New | Layer via Cut(Copy)</code>将该区域隔离到新的图层</li>
+  <li>重新载入选区，移位选区至新的位置，执行第二步同样命令</li>
+  <li>重复执行第三步，直到图片九等分分散在不同图层</li>
 </ul>
-
 
 <p>但是，生成这样的动作不仅麻烦，而且也不甚高效，原因如下：</p>
 
 <ul>
-<li>需要为九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)不同规格生成不同的动作</li>
-<li>其他原因忘了~^~…</li>
+  <li>需要为九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)不同规格生成不同的动作</li>
+  <li>其他原因忘了~^~…</li>
 </ul>
-
 
 <p>于是这种思路只成为了一种念想，一闪即过。</p>
 
-<h2>思路二(切片工具)</h2>
+<h2 id="section-2">思路二(切片工具)</h2>
 
 <p>然后有考虑利用<code>Divide Slice…</code>(划分切图)及<code>Slices from Guides</code>(辅助线自动生成切片)功能——一种传统古老的切图方式。然后通过菜单命令<code>File | Save for Web…</code>将各切片导出为图片。这种方式可行是可行，但事实是提供的图片不是很理想，宫格中有1个像素的透明<code>gutter</code>(间隙)。如果不考虑<code>gutter</code>(间隙)的话，九宫格切图只需四条均分辅助线，否则需要八条，这样就会导出很多垃圾图片——1像素宽或(和)1像素高的图。这样效果不是很理想(自许准理想主义者)，于是这种方法也不了了之了。</p>
 
-<blockquote><p>事实是，这种方法确实可行，考虑四条均分辅助线生成切片，最后可以生成个<code>action</code>(动作)对这些图片做最后的<code>sanitization</code>(“消毒处理”)，傻眼了当时…</p></blockquote>
+<blockquote>
+  <p>事实是，这种方法确实可行，考虑四条均分辅助线生成切片，最后可以生成个<code>action</code>(动作)对这些图片做最后的<code>sanitization</code>(“消毒处理”)，傻眼了当时…</p>
+</blockquote>
 
-<h2>思路三(脚本)</h2>
+<h2 id="section-3">思路三(脚本)</h2>
 
 <p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^-^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
 
@@ -289,13 +281,12 @@
 r
 如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
 
-<h2>参考书目</h2>
+<h2 id="section-4">参考书目</h2>
 
 <ol>
-<li><a href="http://goo.gl/IFQav">Photoshop CS6 Scripting Guide</a></li>
-<li><a href="http://goo.gl/ukIhf">Photoshop CS6 JavaScript Ref</a></li>
+  <li><a href="http://goo.gl/IFQav">Photoshop CS6 Scripting Guide</a></li>
+  <li><a href="http://goo.gl/ukIhf">Photoshop CS6 JavaScript Ref</a></li>
 </ol>
-
 ]]></content>
   </entry>
   

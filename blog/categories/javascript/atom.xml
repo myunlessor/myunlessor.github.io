@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2014-08-19T23:19:13+08:00</updated>
+  <updated>2015-11-19T00:02:53+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,109 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Scoped Reality]]></title>
+    <link href="http://myunlessor.me/blog/2015/11/18/scoped-reality/"/>
+    <updated>2015-11-18T21:32:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2015/11/18/scoped-reality</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>有人叫她“熟食铺子”，因为只有熟食店会把那许多颜色暖热的肉公开陈列；
+又有人叫她“真理”，因为据说“真理是赤裸裸的”；
+而鲍小姐并未一丝不挂，所以他们修正为“局部的真理”。
+　　　　　　　　　　　　　　　　　　　　　　　　　《围城》 — 钱钟书</p>
+</blockquote>
+
+<!-- more -->
+
+<p>```javascript
+/**
+ * Execute javascript code within specific scope
+ * @param  {Function|String} fn scoped function or expression
+ * @param  {Object} imports     An object defines required local variables
+ * @return {Function}           A function that can be invoked to run code in specific scope
+ <em>/
+function scopedRunner(fn, imports) {
+  var rfunc = /^function\s+(?:[^(]</em>)(([^)]<em>))\s</em>{([^]*)}$/;
+  var found = String(fn).match(rfunc) || [,,’return ‘ + fn];
+  var args = found[1] || ‘’;
+  var stmt = found[2] || ‘’;</p>
+
+<p>var body = Object.keys(imports || {}).reduce(function (ret, key, idx) {
+    return ret + (idx ? ‘, ‘ : ‘var ‘) + key + ‘ = <strong>locals</strong>[”’ + key + ‘”]’;
+  }, ‘’) + ‘; return function (‘ + args + ‘) {‘ + stmt + ‘};’;</p>
+
+<p>return Function(‘<strong>locals</strong>’, body).call(null, imports);
+}
+```</p>
+
+<p>The following are some examples.</p>
+
+<p><code>javascript
+// e.g 1
+void function () {
+   scopedRunner(
+     function (m, n) {
+       var result = (x + y) + (m + n);
+       console.log('The meaning of life is:', result);  //=&gt; 42
+     },
+     { x: 10, y: 1 }
+   ).call(null, 30, 1);
+}();
+</code></p>
+
+<p>```javascript
+// e.g 2
+void function () {
+  var result = scopedRunner(
+    ‘times(a, b)’,
+    { a: 6, b: 7, times: (x, y) =&gt; x * y }
+  )();</p>
+
+<p>console.log(‘The meaning of life is:’, result);      //=&gt; 42
+}();
+```</p>
+
+<p>```javascript
+// e.g 3
+Object.prototype.__eval = function (expr) { return scopedRunner(expr, this)(); };</p>
+
+<p>void function () {
+  var obj = { a: 6, b: 7, times: (x, y) =&gt; x * y };
+  var result = obj.__eval(‘times(a, b)’);</p>
+
+<p>console.log(‘The meaning of life is:’, result);      //=&gt; 42
+}();
+```</p>
+
+<p>```javascript
+// e.g 4
+var take = (scope =&gt; scopedRunner(scope.eval, scope.with)());</p>
+
+<p>void function () {
+  var a = 6, b = 7, times = (a, b) =&gt; a * b;</p>
+
+<p>// take result out from evaluated value within specific scope
+  var result = take({
+    with: { a, b, times },
+    eval: ‘times(a, b)’
+  });</p>
+
+<p>console.log(‘The meaning of life is:’, result);      //=&gt; 42
+}();
+```</p>
+
+<p>```javascript
+// e.g 5
+var invoke = scopedRunner((fn, …args) =&gt; fn.apply(null, args))();</p>
+
+<p>void function () {
+  var result = invoke((a, b) =&gt; a + b, 6, 7);
+  console.log(‘The meaning of life is:’, result);      //=&gt; 13
+}();
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用jQuery实现简单的自定义事件功能]]></title>
@@ -22,104 +125,106 @@
 
 <!-- more -->
 
-
 <p>既然jQuery实现有事件模型，为什么我们还要另外再整一套呢？jQuery实现的事件方法(像<code>on、off、trigger</code>等)都是绑定在jQuery包装集对象上的，如果我们想为普通的字面对象或通过构造函数实例化的对象添加事件，显然jQuery提供的那套事件模型不能直接拿来用。如果我们细微地思考下就知道，对jQuery的事件模型稍加包装可以直接应用到普通对象上——jQuery包装集可以包装任意对象，包括字面对象及实例化对象等。</p>
 
 <p>以下是使用jQuery实现的<code>发布/订阅(publish/subscribe)</code>模式。</p>
 
-<h2>全局静态事件实现</h2>
+<h2 id="section">全局静态事件实现</h2>
 
-<pre><code class="js">!(function ($) {
-  var o = $({});
+<p>```js
+!(function ($) {
+  var o = $({});</p>
 
-  $.subscribe = function () {
+<p>$.subscribe = function () {
     o.on.apply(o, arguments);
-  };
+  };</p>
 
-  $.unsubscribe = function () {
+<p>$.unsubscribe = function () {
     o.off.apply(o, arguments);
-  };
+  };</p>
 
-  $.publish = function () {
+<p>$.publish = function () {
     o.trigger.apply(o, arguments);
   };
-})(jQuery);
+})(jQuery);</p>
 
-// 使用
-$.subscribe('howdy', function (e, data) {
-  //=&gt; ["one", "two"]
+<p>// 使用
+$.subscribe(‘howdy’, function (e, data) {
+  //=&gt; [“one”, “two”]
   console.log(data);
-});
+});</p>
 
-$.publish('howdy', [['one', 'two']]);
-</code></pre>
+<p>$.publish(‘howdy’, [[‘one’, ‘two’]]);
+```</p>
 
-<h2>适配一般对象的自定义事件实现</h2>
+<h2 id="section-1">适配一般对象的自定义事件实现</h2>
 
-<pre><code class="js">var pubsub = {
-  _$: function () {
-    return this.__$ || (this.__$ = $(this));
+<p>```js
+var pubsub = {
+  <em>$: function () {
+    return this.<strong>$ || (this.</strong>$ = $(this));
   },
   on: function () {
-    return this._$().on.apply(this._$(), arguments)[0];
+    return this.</em>$().on.apply(this.<em>$(), arguments)[0];
   },
   one: function () {
-    return this._$().one.apply(this._$(), arguments)[0];
+    return this.</em>$().one.apply(this.<em>$(), arguments)[0];
   },
   off: function () {
-    return this._$().off.apply(this._$(), arguments)[0];
+    return this.</em>$().off.apply(this.<em>$(), arguments)[0];
   },
   emit: function (events, data) {
-    return this._$().trigger(events, [data])[0];
+    return this.</em>$().trigger(events, [data])[0];
   }
-};
+};</p>
 
-// 使用
+<p>// 使用</p>
 
-// =====================
+<p>// =====================
 // 字面对象添加自定义事件
 // =====================
 var obj = {};
-$.extend(obj, pubsub);
+$.extend(obj, pubsub);</p>
 
-obj
+<p>obj
   .on({
-    'hello': function (e, data) {
-      //=&gt; 'how are you today?'
+    ‘hello’: function (e, data) {
+      //=&gt; ‘how are you today?’
       console.log(data);
     },
-    'bye': function (e, data) {
-      //=&gt; 'good night!'
+    ‘bye’: function (e, data) {
+      //=&gt; ‘good night!’
       console.log(data);
     }
   })
-  .emit('hello', 'how are you today?')
-  .emit('bye', 'good night!');
+  .emit(‘hello’, ‘how are you today?’)
+  .emit(‘bye’, ‘good night!’);</p>
 
-// =====================
+<p>// =====================
 // 实例化对象添加自定义事件
-// =====================
+// =====================</p>
 
-// 构造函数
-var Foo = function () {};
+<p>// 构造函数
+var Foo = function () {};</p>
 
-// 将事件方法添加到构造函数的原型上
-$.extend(Foo.prototype, pubsub);
+<p>// 将事件方法添加到构造函数的原型上
+$.extend(Foo.prototype, pubsub);</p>
 
-// 实例化对象
-var foo = new Foo();
+<p>// 实例化对象
+var foo = new Foo();</p>
 
-foo.on('howdy.with.namespace', function (e, data) {
-  //=&gt; { spam: "one", eggs: "two" }
+<p>foo.on(‘howdy.with.namespace’, function (e, data) {
+  //=&gt; { spam: “one”, eggs: “two” }
   console.log(data);
-});
+});</p>
 
-foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
-</code></pre>
+<p>foo.emit(‘howdy’, { ‘spam’: ‘one’, ‘eggs’: ‘two’ });
+```</p>
 
 <p>通过以上代码我们可以看到，编写区区几行代码，我们就实现了适配一般对象的复杂易用的事件模型，它具有jQuery事件模型一切强大的功能。另外，我们注意到改造后的事件模型和Backbone实现的事件模型特别相似。另外，如果采用ES6环境，上述代码还可继续简化。</p>
 
-<pre><code class="js">var pubsub = {
+<p><code>js
+var pubsub = {
   _$: function () {
     return this.__$ || (this.__$ = $(this));
   },
@@ -136,9 +241,10 @@ foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
     return this._$().trigger(events, [data])[0];
   }
 };
-</code></pre>
+</code></p>
 
 <p>END</p>
+
 ]]></content>
   </entry>
   
@@ -150,10 +256,9 @@ foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
     <content type="html"><![CDATA[<p>列表数据量过多时，常见有以下两种呈现方式：</p>
 
 <ul>
-<li>将数据列表分页呈现</li>
-<li>采用瀑布流形式加载数据</li>
+  <li>将数据列表分页呈现</li>
+  <li>采用瀑布流形式加载数据</li>
 </ul>
-
 
 <p>本文单讲前者，即以分页方式呈现时分页折叠逻辑实现。</p>
 
@@ -161,91 +266,95 @@ foo.emit('howdy', { 'spam': 'one', 'eggs': 'two' });
 
 <!-- more -->
 
-
-<h2>思考过程</h2>
+<h2 id="section">思考过程</h2>
 
 <p>假设我们的数据有15页，如果不考虑分页折叠逻辑的话，我们分页显示大概像这样：</p>
 
-<pre><code class="js">//=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+<p><code>js
+//=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 _.range(1, 15 + 1)
-</code></pre>
+</code>
+我们可以对以上这个数组遍历渲染为标签。然而我们的页面横向空间有限，分页过多时，我们不希望将每一页都显示为标签。我们需要将跟当前页不太相干的页号折叠起来，不管数据有多少页，只显示固定可视页就好。比如，当前页为第7页，且最多显示9个槽位，我们希望显示成这样：</p>
 
-<p>我们可以对以上这个数组遍历渲染为标签。然而我们的页面横向空间有限，分页过多时，我们不希望将每一页都显示为标签。我们需要将跟当前页不太相干的页号折叠起来，不管数据有多少页，只显示固定可视页就好。比如，当前页为第7页，且最多显示9个槽位，我们希望显示成这样：</p>
-
-<pre><code class="js">[1, '…', 5, 6, '7', 8, 9, '…', 15]
-</code></pre>
+<p><code>js
+[1, '…', 5, 6, '7', 8, 9, '…', 15]
+</code></p>
 
 <p>我们显示第一页、最末页以及与第7页相邻的页，其他页做折叠处理，即上述数组中的<code>…</code>，并且当前页显示为数字字符串以区分非当前页。</p>
 
 <p>如果当前页是第2页呢？</p>
 
-<pre><code class="js">[1, '2', 3, 4, 5, 6, 7, '…', 15]
-</code></pre>
+<p><code>js
+[1, '2', 3, 4, 5, 6, 7, '…', 15]
+</code></p>
 
 <p>如果当前页是第12页呢？</p>
 
-<pre><code class="js">[1, '…', 9, 10, 11, '12', 13, 14, 15]
-</code></pre>
+<p><code>js
+[1, '…', 9, 10, 11, '12', 13, 14, 15]
+</code></p>
 
 <p>我们将分页折叠呈现用javascript的数组直接表示出来了，一切都很直观。既然这样，何不写个方法进行数组变换呢？我把这样的一个方法叫做<code>foldpages</code>：</p>
 
-<pre><code class="js">/**
+<p>```js
+/**
  * [foldpages description]
  * @param  {[Array]}  pages    [未作变换的分页数组]
  * @param  {[Number]} current  [当前显示页]
  * @param  {[Number]} viewsize [分页显示槽位个数]
  * @return {[Array]}           [分页折叠后的数组]
  */
-function foldpages(pages, current, viewsize) {}
+function foldpages(pages, current, viewsize) {}</p>
 
-var pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-var viewsize = 9;
+<p>var pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+var viewsize = 9;</p>
 
-//=&gt; expected result: [1, '…', 5, 6, 7, 8, 9, '…', 15]
-foldpages(pages, 7, viewsize);
+<p>//=&gt; expected result: [1, ‘…’, 5, 6, 7, 8, 9, ‘…’, 15]
+foldpages(pages, 7, viewsize);</p>
 
-//=&gt; expected result: [1, 2, 3, 4, 5, 6, 7, '…', 15]
-foldpages(pages, 2, viewsize);
+<p>//=&gt; expected result: [1, 2, 3, 4, 5, 6, 7, ‘…’, 15]
+foldpages(pages, 2, viewsize);</p>
 
-//=&gt; expected result: [1, '…', 9, 10, 11, 12, 13, 14, 15]
+<p>//=&gt; expected result: [1, ‘…’, 9, 10, 11, 12, 13, 14, 15]
 foldpages(pages, 12, viewsize);
-</code></pre>
+```</p>
 
 <p>剩下的就是实现了！</p>
 
-<pre><code class="js">var foldpages = function (pages, current, viewsize) {
+<p>```js
+var foldpages = function (pages, current, viewsize) {
   var ret  = [].concat(pages),
       min  = 1,
       max  = ret.length,
-      dots = '…',
-      remain;
+      dots = ‘…’,
+      remain;</p>
 
-  current = Math.max(min, Math.min(current, max));
+<p>current = Math.max(min, Math.min(current, max));</p>
 
-  if (max &lt;= viewsize) {
-    ret[current - 1] = '' + ret[current - 1];
+<p>if (max &lt;= viewsize) {
+    ret[current - 1] = ‘’ + ret[current - 1];
     return ret;
-  }
+  }</p>
 
-  viewsize = Math.max(5, viewsize || 7);
-  ret      = ['' + current];
-  remain   = viewsize - 1;
+<p>viewsize = Math.max(5, viewsize || 7);
+  ret      = [’’ + current];
+  remain   = viewsize - 1;</p>
 
-  while (true) {
-    var first = +ret[0], last = +ret[ret.length - 1];
+<p>while (true) {
+    var first = +ret[0], last = +ret[ret.length - 1];</p>
 
-    if (first &gt; min)  {
-      ret.unshift(first - 1);
-      if (!--remain) break;
-    }
+<pre><code>if (first &gt; min)  {
+  ret.unshift(first - 1);
+  if (!--remain) break;
+}
 
-    if (last &lt; max) {
-      ret.push(last + 1);
-      if (!--remain) break;
-    }
-  }
+if (last &lt; max) {
+  ret.push(last + 1);
+  if (!--remain) break;
+}   }
+</code></pre>
 
-  switch (true) {
+<p>switch (true) {
   case +ret[0] === min:
     ret.splice(ret.length - 2, 2, dots, max);
     break;
@@ -256,216 +365,219 @@ foldpages(pages, 12, viewsize);
     ret.splice(0, 2, min, dots);
     ret.splice(ret.length - 2, 2, dots, max);
     break;
-  }
+  }</p>
 
-  return ret;
+<p>return ret;
 };
-</code></pre>
+```</p>
 
 <p>最后再验证下。</p>
 
-<pre><code class="js">var TOTAL_PAGE = 15;
-var pages = _.range(1, TOTAL_PAGE + 1);
+<p>```js
+var TOTAL_PAGE = 15;
+var pages = _.range(1, TOTAL_PAGE + 1);</p>
 
-_.each(_.range(6, 10 + 1), function (foldnum) {
-  console.log('当显示槽位个数为' + foldnum + '时，每一页的折叠显示如下:');
+<p><em>.each(</em>.range(6, 10 + 1), function (foldnum) {
+  console.log(‘当显示槽位个数为’ + foldnum + ‘时，每一页的折叠显示如下:’);</p>
 
-  _.times(TOTAL_PAGE, function (index) {
+<p>_.times(TOTAL_PAGE, function (index) {
     console.log(++index, foldpages(pages, index, foldnum));
-  });
+  });</p>
 
-  console.log('\n');
-});
+<p>console.log(‘\n’);
+});</p>
 
-// =============================================
+<p>// =============================================
 // OUTPUT
-// =============================================
+// =============================================</p>
 
-/**
+<p>/**
 当显示槽位个数为6时，每一页的折叠显示如下:
- 1 ["1", 2, 3, 4, "…", 15]
- 2 [1, "2", 3, 4, "…", 15]
- 3 [1, 2, "3", 4, "…", 15]
- 4 [1, 2, 3, "4", "…", 15]
- 5 [1, "…", 4, "5", "…", 15]
- 6 [1, "…", 5, "6", "…", 15]
- 7 [1, "…", 6, "7", "…", 15]
- 8 [1, "…", 7, "8", "…", 15]
- 9 [1, "…", 8, "9", "…", 15]
-10 [1, "…", 9, "10", "…", 15]
-11 [1, "…", 10, "11", "…", 15]
-12 [1, "…", 11, "12", "…", 15]
-13 [1, "…", 12, "13", 14, 15]
-14 [1, "…", 12, 13, "14", 15]
-15 [1, "…", 12, 13, 14, "15"]
+ 1 [“1”, 2, 3, 4, “…”, 15]
+ 2 [1, “2”, 3, 4, “…”, 15]
+ 3 [1, 2, “3”, 4, “…”, 15]
+ 4 [1, 2, 3, “4”, “…”, 15]
+ 5 [1, “…”, 4, “5”, “…”, 15]
+ 6 [1, “…”, 5, “6”, “…”, 15]
+ 7 [1, “…”, 6, “7”, “…”, 15]
+ 8 [1, “…”, 7, “8”, “…”, 15]
+ 9 [1, “…”, 8, “9”, “…”, 15]
+10 [1, “…”, 9, “10”, “…”, 15]
+11 [1, “…”, 10, “11”, “…”, 15]
+12 [1, “…”, 11, “12”, “…”, 15]
+13 [1, “…”, 12, “13”, 14, 15]
+14 [1, “…”, 12, 13, “14”, 15]
+15 [1, “…”, 12, 13, 14, “15”]</p>
 
-当显示槽位个数为7时，每一页的折叠显示如下:
- 1 ["1", 2, 3, 4, 5, "…", 15]
- 2 [1, "2", 3, 4, 5, "…", 15]
- 3 [1, 2, "3", 4, 5, "…", 15]
- 4 [1, 2, 3, "4", 5, "…", 15]
- 5 [1, "…", 4, "5", 6, "…", 15]
- 6 [1, "…", 5, "6", 7, "…", 15]
- 7 [1, "…", 6, "7", 8, "…", 15]
- 8 [1, "…", 7, "8", 9, "…", 15]
- 9 [1, "…", 8, "9", 10, "…", 15]
-10 [1, "…", 9, "10", 11, "…", 15]
-11 [1, "…", 10, "11", 12, "…", 15]
-12 [1, "…", 11, "12", 13, 14, 15]
-13 [1, "…", 11, 12, "13", 14, 15]
-14 [1, "…", 11, 12, 13, "14", 15]
-15 [1, "…", 11, 12, 13, 14, "15"]
+<p>当显示槽位个数为7时，每一页的折叠显示如下:
+ 1 [“1”, 2, 3, 4, 5, “…”, 15]
+ 2 [1, “2”, 3, 4, 5, “…”, 15]
+ 3 [1, 2, “3”, 4, 5, “…”, 15]
+ 4 [1, 2, 3, “4”, 5, “…”, 15]
+ 5 [1, “…”, 4, “5”, 6, “…”, 15]
+ 6 [1, “…”, 5, “6”, 7, “…”, 15]
+ 7 [1, “…”, 6, “7”, 8, “…”, 15]
+ 8 [1, “…”, 7, “8”, 9, “…”, 15]
+ 9 [1, “…”, 8, “9”, 10, “…”, 15]
+10 [1, “…”, 9, “10”, 11, “…”, 15]
+11 [1, “…”, 10, “11”, 12, “…”, 15]
+12 [1, “…”, 11, “12”, 13, 14, 15]
+13 [1, “…”, 11, 12, “13”, 14, 15]
+14 [1, “…”, 11, 12, 13, “14”, 15]
+15 [1, “…”, 11, 12, 13, 14, “15”]</p>
 
-当显示槽位个数为8时，每一页的折叠显示如下:
- 1 ["1", 2, 3, 4, 5, 6, "…", 15]
- 2 [1, "2", 3, 4, 5, 6, "…", 15]
- 3 [1, 2, "3", 4, 5, 6, "…", 15]
- 4 [1, 2, 3, "4", 5, 6, "…", 15]
- 5 [1, 2, 3, 4, "5", 6, "…", 15]
- 6 [1, "…", 4, 5, "6", 7, "…", 15]
- 7 [1, "…", 5, 6, "7", 8, "…", 15]
- 8 [1, "…", 6, 7, "8", 9, "…", 15]
- 9 [1, "…", 7, 8, "9", 10, "…", 15]
-10 [1, "…", 8, 9, "10", 11, "…", 15]
-11 [1, "…", 9, 10, "11", 12, "…", 15]
-12 [1, "…", 10, 11, "12", 13, 14, 15]
-13 [1, "…", 10, 11, 12, "13", 14, 15]
-14 [1, "…", 10, 11, 12, 13, "14", 15]
-15 [1, "…", 10, 11, 12, 13, 14, "15"]
+<p>当显示槽位个数为8时，每一页的折叠显示如下:
+ 1 [“1”, 2, 3, 4, 5, 6, “…”, 15]
+ 2 [1, “2”, 3, 4, 5, 6, “…”, 15]
+ 3 [1, 2, “3”, 4, 5, 6, “…”, 15]
+ 4 [1, 2, 3, “4”, 5, 6, “…”, 15]
+ 5 [1, 2, 3, 4, “5”, 6, “…”, 15]
+ 6 [1, “…”, 4, 5, “6”, 7, “…”, 15]
+ 7 [1, “…”, 5, 6, “7”, 8, “…”, 15]
+ 8 [1, “…”, 6, 7, “8”, 9, “…”, 15]
+ 9 [1, “…”, 7, 8, “9”, 10, “…”, 15]
+10 [1, “…”, 8, 9, “10”, 11, “…”, 15]
+11 [1, “…”, 9, 10, “11”, 12, “…”, 15]
+12 [1, “…”, 10, 11, “12”, 13, 14, 15]
+13 [1, “…”, 10, 11, 12, “13”, 14, 15]
+14 [1, “…”, 10, 11, 12, 13, “14”, 15]
+15 [1, “…”, 10, 11, 12, 13, 14, “15”]</p>
 
-当显示槽位个数为9时，每一页的折叠显示如下:
- 1 ["1", 2, 3, 4, 5, 6, 7, "…", 15]
- 2 [1, "2", 3, 4, 5, 6, 7, "…", 15]
- 3 [1, 2, "3", 4, 5, 6, 7, "…", 15]
- 4 [1, 2, 3, "4", 5, 6, 7, "…", 15]
- 5 [1, 2, 3, 4, "5", 6, 7, "…", 15]
- 6 [1, "…", 4, 5, "6", 7, 8, "…", 15]
- 7 [1, "…", 5, 6, "7", 8, 9, "…", 15]
- 8 [1, "…", 6, 7, "8", 9, 10, "…", 15]
- 9 [1, "…", 7, 8, "9", 10, 11, "…", 15]
-10 [1, "…", 8, 9, "10", 11, 12, "…", 15]
-11 [1, "…", 9, 10, "11", 12, 13, 14, 15]
-12 [1, "…", 9, 10, 11, "12", 13, 14, 15]
-13 [1, "…", 9, 10, 11, 12, "13", 14, 15]
-14 [1, "…", 9, 10, 11, 12, 13, "14", 15]
-15 [1, "…", 9, 10, 11, 12, 13, 14, "15"]
+<p>当显示槽位个数为9时，每一页的折叠显示如下:
+ 1 [“1”, 2, 3, 4, 5, 6, 7, “…”, 15]
+ 2 [1, “2”, 3, 4, 5, 6, 7, “…”, 15]
+ 3 [1, 2, “3”, 4, 5, 6, 7, “…”, 15]
+ 4 [1, 2, 3, “4”, 5, 6, 7, “…”, 15]
+ 5 [1, 2, 3, 4, “5”, 6, 7, “…”, 15]
+ 6 [1, “…”, 4, 5, “6”, 7, 8, “…”, 15]
+ 7 [1, “…”, 5, 6, “7”, 8, 9, “…”, 15]
+ 8 [1, “…”, 6, 7, “8”, 9, 10, “…”, 15]
+ 9 [1, “…”, 7, 8, “9”, 10, 11, “…”, 15]
+10 [1, “…”, 8, 9, “10”, 11, 12, “…”, 15]
+11 [1, “…”, 9, 10, “11”, 12, 13, 14, 15]
+12 [1, “…”, 9, 10, 11, “12”, 13, 14, 15]
+13 [1, “…”, 9, 10, 11, 12, “13”, 14, 15]
+14 [1, “…”, 9, 10, 11, 12, 13, “14”, 15]
+15 [1, “…”, 9, 10, 11, 12, 13, 14, “15”]</p>
 
-当显示槽位个数为10时，每一页的折叠显示如下:
- 1 ["1", 2, 3, 4, 5, 6, 7, 8, "…", 15]
- 2 [1, "2", 3, 4, 5, 6, 7, 8, "…", 15]
- 3 [1, 2, "3", 4, 5, 6, 7, 8, "…", 15]
- 4 [1, 2, 3, "4", 5, 6, 7, 8, "…", 15]
- 5 [1, 2, 3, 4, "5", 6, 7, 8, "…", 15]
- 6 [1, 2, 3, 4, 5, "6", 7, 8, "…", 15]
- 7 [1, "…", 4, 5, 6, "7", 8, 9, "…", 15]
- 8 [1, "…", 5, 6, 7, "8", 9, 10, "…", 15]
- 9 [1, "…", 6, 7, 8, "9", 10, 11, "…", 15]
-10 [1, "…", 7, 8, 9, "10", 11, 12, "…", 15]
-11 [1, "…", 8, 9, 10, "11", 12, 13, 14, 15]
-12 [1, "…", 8, 9, 10, 11, "12", 13, 14, 15]
-13 [1, "…", 8, 9, 10, 11, 12, "13", 14, 15]
-14 [1, "…", 8, 9, 10, 11, 12, 13, "14", 15]
-15 [1, "…", 8, 9, 10, 11, 12, 13, 14, "15"]
+<p>当显示槽位个数为10时，每一页的折叠显示如下:
+ 1 [“1”, 2, 3, 4, 5, 6, 7, 8, “…”, 15]
+ 2 [1, “2”, 3, 4, 5, 6, 7, 8, “…”, 15]
+ 3 [1, 2, “3”, 4, 5, 6, 7, 8, “…”, 15]
+ 4 [1, 2, 3, “4”, 5, 6, 7, 8, “…”, 15]
+ 5 [1, 2, 3, 4, “5”, 6, 7, 8, “…”, 15]
+ 6 [1, 2, 3, 4, 5, “6”, 7, 8, “…”, 15]
+ 7 [1, “…”, 4, 5, 6, “7”, 8, 9, “…”, 15]
+ 8 [1, “…”, 5, 6, 7, “8”, 9, 10, “…”, 15]
+ 9 [1, “…”, 6, 7, 8, “9”, 10, 11, “…”, 15]
+10 [1, “…”, 7, 8, 9, “10”, 11, 12, “…”, 15]
+11 [1, “…”, 8, 9, 10, “11”, 12, 13, 14, 15]
+12 [1, “…”, 8, 9, 10, 11, “12”, 13, 14, 15]
+13 [1, “…”, 8, 9, 10, 11, 12, “13”, 14, 15]
+14 [1, “…”, 8, 9, 10, 11, 12, 13, “14”, 15]
+15 [1, “…”, 8, 9, 10, 11, 12, 13, 14, “15”]
 */
-</code></pre>
+```</p>
 
 <p>分页折叠逻辑实现好了，接下的的分页渲染就信手拈来，不费吹灰之力了！</p>
 
-<h2>渲染分页</h2>
+<h2 id="section-1">渲染分页</h2>
 
 <p>直接上代码吧！</p>
 
-<pre><code class="js">var renderpages = function (pages) {
+<p>```js
+var renderpages = function (pages) {
   return _.map(pages, function (page) {
     switch (true) {
-    case page === +page: return '&lt;a href="javascript:;"&gt;' + page + '&lt;/a&gt;';
-    case page ==  +page: return '&lt;span class="current"&gt;' + page + '&lt;/span&gt;';
-    default:             return '&lt;span&gt;' + page + '&lt;/span&gt;';
+    case page === +page: return ‘<a href="javascript:;">’ + page + ‘</a>’;
+    case page ==  +page: return ‘<span class="current">’ + page + ‘</span>’;
+    default:             return ‘<span>’ + page + ‘</span>’;
     }
-  }).join('');
-};
+  }).join(‘’);
+};</p>
 
-renderpages([1, '…', 5, 6, '7', 8, 9, '…', 15]);
+<p>renderpages([1, ‘…’, 5, 6, ‘7’, 8, 9, ‘…’, 15]);</p>
 
-//=============== OUTPUT ============&gt;
-      '&lt;a href="javascript:;"&gt;1&lt;/a&gt;' +
-      '&lt;span&gt;…&lt;/span&gt;' +
-      '&lt;a href="javascript:;"&gt;5&lt;/a&gt;' +
-      '&lt;a href="javascript:;"&gt;6&lt;/a&gt;' +
-      '&lt;span class="current"&gt;7&lt;/span&gt;' +
-      '&lt;a href="javascript:;"&gt;8&lt;/a&gt;' +
-      '&lt;a href="javascript:;"&gt;9&lt;/a&gt;' +
-      '&lt;span&gt;…&lt;/span&gt;' +
-      '&lt;a href="javascript:;"&gt;15&lt;/a&gt;'
-</code></pre>
+<p>//=============== OUTPUT ============&gt;
+      ‘<a href="javascript:;">1</a>’ +
+      ‘<span>…</span>’ +
+      ‘<a href="javascript:;">5</a>’ +
+      ‘<a href="javascript:;">6</a>’ +
+      ‘<span class="current">7</span>’ +
+      ‘<a href="javascript:;">8</a>’ +
+      ‘<a href="javascript:;">9</a>’ +
+      ‘<span>…</span>’ +
+      ‘<a href="javascript:;">15</a>’
+```</p>
 
 <p>可以看到分页渲染时没有了分页折叠逻辑的干扰，代码清晰而简明了。我们一般都习惯把复杂的东西简单化。当然，要想要简单的事情变复杂化也是可行的。不信，我们以分页渲染为例，看能够将它复杂化到什么程度。</p>
 
-<h2>简单的事情复杂化</h2>
+<h2 id="section-2">简单的事情复杂化</h2>
 
 <p>仍是直接上代码的方式。</p>
 
-<pre><code class="js">function existy(x) { return x != null; }
-function truthy(x) { return (x !== false) &amp;&amp; existy(x); }
+<p>```js
+function existy(x) { return x != null; }
+function truthy(x) { return (x !== false) &amp;&amp; existy(x); }</p>
 
-function cat() {
+<p>function cat() {
   var head = _.first(arguments);
   return existy(head) ?
          head.concat.apply(head, _.rest(arguments)) : [];
-}
+}</p>
 
-function construct(head, tail) {
+<p>function construct(head, tail) {
   return cat([head], _.toArray(tail));
-}
+}</p>
 
-//=&gt; [4, 8, 15, 16, 23, 42]
-cat([4], [8, 15], [16, 23, 42]);
+<p>//=&gt; [4, 8, 15, 16, 23, 42]
+cat([4], [8, 15], [16, 23, 42]);</p>
 
-//=&gt; [4, 8, 15, 16, 23, 42]
-construct(4, [8, 15, 16, 23, 42]);
+<p>//=&gt; [4, 8, 15, 16, 23, 42]
+construct(4, [8, 15, 16, 23, 42]);</p>
 
-function dispatch(/* funs */) {
-  var funs = _.toArray(arguments), size = funs.length;
+<p>function dispatch(/* funs */) {
+  var funs = _.toArray(arguments), size = funs.length;</p>
 
-  return function (target /*, args */) {
-    var ret = undefined, args = _.rest(arguments);
+<p>return function (target /*, args */) {
+    var ret = undefined, args = _.rest(arguments);</p>
 
-    _.detect(funs, function (fun) {
-      ret = fun.apply(fun, construct(target, args));
-      return existy(ret);
-    });
+<pre><code>_.detect(funs, function (fun) {
+  ret = fun.apply(fun, construct(target, args));
+  return existy(ret);
+});
 
-    return ret;
-  };
-}
+return ret;   }; }
+</code></pre>
 
-function whilst(cond, action) {
+<p>function whilst(cond, action) {
   return function (obj) {
     return truthy(cond(obj)) ? action(obj) : undefined;
   };
-}
+}</p>
 
-var renderer = dispatch(
+<p>var renderer = dispatch(
   whilst(
     function (x) { return x === +x; },
-    function (x) { return '&lt;a href="javascript:;"&gt;' + x + '&lt;/a&gt;'; }
+    function (x) { return ‘<a href="javascript:;">’ + x + ‘</a>’; }
   ),
   whilst(
     function (x) { return x == +x; },
-    function (x) { return '&lt;span class="current"&gt;' + x + '&lt;/span&gt;'; }
+    function (x) { return ‘<span class="current">’ + x + ‘</span>’; }
   ),
-  function (x) { return '&lt;span&gt;' + x + '&lt;/span&gt;'; }
-);
+  function (x) { return ‘<span>’ + x + ‘</span>’; }
+);</p>
 
-var result = _.map([1, '…', 5, 6, '7', 8, 9, '…', 15], renderer).join('');
-</code></pre>
+<p>var result = _.map([1, ‘…’, 5, 6, ‘7’, 8, 9, ‘…’, 15], renderer).join(‘’);
+```</p>
 
 <p>以上展示了如何用函数式编程方式把简单的事情复杂化。不过，它已背离了本文的宗旨，还是就此打住吧！</p>
 
 <p>后记：想了好几种方式实现<code>foldpages</code>方法，天马行空的。然而，没有一种方式觉得很理想，包括贴在此处的这个！我想我是有代码洁癖症的，希望以后能想到更好的实现办法！这需要灵感：或是触类旁通的，或是恍然大悟的。</p>
 
-<pre><code class="js">var inspiration = _.result(aspiration, action);
-</code></pre>
+<p><code>js
+var inspiration = _.result(aspiration, action);
+</code></p>
 ]]></content>
   </entry>
   
@@ -480,73 +592,78 @@ var result = _.map([1, '…', 5, 6, '7', 8, 9, '…', 15], renderer).join('');
 
 <!-- more -->
 
-
-<h2>循序渐进</h2>
+<h2 id="section">循序渐进</h2>
 
 <p>还是以例子引入话题，假如我要将数组<code>['4', '8', '15', '16', '23', '42']</code>(<a href="http://www.douban.com/group/topic/6251101/">神奇数字</a>)中所有字符串元素变换为数字型。不假思索后，我们会这样写：</p>
 
-<pre><code class="js">//=&gt; [4, 8, 15, 16, 23, 42]
+<p><code>js
+//=&gt; [4, 8, 15, 16, 23, 42]
 _.map(['4', '8', '15', '16', '23', '42'], function (val) {
   return Number(val);
 });
-</code></pre>
+</code></p>
 
 <p>没错，这没什么问题。稍微观察一下，我们会发现，传递给<code>_.map</code>方法的匿名回调方法仅仅做了件简单的事，将其第一个参数传进<code>Number</code>函数中调用后直接返回。这种做法其实就相当于：你实际要执行的是<code>f</code>函数，而你却通过调用<code>g</code>函数间接执行<code>f</code>函数，而事实上你完全可以直接执行<code>f</code>函数的，如下所示：</p>
 
-<pre><code class="js">var f = function (val) { return val; };
-var g = function (val) { return f(val); };
+<p>```js
+var f = function (val) { return val; };
+var g = function (val) { return f(val); };</p>
 
-//=&gt; true
-f('stupid') === g('stupid');
-</code></pre>
+<p>//=&gt; true
+f(‘stupid’) === g(‘stupid’);
+```</p>
 
 <p>因此，上述数组变换实际可以简化为：</p>
 
-<pre><code class="js">//=&gt; [4, 8, 15, 16, 23, 42]
+<p><code>js
+//=&gt; [4, 8, 15, 16, 23, 42]
 _.map(['4', '8', '15', '16', '23', '42'], Number);
-</code></pre>
+</code></p>
 
 <p>嗯，确实是这么回事^-^。</p>
 
 <p>再比如，我想将数组<code>['1NO', '2FOOL', '3ME']</code>中所有字符串元素解析为数字型。我们知道将字符串解析为数字型可以通过<code>parseInt</code>直接得到，像这样：</p>
 
-<pre><code class="js">var first = parseInt('1NO');     //=&gt; 1
+<p><code>js
+var first = parseInt('1NO');     //=&gt; 1
 var middle = parseInt('2FOOL');  //=&gt; 2
 var last = parseInt('3ME');      //=&gt; 3
-</code></pre>
+</code></p>
 
 <p>It works! 于是以迅雷不及掩耳的速度得出结果：</p>
 
-<pre><code class="js">//=&gt; [1, 2, 3]
+<p><code>js
+//=&gt; [1, 2, 3]
 _.map(['1NO', '2FOOL', '3ME'], function (val) {
   return parseInt(val);
 });
-</code></pre>
+</code></p>
 
 <p>Perfect！细看一下，咿，这不是和之前那个例子一样的嘛，这次学聪明了，窃喜之下后马上将结果改为如下，也没忘夸奖下自己随机应变的能力：</p>
 
-<pre><code class="js">//=&gt; [1, NaN, NaN]
+<p><code>js
+//=&gt; [1, NaN, NaN]
 _.map(['1NO', '2FOOL', '3ME'], parseInt);
-</code></pre>
+</code></p>
 
 <p>等等，我勒个去，结果不符合预期了，这是怎么回事？！</p>
 
 <p>脑袋稍微转下，原来是这么回事，当你把<code>parseInt</code>直接作为<code>_.map</code>方法的回调时，<code>parseInt</code>执行的时候实际是传入了三个参数(元素值，元素索引，数组本身)。
 所以上述代码实际等价于：</p>
 
-<pre><code class="js">var ary = ['1NO', '2FOOL', '3ME'];
+<p>```js
+var ary = [‘1NO’, ‘2FOOL’, ‘3ME’];</p>
 
-//=&gt; [1, NaN, NaN]
+<p>//=&gt; [1, NaN, NaN]
 _.map(ary, function (val, idx, ary) {
   return parseInt(val, idx, ary);
-});
+});</p>
 
-var first = parseInt('1NO', 0, ary);     //=&gt; 1
-var middle = parseInt('2FOOL', 1, ary);  //=&gt; NaN
-var last = parseInt('3ME', 2, ary);      //=&gt; NaN
-</code></pre>
-
-<p><code>parseInt</code>调用时可接收可选的第二个参数，元素索引值作为第二个参数无形中传入到<code>parseInt</code>，呜呼哀哉！第一个例子为什么没问题？因为Number只接收一个参数，而把其后的所有参数都忽略，所以安然无恙。这么看来<code>Explicit is better than implicit(显优于隐)</code>的确是真理啊！</p>
+<p>var first = parseInt(‘1NO’, 0, ary);     //=&gt; 1
+var middle = parseInt(‘2FOOL’, 1, ary);  //=&gt; NaN
+var last = parseInt(‘3ME’, 2, ary);      //=&gt; NaN
+```
+<code>parseInt</code>调用时可接收可选的第二个参数，元素索引值作为第二个参数无形中传入到<code>parseInt</code>，呜呼哀哉！第一个例子为什么没问题？因为Number只接收一个参数，而把其后的所有参数都忽略，所以安然无恙。这么看来<code>Explicit is better than implicit(显优于隐)</code>的确是真理啊！</p>
 
 <p>在此，我不想弹劾<code>parseInt</code>直接作为<code>_.map</code>回调使用的情况，我只想吐嘈下<code>parseInt</code>不显式指定第二个参数调用的隐患。MDN上关于<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt">parseInt API</a>的定义是强调指明要传入<code>radix(基数)</code>值作为解析数字的依据的。</p>
 
@@ -558,49 +675,55 @@ var last = parseInt('3ME', 2, ary);      //=&gt; NaN
 
 <p>我的想法是，利用<code>_.partial</code>对<code>parseInt</code>进行偏应用处理，返回得到的新函数再作为回调传入<code>_.map</code>中，如下所示：</p>
 
-<pre><code class="js">//=&gt; [1, 2, 3]
+<p><code>js
+//=&gt; [1, 2, 3]
 _.map(['1NO', '2FOOL', '3ME'], _.partial(parseInt, _, 10));
-</code></pre>
+</code></p>
 
 <p>在这个例子中，我们为<code>parseInt</code>预填充了两个参数：第一个参数传入<code>_</code>代表参数占位符，它是动态值；第二个传入基数值10，它是不变的，这样我们就将其第第二个参数“锁定”了。当<code>_.map</code>回调函数被执行时，它还是依次接收三个参数回来，只不过这次接收的第一个参数（数组元素作为数据填补）代替了参数占位符的位置，第二、三个参数被依次追加到<code>parseInt</code>末尾而被忽略，于是我们的代码正常工作了。</p>
 
 <p>然而，这行代码Underscore v1.6.0+版本中才有效，对于Lodash或更低版本的Underscore，我们该怎么办呢？这时函数柯里化的威力就体现出来了。因为<code>parseInt</code>接收两个参数，于是我构建如下的二级柯里化函数：</p>
 
-<pre><code class="js">function curry2(fun) {
+<p><code>js
+function curry2(fun) {
   return function (second) {
     return function (first) {
       return fun(first, second);
     };
   };
 }
-</code></pre>
+</code></p>
 
 <p>函数<code>curry2</code>调用时接收一个希望被柯里化的函数作为参数传入，方法体中返回一个匿名函数，接收单一参数，而在匿名函数中又再次返回一个匿名函数，同样接收单一参数，直到柯里化函数执行两次时，被柯里化的函数得以执行，两级柯里化参数逆序传入而返回。</p>
 
 <p>应用到这个例子，即：我们对<code>parseInt</code>进行柯里化处理，执行一次传入参数10，也是预填充第二个参数，结果返回新的函数等待<code>_.map</code>被执行时将第一个参数传递进行而返回结果值，代码如下：</p>
 
-<pre><code class="js">//=&gt; [1, 2, 3]
+<p><code>js
+//=&gt; [1, 2, 3]
 _.map(['1NO', '2FOOL', '3ME'], curry2(parseInt)(10));
-</code></pre>
+</code></p>
 
 <p>在这个妥协的解决方法里，我们借助了自己构建的柯里化函数作为辅助。这不禁让我这么想：难道在这泱泱几十号工具方法中，在这个问题上一无是处，无一能为我所用，反倒要依赖外援？思考片刻后，依照<code>curry2</code>的思路，想到Lodash不是提供有<code>_.partialRight</code>方法嘛！从左往右填充参数不行，那就从右往左介入。就像<code>curry2</code>那样给<code>parseInt</code>预填充第二个参数，然后等待<code>_.map</code>填充第一个参数后执行，于是写了如下代码：</p>
 
-<pre><code class="js">//=&gt; [1, NaN, NaN]
+<p><code>js
+//=&gt; [1, NaN, NaN]
 _.map(['1NO', '2FOOL', '3ME'], _.partialRight(parseInt, 10));
-</code></pre>
+</code></p>
 
 <p>结果不尽如人意，和<code>parseInt</code>直接作为<code>_.map</code>回调函数传入时结果没什么两样，执行时<code>parseInt</code>仍是被<code>_.map</code>传回来的多余参数污染了，基数10成为了<code>parseInt</code>的末尾参数而直接忽略了。多余？这给我提了个醒，如果我能将<code>_.map</code>传回来的多余的后两参数过滤掉，那么<code>parseInt</code>被执行时作为基数10的末尾参数是不是就是作为其第二个参数传入而正常了。Great！现在的问题变成了如何将<code>_.map</code>传回来的多余的后两参数过滤掉？思考良久后我辗转想到了<code>_.identity</code>。<code>_.identity</code>应该算Lodash中倒数第二简单的方法了吧，最简单的是<code>_.noop</code>，它们各自定义如下所示：</p>
 
-<pre><code class="js">_.noop = function () {};
+<p><code>js
+_.noop = function () {};
 _.identity = function (val) { return val; };
-</code></pre>
+</code></p>
 
 <p>简单的东西并非一无是处。麻雀虽小，五脏俱全。有时候往往是简单的东西才是我们需要的东西。咋一看，<code>_.identity</code>不就是你给它什么输入，它就给你返回什么嘛。可是当你换个角度想，你却发现了别样的东西，直接上代码：</p>
 
-<pre><code class="js">_.identity('I');                  //=&gt; 'I'
+<p><code>js
+_.identity('I');                  //=&gt; 'I'
 _.identity('I', 'FOOL');          //=&gt; 'I'
 _.identity('I', 'FOOL', 'YOU');   //=&gt; 'I'
-</code></pre>
+</code></p>
 
 <p>发现了什么？所以，更准确地说，无论你给<code>_.identity</code>传入多少个参数，结果都是返回给你传入的第一个参数。这样一想，我传三个参数给它，结果它只把第一个参数返回了，剩余那两个参数呢？消失在茫茫人海之中，不见了。Good Job！</p>
 
@@ -608,217 +731,236 @@ _.identity('I', 'FOOL', 'YOU');   //=&gt; 'I'
 
 <p>假设<code>f</code>和<code>g</code>是两函数，<code>f</code>函数调用后的输出作为<code>g</code>函数的输入，其中<code>x</code>是<code>f</code>的输入值，则以下等式是成立的：</p>
 
-<pre><code class="js">//=&gt; true
+<p><code>js
+//=&gt; true
 _.isEqual( g(f(x)), _.compose(g, f)(x) );
-</code></pre>
+</code></p>
 
 <p>有了以上的分析后，我们通过<code>_.compose</code>作为纽带将<code>partial right</code>后的<code>parseInt</code>和<code>_.identity</code>衔接起来，最终得到答案：</p>
 
-<pre><code class="js">//=&gt; [1, 2, 3]
+<p><code>js
+//=&gt; [1, 2, 3]
 _.map( ['1NO', '2FOOL', '3ME'], _.compose( _.partialRight(parseInt, 10), _.identity ) );
-</code></pre>
+</code></p>
 
 <p>看到以上这行代码，你在脑海中涌动的应该就是数据在各个函数间依次流动着而最终得到结果，即函数式编程的<code>数据流(data flow)</code>思想。我并不是倡导在实际工作中要写这种代码，更多的是体会函数式编程的思维，那种自成一体的曼妙。函数式编程的思想表现的不是<code>MARVEL</code>旗下的那些个个人英雄主义气概，而是各个功能单一的函数组合在一起才能体现的威力。</p>
 
-<h2>思维发散</h2>
+<h2 id="section-1">思维发散</h2>
 
 <p>另一个例子：将数组<code>['left  ', ' center ', '  right']</code>中各个字符串元素两边的空白符去除，长驱直入：</p>
 
-<pre><code class="js">//=&gt; ['left', 'center', 'right']
+<p><code>js
+//=&gt; ['left', 'center', 'right']
 _.map(['left  ', ' center ', '  right'], function (s) {
   return s.trim();
 });
-</code></pre>
+</code></p>
 
 <p>仔细看这段代码，你会看到另一种模式，匿名函数里返回的是第一个参数调用某个方法的结果。函数式编程的核心是函数，而不是方法。我们要将方法调用转化为函数调用，才更能体现函数式风格。Underscore和Lodash都提供了<code>_.result</code>方法。通过这个方法我们可以将方法调用转化为函数调用，也即：</p>
 
-<pre><code class="js">var str = ' center ';
+<p>```js
+var str = ‘ center ‘;</p>
 
-//=&gt; true
-str.trim() === _.result(str, 'trim');
-</code></pre>
+<p>//=&gt; true
+str.trim() === _.result(str, ‘trim’);
+```</p>
 
 <p><code>_.result</code>调用像不像此前的<code>parseInt</code>？这样，我们之前的方法再次奏效：</p>
 
-<pre><code class="js">var ary = ['left  ', ' center ', '  right'];
+<p>```js
+var ary = [‘left  ‘, ‘ center ‘, ‘  right’];</p>
 
-// Underscore v1.6.0
-_.map(ary, _.partial( _.result, _, 'trim' ));
+<p>// Underscore v1.6.0
+_.map(ary, _.partial( _.result, _, ‘trim’ ));</p>
 
-// Lodash v2.4.1
-_.map(ary, _.compose( _.partialRight( _.result, 'trim' ), _.identity ));
+<p>// Lodash v2.4.1
+_.map(ary, _.compose( _.partialRight( _.result, ‘trim’ ), _.identity ));</p>
 
-// Underscore &amp; Lodash
-_.map(ary, curry2( _.result )( 'trim' ));
-</code></pre>
+<p>// Underscore &amp; Lodash
+_.map(ary, curry2( _.result )( ‘trim’ ));
+```</p>
 
-<h2>延伸拓展</h2>
+<h2 id="section-2">延伸拓展</h2>
 
 <p>前面提到了<code>_.identity</code>方法，如果换种角度来看，可以把它当作参数过滤器使用。可是它是有局限性的，它只能过滤第一个参数。假如某种情况下我要过滤出输入参数的前两个参数，这回该怎么办？我们知道函数只能返回一个值，要返回多个值的话，则可以将多个值以数组形式返回。以下是过滤前两个参数的代码：</p>
 
-<pre><code class="js">function take2(first, second) {
+<p>```js
+function take2(first, second) {
   return [first, second];
-}
+}</p>
 
-//=&gt; ['first', 'second']
-take2('first', 'second', 'third');
+<p>//=&gt; [‘first’, ‘second’]
+take2(‘first’, ‘second’, ‘third’);</p>
 
-//=&gt; ['first', 'second']
-take2('first', 'second', 'third', 'forth');
-</code></pre>
+<p>//=&gt; [‘first’, ‘second’]
+take2(‘first’, ‘second’, ‘third’, ‘forth’);
+```</p>
 
 <p>解决了过滤两个参数的问题，可是它有个瑕疵，它的输出是以数组形式返回的。如果这种输出直接作为另一个函数的输入，这将无法衔接起来，因为我们的接收方函数要求参数是单个单个传入，而不是给它灌入单个数组。于是，我们接下来需要某种能够将数组变换为单个单个参数传入接收方函数的方法。</p>
 
 <p>先看以下举例：</p>
 
-<pre><code class="js">function max(/* args */) {
+<p>```js
+function max(/* args */) {
   return Math.max.apply(Math, arguments);
-}
+}</p>
 
-//=&gt; 42
+<p>//=&gt; 42
 max(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p><code>max</code>方法很简单，它返回任意输入Number型参数的最大值。给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前两个哪个最大。我们脑海里首先闪过的可能是如下答案：</p>
 
-<pre><code class="js">function max_initial(first, second) {
+<p>```js
+function max_initial(first, second) {
   return max(first, second);
-}
+}</p>
 
-//=&gt; 8
+<p>//=&gt; 8
 max_initial(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>看起来还不错！但我们前面定义了专门充当“参数过滤器”的函数<code>take2</code>，让我们试图将它介入其中，像如下那样：</p>
 
-<pre><code class="js">function max_initial2(/* args */) {
+<p>```js
+function max_initial2(/* args */) {
   return max.apply(null, take2.apply(null, arguments));
-}
+}</p>
 
-//=&gt; 8
+<p>//=&gt; 8
 max_initial2(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>感谢<code>Function.prototype.apply</code>方法，我们成功地将参数过滤了，并传给了<code>max</code>，It Works！可是盯着它看下，怎么看怎么不舒服。还是再改进下吧～前面我们提到<code>_.compose</code>方法可以将参数输入输出串联起来，那再试图让<code>_.compose</code>介入进来吧！</p>
 
-<pre><code class="js">var max_initial3 = _.compose(max, take2);
+<p>```js
+var max_initial3 = _.compose(max, take2);</p>
 
-//=&gt; NaN
+<p>//=&gt; NaN
 max_initial3(8, 4, 15, 42, 23, 16);
-</code></pre>
+```
+Does it work？Nope！Why？<code>max_initial3</code>函数执行实际等价于如下代码：</p>
 
-<p>Does it work？Nope！Why？<code>max_initial3</code>函数执行实际等价于如下代码：</p>
+<p>```js
+//=&gt; [8, 4]
+var result = take2(8, 4, 15, 42, 23, 16);</p>
 
-<pre><code class="js">//=&gt; [8, 4]
-var result = take2(8, 4, 15, 42, 23, 16);
-
-//=&gt; NaN
+<p>//=&gt; NaN
 max(result);
-</code></pre>
+```</p>
 
 <p>我们将<code>take2</code>执行后返回的数组值直接传递给了<code>max</code>，而<code>max</code>需接收的是单个单个的参数。由于接口的不一致，我们的尝试失败了。既然接口不一致，我们何不制造个<code>适配器(Adapter)</code>以适配接口呢！我们需要什么样的适配器？我们需要将数组参数转化为单个单个参数的适配器——我们需要<code>splat</code>适配器：</p>
 
-<pre><code class="js">function splat(fun) {
+<p>```js
+function splat(fun) {
   return function (array) {
     return fun.apply(null, array);
   };
-}
+}</p>
 
-var maxAdapted = splat(max);
+<p>var maxAdapted = splat(max);</p>
 
-//=&gt; 8
+<p>//=&gt; 8
 maxAdapted([8, 4]);
-</code></pre>
+```</p>
 
-<p>Looks pretty neat, doesn&rsquo;t it?有了适配器后，我们再用<code>_.compose</code>将它们衔接起来：</p>
+<p>Looks pretty neat, doesn’t it?有了适配器后，我们再用<code>_.compose</code>将它们衔接起来：</p>
 
-<pre><code class="js">var max_initial4 = _.compose(splat(max), take2);
+<p>```js
+var max_initial4 = _.compose(splat(max), take2);</p>
 
-//=&gt; 8
+<p>//=&gt; 8
 max_initial4(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>瞧，它又正常工作了，多亏了<code>splat</code>适配器。适配器用于适配不同的接口，以此将不同的接口衔接起来，它的职责是单一的，因此也可以复用。</p>
 
 <p>现在我们有了将数组参数转化为单个单个参数的<code>splat</code>适配器。反过来，我们何不再制造个将单个单个参数转化为数组参数的适配器呢？我们估且叫它<code>unsplat</code>吧！</p>
 
-<pre><code class="js">function unsplat(fun) {
+<p>```js
+function unsplat(fun) {
   return function () {
     return fun.call(null, [].slice.call(arguments));
   };
-}
+}</p>
 
-// 既然我们使用Underscore或Lodash，我们何不写成这样呢！
+<p>// 既然我们使用Underscore或Lodash，我们何不写成这样呢！
 function unsplat(fun) {
   return function () {
     return fun.call(null, _.toArray(arguments));
   };
 }
-</code></pre>
+```</p>
 
-<p><code>unsplat</code>能用在什么地方呢？Let&rsquo;s have a try!</p>
+<p><code>unsplat</code>能用在什么地方呢？Let’s have a try!</p>
 
 <p>前面我们定义有<code>take2</code>，我们何不定义个更一般的<code>take</code>函数呢？</p>
 
-<pre><code class="js">function take(n, array) {
+<p>```js
+function take(n, array) {
   return array.slice(0, n);
-}
+}</p>
 
-//=&gt; [8, 4]
+<p>//=&gt; [8, 4]
 take(2, [8, 4, 15, 42, 23, 16]);
-</code></pre>
+```</p>
 
 <p>有了更一般的<code>take</code>函数，我们就可以基于它生成过滤任意多个前置参数的“参数过滤器”函数了。</p>
 
-<pre><code class="js">var take2 = _.partial(take, 2);
-var take3 = _.partial(take, 3);
+<p>```js
+var take2 = _.partial(take, 2);
+var take3 = _.partial(take, 3);</p>
 
-//=&gt; [8, 4]
-take2([8, 4, 15, 42, 23, 16]);
+<p>//=&gt; [8, 4]
+take2([8, 4, 15, 42, 23, 16]);</p>
 
-//=&gt; [8, 4, 15]
+<p>//=&gt; [8, 4, 15]
 take3([8, 4, 15, 42, 23, 16]);
-</code></pre>
+```</p>
 
 <p>这不对！之前我们调用<code>take2</code>的时候传递给它的是单个单个的参数，可是这回调用时传递的却是数组参数。不行，我们需要适配器，我们需要将单个单个参数转化为数组参数的适配器——我们需要<code>unsplat</code>适配器！</p>
 
-<pre><code class="js">var take2 = unsplat(_.partial(take, 2));
-var take3 = unsplat(_.partial(take, 3));
+<p>```js
+var take2 = unsplat(<em>.partial(take, 2));
+var take3 = unsplat(</em>.partial(take, 3));</p>
 
-//=&gt; [8, 4]
-take2(8, 4, 15, 42, 23, 16);
+<p>//=&gt; [8, 4]
+take2(8, 4, 15, 42, 23, 16);</p>
 
-//=&gt; [8, 4, 15]
+<p>//=&gt; [8, 4, 15]
 take3(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>这回正常了！回到最初的问题，针对<code>max</code>函数，给它输入的单个单个参数依次是<code>8, 4, 15, 42, 23, 16</code>。现在假设我只想知道输入参数的前三个哪个最大，我们有了一般性的答案：</p>
 
-<pre><code class="js">var max_revamped = _.compose( splat(max), unsplat( _.partial(take, 3) ) );
+<p>```js
+var max_revamped = _.compose( splat(max), unsplat( _.partial(take, 3) ) );</p>
 
-//=&gt; 15
+<p>//=&gt; 15
 max_revamped(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>Now everything is under control! 如果我们了解<code>_.wrap</code>方法，我们可以做的更疯狂：</p>
 
-<pre><code class="js">var max_fancy = _.compose(
+<p>```js
+var max_fancy = _.compose(
   _.wrap( max, splat )(),
   _.wrap( _.partial(take, 3), unsplat )()
-);
+);</p>
 
-//=&gt; 15
+<p>//=&gt; 15
 max_fancy(8, 4, 15, 42, 23, 16);
-</code></pre>
+```</p>
 
 <p>太过天马行空了，似乎偏离主旨了。。。还是就此收笔吧！</p>
 
-<h2>总结</h2>
+<h2 id="section-3">总结</h2>
 
 <p>函数式编程就像搭积木一样，像<code>_.identity</code>、<code>_.partial</code>、<code>_.compose</code>、<code>splat</code>、<code>unsplat</code>等都是职责单一的函数。别看它们简单，把它们当作积木看待，它们释放的是无尽的活力。
 越是简单的东西，蕴藏的越是更为无限的可能性。</p>
 
 <p>最后，我的感悟是：函数式编程以数据流动为导向，是函数装配的艺术。</p>
+
 ]]></content>
   </entry>
   
@@ -837,734 +979,607 @@ max_fancy(8, 4, 15, 42, 23, 16);
 
 <p>有关<code>traceur compiler</code>的环境配置如下：</p>
 
-<p>```html</p>
-
-<script src="https://traceur-compiler.googlecode.com/git/bin/traceur.js"></script>
-
-
-<script src="https://traceur-compiler.googlecode.com/git/src/bootstrap.js"></script>
-
-
-<script>
+<p><code>html
+&lt;script src="https://traceur-compiler.googlecode.com/git/bin/traceur.js"&gt;&lt;/script&gt;
+&lt;script src="https://traceur-compiler.googlecode.com/git/src/bootstrap.js"&gt;&lt;/script&gt;
+&lt;script&gt;
 traceur.options.experimental = true;
-</script>
-
-
-<script>
+&lt;/script&gt;
+&lt;script&gt;
   // blablabla...
-</script>
-
-
-<p>```</p>
+&lt;/script&gt;
+</code></p>
 
 <!-- more -->
 
+<h2 id="i">I、新的语法</h2>
 
-<h2>I、新的语法</h2>
-
-<h3>1. 块作用域(Block Scope)</h3>
+<h3 id="block-scope">1. 块作用域(Block Scope)</h3>
 
 <p><code>var</code>关键字声明的变量具有函数作用域或全局作用域，而通过<code>let</code>关键字将变量声明为块作用域，对比如下：</p>
 
-<pre><code class="js">// 在块(curly)作用域中声明并初始化变量
-{ var foo = 'foo'; }
-{ let bar = 'bar'; }
+<p>```js
+// 在块(curly)作用域中声明并初始化变量
+{ var foo = ‘foo’; }
+{ let bar = ‘bar’; }</p>
 
-console.log(foo); // -&gt; 'foo'
+<p>console.log(foo); // -&gt; ‘foo’
 console.log(bar); // ReferenceError: bar is not defined
-</code></pre>
+```</p>
 
-<h3>2. 常量(Constants)</h3>
+<h3 id="constants">2. 常量(Constants)</h3>
 
 <p>许多语言都有常量的概念(值不能改变的变量)。ES6草案将常量引入到了JavaScript中。</p>
 
 <p>使用<code>const</code>关键字将变量声明为常量，规范要求<code>const</code>声明的常量具块作用域，某些浏览器目前将其实现为函数作用域或全局作用域。声明变量为常量时如果不赋值，某些浏览器会将该变量赋<code>undefined</code>值，而某些浏览器则直接报错。为常量重新赋值，某些浏览器会忽略新赋值，某些浏览器会报错。将引用类型（如数组或对象）声明为常量，并不影响引用类型的扩充行为：</p>
 
-<pre><code class="js">const noexist;             // Const must be initialized (IE)
-const foo = 'foo';
-foo = 'hoo';               // Assignment to const (IE)
-console.log(foo);          // -&gt; 'foo'
+<p>```js
+const noexist;             // Const must be initialized (IE)
+const foo = ‘foo’;
+foo = ‘hoo’;               // Assignment to const (IE)
+console.log(foo);          // -&gt; ‘foo’</p>
 
-// 常量引用类型并不影响对其自身的扩充(`augument`)
+<p>// 常量引用类型并不影响对其自身的扩充(<code>augument</code>)
 const bar = [];
-bar.push('spam', 'eggs');
-console.log(bar.length);   // -&gt; 2
+bar.push(‘spam’, ‘eggs’);
+console.log(bar.length);   // -&gt; 2</p>
 
-// 同上
+<p>// 同上
 const baz = {};
-baz.spam = 'eggs';
-console.log(baz.spam);     // -&gt; 'eggs'
-</code></pre>
+baz.spam = ‘eggs’;
+console.log(baz.spam);     // -&gt; ‘eggs’
+```</p>
 
-<h3>3. 默认参数(Default Parameters)</h3>
+<h3 id="default-parameters">3. 默认参数(Default Parameters)</h3>
 
 <p>函数声明时可以为参数赋予默认值，这样函数调用时如果参数缺省(<code>undefined</code>)，则该参数会被赋予默认值，使用默认参数在一定程序上使函数声明更为直观，并且简化我们的代码。</p>
 
-<pre><code class="js">// 传统写法
+<p>```js
+// 传统写法
 function fill(container, liquid) {
-  if (typeof liquid === 'undefined') {
-    liquid = 'coffee';
+  if (typeof liquid === ‘undefined’) {
+    liquid = ‘coffee’;
   }
-  // blablabla...
-}
+  // blablabla…
+}</p>
 
-// 新式写法
-function fill(container, liquid = 'coffee') {
-  // blablabla...
+<p>// 新式写法
+function fill(container, liquid = ‘coffee’) {
+  // blablabla…
 }
-</code></pre>
+```</p>
 
-<h3>4. Rest和Spread操作符</h3>
+<h3 id="restspread">4. Rest和Spread操作符</h3>
 
 <p>很多时候我们处理函数的时候需要用到数组参数，ES6提供的<code>Rest</code>和<code>Spread</code>操作符可以让我们更方便地处理数组参数。</p>
 
 <p><code>rest</code>是将多值折叠为单值集合的过程，和<code>rest</code>相反，<code>spread</code>是将单值集合展开为多值的过程。很多语言都有对它的支持，语法略有差异，Python、Ruby和CoffeeScript将这种语法统称为<code>splats</code>，Python和Ruby用形如<code>*var</code>的语法来表达。CoffeeScript用形如<code>var...</code>的语法来表达，而ES6则用形如<code>...var</code>的语法来表达。</p>
 
-<pre><code class="js">// 1. rest
-function unary(...first) {
+<p>```js
+// 1. rest
+function unary(…first) {
   console.log(first);
-}
+}</p>
 
-function binary(first, ...rest) {
+<p>function binary(first, …rest) {
   console.log([first, rest]);
-}
+}</p>
 
-unary('foo');                 // -&gt; ['foo']
-unary('foo', 'bar');          // -&gt; ['foo', 'bar']
+<p>unary(‘foo’);                 // -&gt; [‘foo’]
+unary(‘foo’, ‘bar’);          // -&gt; [‘foo’, ‘bar’]</p>
 
-binary('foo');                // -&gt; ['foo', []]
-binary('foo', 'bar', 'baz');  // -&gt; ['foo', ['bar', 'baz']]
+<p>binary(‘foo’);                // -&gt; [‘foo’, []]
+binary(‘foo’, ‘bar’, ‘baz’);  // -&gt; [‘foo’, [‘bar’, ‘baz’]]</p>
 
-// rest实现
+<p>// rest实现
 ;(function (window, undefined) {
-  var _slice = Array.prototype.slice;
+  var _slice = Array.prototype.slice;</p>
 
-  function variadic(fn) {
+<p>function variadic(fn) {
     var numParams    = fn.length, // 形参个数
-        numNamedArgs = numParams - 1;
+        numNamedArgs = numParams - 1;</p>
 
+<pre><code>return numParams &lt; 1 ? fn : function () {
+  var
+    numArgs             = arguments.length, // 实参个数
+    namedArgs           = _slice.call(arguments, 0, numNamedArgs),
+    numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
+    argPadding          = Array(numMissingNamedArgs),
+    variadicArgs        = _slice.call(arguments, numNamedArgs);
 
-    return numParams &lt; 1 ? fn : function () {
-      var
-        numArgs             = arguments.length, // 实参个数
-        namedArgs           = _slice.call(arguments, 0, numNamedArgs),
-        numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
-        argPadding          = Array(numMissingNamedArgs),
-        variadicArgs        = _slice.call(arguments, numNamedArgs);
-
-      return fn.apply(this, namedArgs
-                              .concat(argPadding)
-                              .concat([variadicArgs]));
-    };
-  }
-
-  window.variadic = variadic;
-}).call(this, this);
-
-// -&gt; ['why', 'hello', 'there']
-variadic(unary)('why', 'hello', 'there');
-
-// -&gt; ['why', ['hello', 'there']]
-variadic(binary)('why', 'hello', 'there');
-
-// ----------------------------------------------------
-
-// 2. spread
-var numbers = [1, 2, 3, 4, 5];
-
-// 传统写法
-var max = Math.max.apply(Math, number);
-
-var filled = numbers.slice(0);
-[].push.apply(filled, [6, 7, 8, 9, 10]);
-
-// 新式写法
-var max = Math.max(...number);
-var filled = [...numbers, 6, 7, 8, 9, 10]
+  return fn.apply(this, namedArgs
+                          .concat(argPadding)
+                          .concat([variadicArgs]));
+};   }
 </code></pre>
 
-<h3>5. 解构赋值(Destructuring Assignment)</h3>
+<p>window.variadic = variadic;
+}).call(this, this);</p>
+
+<p>// -&gt; [‘why’, ‘hello’, ‘there’]
+variadic(unary)(‘why’, ‘hello’, ‘there’);</p>
+
+<p>// -&gt; [‘why’, [‘hello’, ‘there’]]
+variadic(binary)(‘why’, ‘hello’, ‘there’);</p>
+
+<p>// —————————————————-</p>
+
+<p>// 2. spread
+var numbers = [1, 2, 3, 4, 5];</p>
+
+<p>// 传统写法
+var max = Math.max.apply(Math, number);</p>
+
+<p>var filled = numbers.slice(0);
+[].push.apply(filled, [6, 7, 8, 9, 10]);</p>
+
+<p>// 新式写法
+var max = Math.max(…number);
+var filled = […numbers, 6, 7, 8, 9, 10]
+```</p>
+
+<h3 id="destructuring-assignment">5. 解构赋值(Destructuring Assignment)</h3>
 
 <p>如果你想从数组中拿取多个元素并赋予其他变量，或是从函数中返回多值，那么ES6提供的<code>解构赋值(Destructuring Assignment)</code>特性正是我们所需要的。</p>
 
-<pre><code class="js">// 1. 数组解构赋值
+<p>```js
+// 1. 数组解构赋值
 let a = 1, b = 2;
-[b, a] = [a, b];   // swap two variabls
+[b, a] = [a, b];   // swap two variabls</p>
 
-console.log(a, b); // -&gt; 2 1
+<p>console.log(a, b); // -&gt; 2 1</p>
 
-function dest() {
-  return ['why', 'hello', 'there'];
-}
+<p>function dest() {
+  return [‘why’, ‘hello’, ‘there’];
+}</p>
 
-let [foo, bar, baz] = dest();
+<p>let [foo, bar, baz] = dest();</p>
 
-// -&gt; 'why' 'hello' 'there'
-console.log(foo, bar, baz);
+<p>// -&gt; ‘why’ ‘hello’ ‘there’
+console.log(foo, bar, baz);</p>
 
-// 忽略不需要的值
-let [a, , c] = dest();
+<p>// 忽略不需要的值
+let [a, , c] = dest();</p>
 
-// -&gt; 'why' 'there'
-console.log(a, c);
+<p>// -&gt; ‘why’ ‘there’
+console.log(a, c);</p>
 
-// 2. 对象解构赋值
+<p>// 2. 对象解构赋值
 let janeDoe = {
-  first: 'jane',
-  last: 'doe',
-  gender: 'female',
-  hobbies: ['music', 'sports']
-};
+  first: ‘jane’,
+  last: ‘doe’,
+  gender: ‘female’,
+  hobbies: [‘music’, ‘sports’]
+};</p>
 
-let { first: firstName, last: lastName } = janeDoe;
+<p>let { first: firstName, last: lastName } = janeDoe;</p>
 
-// -&gt; 'jane' 'doe'
-console.log(firstName, lastName);
+<p>// -&gt; ‘jane’ ‘doe’
+console.log(firstName, lastName);</p>
 
-let { first, last } = janeDoe;
+<p>let { first, last } = janeDoe;</p>
 
-// -&gt; 'jane' 'doe'
-console.log(first, last);
+<p>// -&gt; ‘jane’ ‘doe’
+console.log(first, last);</p>
 
-function whatever({ first: f, last: l }) {
+<p>function whatever({ first: f, last: l }) {
   console.log(f, l);
-}
+}</p>
 
-// -&gt; 'jane' 'doe'
-whatever(janeDoe);
+<p>// -&gt; ‘jane’ ‘doe’
+whatever(janeDoe);</p>
 
-function another({ gender, hobbies: [hob1, hob2] }) {
+<p>function another({ gender, hobbies: [hob1, hob2] }) {
   console.log(gender, hob1, hob2);
-}
+}</p>
 
-// -&gt; 'female' 'music' 'sports'
+<p>// -&gt; ‘female’ ‘music’ ‘sports’
 another(janeDoe);
-</code></pre>
+```</p>
 
-<h3>6. for…of 循环语句</h3>
+<h3 id="forof-">6. for…of 循环语句</h3>
 
 <p>ES6新引入了<code>for…of</code>循环语句，以往我们使用的<code>for..in</code>循环语句用于迭代对象的<code>属性(properties)</code>，而新式的for…of循环语句则用于迭代对象的<code>值(values)</code>。</p>
 
-<pre><code class="js">var numbers = [1, 2, 3, 4, 5];
+<p>```js
+var numbers = [1, 2, 3, 4, 5];</p>
 
-// 传统写法
+<p>// 传统写法
 numbers.forEach(function (number) {
   console.log(number);
-});
+});</p>
 
-// 新式写法
+<p>// 新式写法
 for (let number of numbers) {
   console.log(number);
 }
-</code></pre>
+```</p>
 
-<h3>7. 迭代器(Iterators)</h3>
+<h3 id="iterators">7. 迭代器(Iterators)</h3>
 
 <p><code>for..of</code>循环只对迭代对象有效，这意味着要使一个对象可迭代，对象自身需要迭代器。具体可移步参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-iterators-and-for-of-loops">这里</a></p>
 
-<h3>8. 生成器(Generators)</h3>
+<h3 id="generators">8. 生成器(Generators)</h3>
 
 <p>生成器可以创建迭代器，并且可以用它来创建自定义迭代对象。生成器异常强大，网上你可以找到它联合<code>Promises</code>一起使用的情形，它为ajax异步调用开启一个新的世界，一个没有<code>callbacks</code>，没有<code>then</code>的世界，它的强大会超乎你的想象。</p>
 
-<pre><code class="js">// 基本用法
+<p>```js
+// 基本用法
 function* numberGen() {
-  let limit = 3, i = 0;
+  let limit = 3, i = 0;</p>
 
-  do {
+<p>do {
     yield i++;
   } while (i &lt; limit);
-}
+}</p>
 
-let iter = numberGen();
+<p>let iter = numberGen();</p>
 
-// -&gt; { value: 0, done: false }
-iter.next();
+<p>// -&gt; { value: 0, done: false }
+iter.next();</p>
 
-// -&gt; { value: 1, done: false }
-iter.next();
+<p>// -&gt; { value: 1, done: false }
+iter.next();</p>
 
-// -&gt; { value: 2, done: false }
-iter.next();
+<p>// -&gt; { value: 2, done: false }
+iter.next();</p>
 
-// -&gt; { value: undefined, done: true }
-iter.next();
+<p>// -&gt; { value: undefined, done: true }
+iter.next();</p>
 
-// 过滤偶数
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+<p>// 过滤偶数
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];</p>
 
-function* even(numbers) {
+<p>function* even(numbers) {
   for (let n of numbers) {
     if (n % 2 === 0) {
       yield n;
     }
   }
-}
+}</p>
 
-for (let n of even(numbers)) {
+<p>for (let n of even(numbers)) {
   console.log(n);
-}
+}</p>
 
-// 延伸用法1
+<p>// 延伸用法1
 let janeDoe = {
-  first: 'jane',
-  last: 'doe'
-};
+  first: ‘jane’,
+  last: ‘doe’
+};</p>
 
-function* iterObj(obj) {
+<p>function* iterObj(obj) {
   for (let prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       yield [prop, obj[prop]];
     }
   }
-}
+}</p>
 
-// -&gt; "first: jane"
-// -&gt; "last: doe"
+<p>// -&gt; “first: jane”
+// -&gt; “last: doe”
 for (let [key, value] of iterObj(janeDoe)) {
-  console.log([key, value].join(': '));
-}
+  console.log([key, value].join(‘: ‘));
+}</p>
 
-// 延伸用法2
+<p>// 延伸用法2
 function Person(firstName, lastName) {
   this.firstName = firstName;
   this.lastName = lastName;
-}
+}</p>
 
-Person.prototype.greeting = function (name) {
-  return 'Hello, ' + name;
-};
+<p>Person.prototype.greeting = function (name) {
+  return ‘Hello, ‘ + name;
+};</p>
 
-// Person.prototype[Symbol.iterator]
-Person.prototype['@@iterator'] = function* () {
+<p>// Person.prototype[Symbol.iterator]
+Person.prototype[’@@iterator’] = function* () {
   for (let prop in this) {
     if (this.hasOwnProperty(prop)) {
       yield [prop, this[prop]];
     }
   }
-};
+};</p>
 
-let johndoe = new Person('john', 'doe');
+<p>let johndoe = new Person(‘john’, ‘doe’);</p>
 
-// -&gt; "first: john"
-// -&gt; "last: doe"
+<p>// -&gt; “first: john”
+// -&gt; “last: doe”
 for (let [key, value] of johndoe) {
-  console.log([key, value].join(': '));
+  console.log([key, value].join(‘: ‘));
 }
-</code></pre>
+```</p>
 
-<h3>9. Comprehensions</h3>
+<h3 id="comprehensions">9. Comprehensions</h3>
 
 <p>Python最早引入了<code>List Comprehensions(列表推导)</code>的概念，这一特性深受程序员的喜爱，这一特性继而引申出<code>Dict Comprehensions</code>及<code>Generator Comprehensions</code>。CoffeeScript设计时也参考了Python，它也有<code>Comprehensions</code>的概念。而作为日渐流行的JavaScript，这么好的东西怎么能错过呢？自然而然地它也成为了JavaScript的标配。
 我们在操作数组的时候经常会使用<code>Array.prototype.map</code>和<code>Array.prototype.filter</code>方法，ES6为我们提供的<code>Comprehensions</code>简直可以称为这两个方法提供<code>语法糖(syntax sugar)</code>，其语法表达直白、简明、形象。</p>
 
-<pre><code class="js">let fruits = ['apple', 'orange', 'banana'];
+<p>```js
+let fruits = [‘apple’, ‘orange’, ‘banana’];</p>
 
-// 传统应用
+<p>// 传统应用
 let ripeFruits = fruits.map(function (item) {
-  return 'ripe ' + item;
-});
+  return ‘ripe ‘ + item;
+});</p>
 
-let fruitsWithN = fruits.filter(function (item) {
-  return item.indexOf('n') &gt; -1;
-});
+<p>let fruitsWithN = fruits.filter(function (item) {
+  return item.indexOf(‘n’) &gt; -1;
+});</p>
 
-console.log(ripeFruits);
-console.log(fruitsWithN);
+<p>console.log(ripeFruits);
+console.log(fruitsWithN);</p>
 
-// 新式玩法
+<p>// 新式玩法
 // 1. 数组推导(Array Comprehension)
-let ripeFruits2 = ['ripe ' + item for (item of fruits)];
-let fruitsWithN2 = [item for (item of fruits) if (item.indexOf('n') &gt; -1)];
-let ripeFruitsWithN = ['ripe ' + item for (item of fruits) if (item.indexOf('n') &gt; -1)];
+let ripeFruits2 = [‘ripe ‘ + item for (item of fruits)];
+let fruitsWithN2 = [item for (item of fruits) if (item.indexOf(‘n’) &gt; -1)];
+let ripeFruitsWithN = [‘ripe ‘ + item for (item of fruits) if (item.indexOf(‘n’) &gt; -1)];</p>
 
-console.log(ripeFruits2);
+<p>console.log(ripeFruits2);
 console.log(fruitsWithN2);
-console.log(ripeFruitsWithN);
+console.log(ripeFruitsWithN);</p>
 
-// 2. 生成器推导(Generator Comprehension)
-let iter = ('ripe ' + item for (item of fruits) if (item.indexOf('n') &gt; -1));
-console.log(iter.next()); // -&gt; "ripe orange"
-console.log(iter.next()); // -&gt; "ripe banana"
-</code></pre>
+<p>// 2. 生成器推导(Generator Comprehension)
+let iter = (‘ripe ‘ + item for (item of fruits) if (item.indexOf(‘n’) &gt; -1));
+console.log(iter.next()); // -&gt; “ripe orange”
+console.log(iter.next()); // -&gt; “ripe banana”
+```</p>
 
-<h3>10. 箭头函数(Arrow Functions)</h3>
+<h3 id="arrow-functions">10. 箭头函数(Arrow Functions)</h3>
 
 <p>有关ES6箭头函数的介绍移步<a href="http://www.nczonline.net/blog/2013/09/10/understanding-ecmascript-6-arrow-functions/">这里</a>参阅。</p>
 
-<h2>II、新的代码组织方式</h2>
+<h2 id="ii">II、新的代码组织方式</h2>
 
-<h3>1. 类(Classes)</h3>
+<h3 id="classes">1. 类(Classes)</h3>
 
 <p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-classes">这里</a>以及<a href="http://www.nczonline.net/blog/2012/10/16/does-javascript-need-classes/">这里</a>进行参阅。</p>
 
-<h3>2. 模块(Modules)</h3>
+<h3 id="modules">2. 模块(Modules)</h3>
 
 <p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-modules">这里</a>进行参阅。</p>
 
-<h2>III、新的标准类库</h2>
+<h2 id="iii">III、新的标准类库</h2>
 
-<h3>1. 集合(Set)</h3>
+<h3 id="set">1. 集合(Set)</h3>
 
 <p>Python的作者是个数学家，所以这门语言早期就有了对<code>Set</code>的支持。现在，ES6也将<code>Set</code>纳为标配了。有了集合，数组去除已然不费吹灰之力了。
 更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/09/25/ecmascript-6-collections-part-1-sets/">这里</a>。</p>
 
-<pre><code class="js">// 创建集合实例
-let items = new Set([1, 2, 2, 3, 4, 3, 5, '2']);
+<p>```js
+// 创建集合实例
+let items = new Set([1, 2, 2, 3, 4, 3, 5, ‘2’]);</p>
 
-// 判断指定元素是否在集合中
-console.log(items.has('2'));
+<p>// 判断指定元素是否在集合中
+console.log(items.has(‘2’));</p>
 
-// 遍历集合元素
+<p>// 遍历集合元素
 for (let item of items) {
   console.log(item);
-}
+}</p>
 
-// 添加元素到集合中
-items.add(6);
+<p>// 添加元素到集合中
+items.add(6);</p>
 
-// 从集合中移除元素
-items.delete(1);
+<p>// 从集合中移除元素
+items.delete(1);</p>
 
-// 获取集合里元素个数
-console.log(items.size);
+<p>// 获取集合里元素个数
+console.log(items.size);</p>
 
-// 遍历集合元素
+<p>// 遍历集合元素
 for (let item of items) {
   console.log(item);
-}
+}</p>
 
-// 移除集合里所有元素
+<p>// 移除集合里所有元素
 items.clear();
-</code></pre>
+```</p>
 
-<h3>2. 映射(Map)</h3>
+<h3 id="map">2. 映射(Map)</h3>
 
 <p>以往我们都是使用字面对象构建键值对映射，ES6提供的<code>Map</code>结构提供了友好直白的API让我们可以更好地操纵键值对，就像<code>localStorge</code>一样，它使我们更好地在客户端保存数据。
 更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/10/09/ecmascript-6-collections-part-2-maps/">这里</a>。</p>
 
-<pre><code class="js">// 创建映射实例
-let stuff = new Map();
+<p>```js
+// 创建映射实例
+let stuff = new Map();</p>
 
-// 设置键值对
-stuff.set('foo', 'bar')
+<p>// 设置键值对
+stuff.set(‘foo’, ‘bar’)
 // 你没看错，对象也可以作为Map的key
-stuff.set(document, document.createElement('div'));
+stuff.set(document, document.createElement(‘div’));</p>
 
-// 判断是否设置了指定键
-console.log(stuff.has('foo'));
+<p>// 判断是否设置了指定键
+console.log(stuff.has(‘foo’));</p>
 
-// 获取键值对个数
-console.log(stuff.size);
+<p>// 获取键值对个数
+console.log(stuff.size);</p>
 
-// 获取指定键的值
-console.log(stuff.get('foo'));
+<p>// 获取指定键的值
+console.log(stuff.get(‘foo’));</p>
 
-// 删除指定的键
-stuff.delete('foo');
+<p>// 删除指定的键
+stuff.delete(‘foo’);</p>
 
-// 清除所有键
-stuff.clear();
+<p>// 清除所有键
+stuff.clear();</p>
 
-// 遍历键值对
+<p>// 遍历键值对
 for (let item of stuff) {
   // key = item[0];
   // value = item[1];
   // do something
-}
+}</p>
 
-// 同上
+<p>// 同上
 for (let item of stuff.items()) {
   // do something
-}
+}</p>
 
-// 同上(解构赋值)
+<p>// 同上(解构赋值)
 for (let [key, value] of stuff) {
   // do something
-}
+}</p>
 
-// 遍历所有键
+<p>// 遍历所有键
 for (let key of stuff.keys()) {
   // do something
-}
+}</p>
 
-// 遍历所有值
+<p>// 遍历所有值
 for (let value of stuff.values()) {
   // do something
 }
-</code></pre>
+```</p>
 
-<h3>2. 弱映射(WeakMap)</h3>
+<h3 id="weakmap">2. 弱映射(WeakMap)</h3>
 
 <p><code>WeakMap</code>和<code>Map</code>类似，但<code>WeakMap</code>的键只能为对象，而不能为原始类型。
 有关<code>WeakMap</code>的详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/11/06/ecmascript-6-collections-part-3-weakmaps/">这里</a>以及<a href="http://www.nczonline.net/blog/2014/01/21/private-instance-members-with-weakmaps-in-javascript/">这里</a>。</p>
 
-<h3>3. Promises</h3>
+<h3 id="promises">3. Promises</h3>
 
 <p>由于JavaScript的异步编程的普遍应用，Promises尤显得重要。众望所归，ES6也把<code>Promises</code>写入草案中了。目前<code>Firefox 30+及Chrome33+</code>实现了<code>Promises</code>，加了这个<a href="https://github.com/jakearchibald/es6-promise">polyfill</a>，我们可以在所有现代浏览器中使用它。</p>
 
-<pre><code class="js">function get(url) {
+<p>```js
+function get(url) {
   return new Promise(function (resolve, reject) {
-    var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();</p>
 
-    xhr.open('GET', url);
+<pre><code>xhr.open('GET', url);
 
-    xhr.onload = function () {
-      var status = xhr.status;
+xhr.onload = function () {
+  var status = xhr.status;
 
-      if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
-        resolve(xhr.response);
-      } else {
-        reject(xhr.statusText);
-      }
-    };
+  if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
+    resolve(xhr.response);
+  } else {
+    reject(xhr.statusText);
+  }
+};
 
-    xhr.onerror = function () {
-      reject('Network error');
-    };
+xhr.onerror = function () {
+  reject('Network error');
+};
 
-    xhr.send(null);
-  });
-}
+xhr.send(null);   }); }
+</code></pre>
 
-function getJSON(url) {
+<p>function getJSON(url) {
   return get(url).then(JSON.parse);
-}
+}</p>
 
-// file1.txt: { "message": "This is the first file." }
-// file2.txt: { "message": "This is the second file." }
-// file3.txt: 404
+<p>// file1.txt: { “message”: “This is the first file.” }
+// file2.txt: { “message”: “This is the second file.” }
+// file3.txt: 404</p>
 
-let promise = getJSON('file1.txt');
+<p>let promise = getJSON(‘file1.txt’);</p>
 
-promise
+<p>promise
   .then(function (obj) {
     alert(obj.message);
-    return getJSON('file2.txt');
+    return getJSON(‘file2.txt’);
   })
   .then(function () {
     alert(obj.message);
-    return getJSON('file3.txt');
+    return getJSON(‘file3.txt’);
   })
   .then(function (obj) {
     alert(obj.message);
   })
   .catch(console.log);
-</code></pre>
+```</p>
 
-<h3>3. 虚拟对象(Proxies)</h3>
+<h3 id="proxies">3. 虚拟对象(Proxies)</h3>
 
 <p><code>Proxies</code>实为虚拟对象，它为对象操纵添加了一道包装，使用它有点Ruby元编程的味道。更多关于<code>Proxies</code>的解释请参阅<a href="http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies">这里</a></p>
 
-<pre><code class="js">// 原型
+<p>```js
+// 原型
 let handler = {
   get: function (proxy, name) {
-    console.log('Getter for ' + name);
+    console.log(‘Getter for ‘ + name);
+  },</p>
+
+<p>set: function (proxy, name, value) {
+    console.log(‘Setter for ‘ + name + ‘ and value of ‘ + value);
+  },</p>
+
+<p>has: function (name) {
+    console.log(name + ‘ is in the has trap.’);
+  }
+};</p>
+
+<p>var proxy = Proxy.create(handler);</p>
+
+<p>// 实例
+let createElement = (function () {
+  let specialProps = [‘id’, ‘className’];</p>
+
+<p>return function (tagName) {
+    let element = document.createElement(tagName);</p>
+
+<pre><code>let p = Proxy.create({
+  get: function (proxy, name) {
+    if (name === 'node') {
+      return element;
+    }
+
+    if (name in element) {
+      return element[name];
+    }
+
+    return element.getAttribute(name);
   },
 
   set: function (proxy, name, value) {
-    console.log('Setter for ' + name + ' and value of ' + value);
-  },
+    if (name === 'node') {
+      throw new Error('node cannot be set');
+    }
 
-  has: function (name) {
-    console.log(name + ' is in the has trap.');
-  }
-};
-
-var proxy = Proxy.create(handler);
-
-// 实例
-let createElement = (function () {
-  let specialProps = ['id', 'className'];
-
-  return function (tagName) {
-    let element = document.createElement(tagName);
-
-    let p = Proxy.create({
-      get: function (proxy, name) {
-        if (name === 'node') {
-          return element;
-        }
-
-        if (name in element) {
-          return element[name];
-        }
-
-        return element.getAttribute(name);
-      },
-
-      set: function (proxy, name, value) {
-        if (name === 'node') {
-          throw new Error('node cannot be set');
-        }
-
-        if (name in element) {
-          if (specialProps.indexOf(name) === -1) {
-            throw new Error(name + ' cannot be set');
-          }
-
-          element[name] = value;
-        } else {
-          element.setAttribute(name, value);
-        }
+    if (name in element) {
+      if (specialProps.indexOf(name) === -1) {
+        throw new Error(name + ' cannot be set');
       }
-    });
 
-    return p;
-  };
-})();
+      element[name] = value;
+    } else {
+      element.setAttribute(name, value);
+    }
+  }
+});
 
-let el = createElement('div'); // proxy
+return p;   }; })();
+</code></pre>
 
-el.id = 'proxyTest';
-el.className = 'first-class';
-el.classList.add('second-class');
-el.foo = 'bar';
-el['data-proxy-test'] = true;
+<p>let el = createElement(‘div’); // proxy</p>
 
-console.log(el.node);
+<p>el.id = ‘proxyTest’;
+el.className = ‘first-class’;
+el.classList.add(‘second-class’);
+el.foo = ‘bar’;
+el[‘data-proxy-test’] = true;</p>
+
+<p>console.log(el.node);
 console.log(el.id);
 console.log(el.className);
 console.log(el.foo);
-console.log(el['data-proxy-test']);
-</code></pre>
+console.log(el[‘data-proxy-test’]);
+```</p>
 
-<h2>IV、尾声</h2>
+<h2 id="iv">IV、尾声</h2>
 
 <p>更多关于ES6的信息可参阅如下链接：</p>
 
 <ol>
-<li><a href="https://github.com/addyosmani/es6-tools">Addy Osmani ES6 Tools</a></li>
-<li><a href="http://addyosmani.com/blog/tracking-es6-support/">Tracking ECMAScript 6 Support</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">ES6 Support in Mozilla</a></li>
-<li><a href="http://kangax.github.io/es5-compat-table/es6/">Kangax’s ES6 Support Table</a></li>
-<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts">ES6 Specification Wiki</a></li>
+  <li><a href="https://github.com/addyosmani/es6-tools">Addy Osmani ES6 Tools</a></li>
+  <li><a href="http://addyosmani.com/blog/tracking-es6-support/">Tracking ECMAScript 6 Support</a></li>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">ES6 Support in Mozilla</a></li>
+  <li><a href="http://kangax.github.io/es5-compat-table/es6/">Kangax’s ES6 Support Table</a></li>
+  <li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts">ES6 Specification Wiki</a></li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[闭包陷阱：我中招了！]]></title>
-    <link href="http://myunlessor.me/blog/2013/12/09/closure-caveat-it-got-me/"/>
-    <updated>2013-12-09T21:37:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/12/09/closure-caveat-it-got-me</id>
-    <content type="html"><![CDATA[<p>一直以来我都以为自己对js的闭包功能掌握的还算可以，最近在工作中却实实在在地被闭包整了一回，特记录于斯，以为警戒！</p>
-
-<!-- more -->
-
-
-<p>以下代码是从工作中提炼出来的，在这4个case中两次调用<code>howdy()</code>函数时log打印值分别是什么？</p>
-
-<pre><code class="js">// closure caveat
-
-// case 1
-;(function (window, $, undefined) {
-  var $target;
-
-  function howdy() {
-    var x = 'foo';
-
-    if (!$target) {
-      $target = $({})
-        .on('whatever', function () {
-          console.log(x);
-        })
-        .on('soga', function () {
-          x = 'bar';
-        });
-
-      $target.triggerHandler('soga');
-    }
-
-    $target.triggerHandler('whatever');
-  }
-
-  howdy();
-  howdy();
-})(this, jQuery);
-
-// case 2
-;(function (window, $, undefined) {
-  var $target, x;
-
-  function howdy() {
-    x = 'foo';
-
-    if (!$target) {
-      $target = $({})
-        .on('whatever', function () {
-          console.log(x);
-        })
-        .on('soga', function () {
-          x = 'bar';
-        });
-
-      $target.triggerHandler('soga');
-    }
-
-    $target.triggerHandler('whatever');
-  }
-
-  howdy();
-  howdy();
-})(this, jQuery);
-
-// case 3
-;(function (window, $, undefined) {
-  var $target;
-
-  function howdy() {
-    var x = 'foo';
-
-    if (!$target) {
-      $target = $({}).on('soga', function () {
-        x = 'bar';
-      });
-    }
-
-    $target
-      .off('whatever')
-      .on('whatever', function () {
-        console.log(x);
-      });
-
-    $target.triggerHandler('soga');
-    $target.triggerHandler('whatever');
-  }
-
-  howdy();
-  howdy();
-})(this, jQuery);
-
-// case 4
-;(function (window, $, undefined) {
-  var $target, x;
-
-  function howdy() {
-    x = 'foo';
-
-    if (!$target) {
-      $target = $({}).on('soga', function () {
-        x = 'bar';
-      });
-    }
-
-    $target
-      .off('whatever')
-      .on('whatever', function () {
-        console.log(x);
-      });
-
-    $target.triggerHandler('soga');
-    $target.triggerHandler('whatever');
-  }
-
-  howdy();
-  howdy();
-})(this, jQuery);
-</code></pre>
-
-<p>总结：<code>prefer object properties to local variables when recording state!</code></p>
 ]]></content>
   </entry>
   
