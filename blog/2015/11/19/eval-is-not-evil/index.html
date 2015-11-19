@@ -1,0 +1,544 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>"eval" is not evil - Silent Reverie</title>
+  <meta name="author" content="俞乐">
+
+  
+  <meta name="description" content="Emil6us's Space">
+  
+  <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
+
+  
+  <meta name="description" content="一般我们代码几乎不会使用到eval, 但凡需要使用到eval的地方，都会代而使用构造器Function生成函数实例的方式，因为eval is evil。eval可以在全局作域下执行代码，也可以在局部作用域（间接调用eval）下执行代码。而使用构造器Function生成函数实例的方式， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://myunlessor.me/blog/2015/11/19/eval-is-not-evil">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Silent Reverie" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/javascripts/link_open_in_blank.js"></script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-41039292-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Silent Reverie</a></h1>
+  
+    <h2>Creating memories with the awesome stuff I've learnt.</h2>
+  
+</hgroup>
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:myunlessor.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="搜索"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">所有文章</a></li>
+  <li><a href="/about.html">关于我</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">"Eval" Is Not Evil</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-11-19T21:56:00+08:00" pubdate data-updated="true">2015年11月19日</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>一般我们代码几乎不会使用到<code>eval</code>, 但凡需要使用到<code>eval</code>的地方，都会代而<code>使用构造器Function生成函数实例</code>的方式，因为<code>eval is evil</code>。<code>eval</code>可以在全局作域下执行代码，也可以在局部作用域（间接调用<code>eval</code>）下执行代码。而<code>使用构造器Function生成函数实例</code>的方式，可以确保我们的代码是在全局作用域下执行。</p>
+
+<!-- more -->
+
+<p>依赖Function，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+
+<p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">global</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="cm">/**</span>
+</span><span class="line"><span class="cm">   * Execute javascript code within specific scope</span>
+</span><span class="line"><span class="cm">   * @param  {Function|String} fn Scoped function or expression</span>
+</span><span class="line"><span class="cm">   * @param  {Object} imports     An object which defines required local variables</span>
+</span><span class="line"><span class="cm">   * @return {Function}           Function that can be invoked to run code in specific scope</span>
+</span><span class="line"><span class="cm">   */</span>
+</span><span class="line">  <span class="kd">function</span> <span class="nx">scopedRunner</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">imports</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">rfunc</span> <span class="o">=</span> <span class="sr">/^function\s+(?:[^(]*)\(([^)]*)\)\s*{([^]*)}$/</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">found</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">fn</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rfunc</span><span class="p">)</span> <span class="o">||</span> <span class="p">[,,</span><span class="s1">&#39;return (&#39;</span> <span class="o">+</span> <span class="nx">fn</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">];</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">found</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">stmt</span> <span class="o">=</span> <span class="nx">found</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">imports</span> <span class="o">||</span> <span class="p">{}).</span><span class="nx">reduce</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">ret</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">idx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="nx">ret</span> <span class="o">+</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">?</span> <span class="s1">&#39;, &#39;</span> <span class="o">:</span> <span class="s1">&#39;var &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39; = $scope[&quot;&#39;</span> <span class="o">+</span> <span class="nx">key</span> <span class="o">+</span> <span class="s1">&#39;&quot;]&#39;</span><span class="p">;</span>
+</span><span class="line">    <span class="p">},</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;; return function (&#39;</span> <span class="o">+</span> <span class="nx">args</span> <span class="o">+</span> <span class="s1">&#39;) {&#39;</span> <span class="o">+</span> <span class="nx">stmt</span> <span class="o">+</span> <span class="s1">&#39;};&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">return</span> <span class="nb">Function</span><span class="p">(</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="nx">body</span><span class="p">).</span><span class="nx">call</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">imports</span><span class="p">);</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// define `global.$eval`</span>
+</span><span class="line">  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">global</span><span class="p">,</span> <span class="s1">&#39;$eval&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="nx">scopedRunner</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">)();</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// define `Object.prototype.$eval`</span>
+</span><span class="line">  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="s1">&#39;$eval&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">value</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">expr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="nx">global</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">}(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>以下是一些关于<code>$eval</code>和<code>Object.prototype.$eval</code>的使用例子。</p>
+
+<ul>
+  <li>e.g 1</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="c1">// define some global variables</span>
+</span><span class="line"><span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class="line"><span class="nx">y</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="c1">// define some local variables</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// ReferenceError: a is not defined</span>
+</span><span class="line">    <span class="c1">// console.log(a + b);</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// ReferenceError: a is not defined</span>
+</span><span class="line">  <span class="c1">// $eval(&#39;a + b&#39;);</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;y / x&#39;</span><span class="p">);</span> <span class="c1">//=&gt; 3</span>
+</span><span class="line"><span class="p">}();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>e.g 2</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">a</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="mi">7</span> <span class="p">};</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">result</span> <span class="o">=</span> <span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class="line">  <span class="p">},</span> <span class="nx">obj</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//=&gt; 42</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">result</span> <span class="o">=</span> <span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;a * b&#39;</span><span class="p">,</span> <span class="nx">obj</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//=&gt; 42</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;a * b&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">//=&gt; 42</span>
+</span><span class="line"><span class="p">}();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>e.g 3</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">raws</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[6, 7]&#39;</span><span class="p">,</span> <span class="s1">&#39;{}&#39;</span><span class="p">,</span> <span class="s1">&#39;42&#39;</span><span class="p">,</span> <span class="s1">&#39;a * b&#39;</span><span class="p">];</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">raws</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nb">eval</span><span class="p">.</span><span class="nx">$eval</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span> <span class="nx">a</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="mi">7</span><span class="p">}));</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">//=&gt; [[6, 7], {}, 42, 42]</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
+</span><span class="line"><span class="p">}();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>e.g 4</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class="line"><span class="nx">y</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">x</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">y</span><span class="o">:</span> <span class="mi">7</span><span class="p">,</span>
+</span><span class="line">    <span class="nx">times</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">y</span><span class="p">;</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">};</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="k">return</span> <span class="nx">$scope</span><span class="p">;</span>
+</span><span class="line">  <span class="p">},</span> <span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="nx">obj</span><span class="p">);</span> <span class="c1">//=&gt; true</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;$scope&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="nx">obj</span><span class="p">);</span> <span class="c1">//=&gt; true</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">obj</span><span class="p">.</span><span class="nx">$eval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">times</span><span class="p">());</span>             <span class="c1">//=&gt; 300</span>
+</span><span class="line">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">times</span><span class="p">());</span>      <span class="c1">//=&gt; 42</span>
+</span><span class="line">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">times</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">$scope</span><span class="p">));</span>  <span class="c1">//=&gt; 42</span>
+</span><span class="line">  <span class="p">});</span>
+</span><span class="line"><span class="p">}();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最后，<code>$eval is not eval, $eval is not evil</code>。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">俞乐</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-11-19T21:56:00+08:00" pubdate data-updated="true">2015年11月19日</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+
+  
+
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/11/18/scoped-reality/" title="Previous Post: Scoped Reality">&laquo; Scoped Reality</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>文章分类</h1>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (11)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+</section><section>
+  <h1>近期文章</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/19/eval-is-not-evil/">"Eval" Is Not Evil</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/18/scoped-reality/">Scoped Reality</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/19/simple-custom-events-using-jquery/">使用jQuery实现简单的自定义事件功能</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/">简单的分页折叠逻辑实现</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/18/ponder-with-underscore-and-lodash/">由Underscore与Lodash的差异引发的思考</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/01/venture-into-es6/">浅尝ECMAScript 6</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/17/touch-sublime-text-plugins/">触摸Sublime Text Plugins</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/16/pragmatic-sublime-text-snippets/">Sublime Text Snippets实用技巧二则</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/15/embrace-sublime-text-snippets/">拥抱Sublime Text Snippets</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/14/embrace-sublime-text/">情逗Sublime Text</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/09/closure-caveat-it-got-me/">闭包陷阱：我中招了！</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/15/alibaba-ued-quiz3-strategy/">淘宝前端之智勇大闯关第三季攻略</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/08/playing-zhao-cha-with-photoshop/">Photoshop趣味用法：玩转QQ找茬游戏</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/04/import-this-and-caesar-cipher/">Import This 与恺撒密码</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/04/strategy-for-scheduling-javascript-asynchronous-code/">JavaScript异步代码排程策略</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/">使用Photoshop: 将整图一分为九</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/19/file-batch-stuff/">文件批处理那些事儿</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>友情链接</h1>
+  <ul>
+    <li><a href="http://www.xiezongxing.com/">谢宗星博客</a></li>
+    <li><a href="http://mengkang.net/">周梦康</a></li>
+    <li><a href="http://bibodeng.sinaapp.com/">bibodeng</a></li>
+    <li><a href="http://www.mapleshaw.com/">chrome丁</a></li>
+  </ul>
+</section>
+
+
+<section>
+    <h1>最近评论</h1>
+    <div id="recentcomments" class="dsq-widget"><script type="text/javascript" src="http://myunlessor.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=0&avatar_size=48&excerpt_length=200"></script></div>
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - 俞乐 -
+  <span class="credit">Proudly Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'myunlessor';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://myunlessor.me/blog/2015/11/19/eval-is-not-evil/';
+        var disqus_url = 'http://myunlessor.me/blog/2015/11/19/eval-is-not-evil/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

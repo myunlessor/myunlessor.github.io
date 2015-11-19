@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-11-19T00:06:58+08:00</updated>
+  <updated>2015-11-19T22:09:15+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,156 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA["eval" is not evil]]></title>
+    <link href="http://myunlessor.me/blog/2015/11/19/eval-is-not-evil/"/>
+    <updated>2015-11-19T21:56:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2015/11/19/eval-is-not-evil</id>
+    <content type="html"><![CDATA[<p>一般我们代码几乎不会使用到<code>eval</code>, 但凡需要使用到<code>eval</code>的地方，都会代而<code>使用构造器Function生成函数实例</code>的方式，因为<code>eval is evil</code>。<code>eval</code>可以在全局作域下执行代码，也可以在局部作用域（间接调用<code>eval</code>）下执行代码。而<code>使用构造器Function生成函数实例</code>的方式，可以确保我们的代码是在全局作用域下执行。</p>
+
+<!-- more -->
+
+<p>依赖Function，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+
+<p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
+
+<p>```javascript
+void function () {
+  var global = this;</p>
+
+<p>/**
+   * Execute javascript code within specific scope
+   * @param  {Function|String} fn Scoped function or expression
+   * @param  {Object} imports     An object which defines required local variables
+   * @return {Function}           Function that can be invoked to run code in specific scope
+   <em>/
+  function scopedRunner(fn, imports) {
+    var rfunc = /^function\s+(?:[^(]</em>)(([^)]<em>))\s</em>{([^]*)}$/;
+    var found = String(fn).match(rfunc) || [,,’return (‘ + fn + ‘);’];
+    var args = found[1] || ‘’;
+    var stmt = found[2] || ‘’;</p>
+
+<pre><code>var body = Object.keys(imports || {}).reduce(function (ret, key, idx) {
+  return ret + (idx ? ', ' : 'var ') + key + ' = $scope["' + key + '"]';
+}, '') + '; return function (' + args + ') {' + stmt + '};';
+
+return Function('$scope', body).call(null, imports);   }
+</code></pre>
+
+<p>// define <code>global.$eval</code>
+  Object.defineProperty(global, ‘$eval’, {
+    value: function () {
+      return scopedRunner.apply(null, arguments)();
+    }
+  });</p>
+
+<p>// define <code>Object.prototype.$eval</code>
+  Object.defineProperty(Object.prototype, ‘$eval’, {
+    value: function (expr) {
+      return global.$eval(expr, this);
+    }
+  });
+}(function () { return this; });
+```</p>
+
+<p>以下是一些关于<code>$eval</code>和<code>Object.prototype.$eval</code>的使用例子。</p>
+
+<ul>
+  <li>e.g 1</li>
+</ul>
+
+<p>```javascript
+// define some global variables
+x = 10;
+y = 30;</p>
+
+<p>void function () {
+  // define some local variables
+  var a = 6, b = 7;</p>
+
+<p>$eval(function () {
+    // ReferenceError: a is not defined
+    // console.log(a + b);
+  });</p>
+
+<p>// ReferenceError: a is not defined
+  // $eval(‘a + b’);</p>
+
+<p>$eval(‘y / x’); //=&gt; 3
+}();
+```</p>
+
+<ul>
+  <li>e.g 2</li>
+</ul>
+
+<p>```javascript
+void function () {
+  var obj = { a: 6, b: 7 };
+  var result;</p>
+
+<p>result = $eval(function () {
+    return a * b;
+  }, obj);
+  console.log(result); //=&gt; 42</p>
+
+<p>result = $eval(‘a * b’, obj);
+  console.log(result); //=&gt; 42</p>
+
+<p>result = obj.$eval(‘a * b’);
+  console.log(result); //=&gt; 42
+}();
+```</p>
+
+<ul>
+  <li>e.g 3</li>
+</ul>
+
+<p>```javascript
+void function () {
+  var raws = [‘[6, 7]’, ‘{}’, ‘42’, ‘a * b’];
+  var out = raws.map(eval.$eval.bind({ a: 6, b: 7}));</p>
+
+<p>//=&gt; [[6, 7], {}, 42, 42]
+  console.log(out);
+}();
+```</p>
+
+<ul>
+  <li>e.g 4</li>
+</ul>
+
+<p>```javascript
+x = 10;
+y = 30;</p>
+
+<p>void function () {
+  var obj = {
+    x: 6,
+    y: 7,
+    times: function () {
+      return this.x * this.y;
+    }
+  };</p>
+
+<p>console.log($eval(function () {
+    return $scope;
+  }, obj) === obj); //=&gt; true</p>
+
+<p>console.log(obj.$eval(‘$scope’) === obj); //=&gt; true</p>
+
+<p>obj.$eval(function () {
+    console.log(times());             //=&gt; 300
+    console.log($scope.times());      //=&gt; 42
+    console.log(times.call($scope));  //=&gt; 42
+  });
+}();
+```</p>
+
+<p>最后，<code>$eval is not eval, $eval is not evil</code>。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Scoped Reality]]></title>
@@ -961,625 +1111,6 @@ max_fancy(8, 4, 15, 42, 23, 16);
 
 <p>最后，我的感悟是：函数式编程以数据流动为导向，是函数装配的艺术。</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[浅尝ECMAScript 6]]></title>
-    <link href="http://myunlessor.me/blog/2014/03/01/venture-into-es6/"/>
-    <updated>2014-03-01T10:43:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2014/03/01/venture-into-es6</id>
-    <content type="html"><![CDATA[<p>现在ECMAScript 6草案制定在不断地推进，浏览器们也在跟进实现，了解ES6的提供的诸多特性是势在必行的事了。</p>
-
-<p>有关浏览器们对ECMAScript 6草案的实现情况可参阅<a href="http://kangax.github.io/es5-compat-table/es6/">这里</a>。</p>
-
-<p>有关ES6的语言特性可参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures">这里</a>。</p>
-
-<p>目前对ES6实现较为充分的环境有<a href="https://github.com/google/traceur-compiler">Google Traceur Compiler</a>及<a href="http://nightly.mozilla.org/">Firefox Nightly</a>。</p>
-
-<p>有关<code>traceur compiler</code>的环境配置如下：</p>
-
-<p><code>html
-&lt;script src="https://traceur-compiler.googlecode.com/git/bin/traceur.js"&gt;&lt;/script&gt;
-&lt;script src="https://traceur-compiler.googlecode.com/git/src/bootstrap.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-traceur.options.experimental = true;
-&lt;/script&gt;
-&lt;script&gt;
-  // blablabla...
-&lt;/script&gt;
-</code></p>
-
-<!-- more -->
-
-<h2 id="i">I、新的语法</h2>
-
-<h3 id="block-scope">1. 块作用域(Block Scope)</h3>
-
-<p><code>var</code>关键字声明的变量具有函数作用域或全局作用域，而通过<code>let</code>关键字将变量声明为块作用域，对比如下：</p>
-
-<p>```js
-// 在块(curly)作用域中声明并初始化变量
-{ var foo = ‘foo’; }
-{ let bar = ‘bar’; }</p>
-
-<p>console.log(foo); // -&gt; ‘foo’
-console.log(bar); // ReferenceError: bar is not defined
-```</p>
-
-<h3 id="constants">2. 常量(Constants)</h3>
-
-<p>许多语言都有常量的概念(值不能改变的变量)。ES6草案将常量引入到了JavaScript中。</p>
-
-<p>使用<code>const</code>关键字将变量声明为常量，规范要求<code>const</code>声明的常量具块作用域，某些浏览器目前将其实现为函数作用域或全局作用域。声明变量为常量时如果不赋值，某些浏览器会将该变量赋<code>undefined</code>值，而某些浏览器则直接报错。为常量重新赋值，某些浏览器会忽略新赋值，某些浏览器会报错。将引用类型（如数组或对象）声明为常量，并不影响引用类型的扩充行为：</p>
-
-<p>```js
-const noexist;             // Const must be initialized (IE)
-const foo = ‘foo’;
-foo = ‘hoo’;               // Assignment to const (IE)
-console.log(foo);          // -&gt; ‘foo’</p>
-
-<p>// 常量引用类型并不影响对其自身的扩充(<code>augument</code>)
-const bar = [];
-bar.push(‘spam’, ‘eggs’);
-console.log(bar.length);   // -&gt; 2</p>
-
-<p>// 同上
-const baz = {};
-baz.spam = ‘eggs’;
-console.log(baz.spam);     // -&gt; ‘eggs’
-```</p>
-
-<h3 id="default-parameters">3. 默认参数(Default Parameters)</h3>
-
-<p>函数声明时可以为参数赋予默认值，这样函数调用时如果参数缺省(<code>undefined</code>)，则该参数会被赋予默认值，使用默认参数在一定程序上使函数声明更为直观，并且简化我们的代码。</p>
-
-<p>```js
-// 传统写法
-function fill(container, liquid) {
-  if (typeof liquid === ‘undefined’) {
-    liquid = ‘coffee’;
-  }
-  // blablabla…
-}</p>
-
-<p>// 新式写法
-function fill(container, liquid = ‘coffee’) {
-  // blablabla…
-}
-```</p>
-
-<h3 id="restspread">4. Rest和Spread操作符</h3>
-
-<p>很多时候我们处理函数的时候需要用到数组参数，ES6提供的<code>Rest</code>和<code>Spread</code>操作符可以让我们更方便地处理数组参数。</p>
-
-<p><code>rest</code>是将多值折叠为单值集合的过程，和<code>rest</code>相反，<code>spread</code>是将单值集合展开为多值的过程。很多语言都有对它的支持，语法略有差异，Python、Ruby和CoffeeScript将这种语法统称为<code>splats</code>，Python和Ruby用形如<code>*var</code>的语法来表达。CoffeeScript用形如<code>var...</code>的语法来表达，而ES6则用形如<code>...var</code>的语法来表达。</p>
-
-<p>```js
-// 1. rest
-function unary(…first) {
-  console.log(first);
-}</p>
-
-<p>function binary(first, …rest) {
-  console.log([first, rest]);
-}</p>
-
-<p>unary(‘foo’);                 // -&gt; [‘foo’]
-unary(‘foo’, ‘bar’);          // -&gt; [‘foo’, ‘bar’]</p>
-
-<p>binary(‘foo’);                // -&gt; [‘foo’, []]
-binary(‘foo’, ‘bar’, ‘baz’);  // -&gt; [‘foo’, [‘bar’, ‘baz’]]</p>
-
-<p>// rest实现
-;(function (window, undefined) {
-  var _slice = Array.prototype.slice;</p>
-
-<p>function variadic(fn) {
-    var numParams    = fn.length, // 形参个数
-        numNamedArgs = numParams - 1;</p>
-
-<pre><code>return numParams &lt; 1 ? fn : function () {
-  var
-    numArgs             = arguments.length, // 实参个数
-    namedArgs           = _slice.call(arguments, 0, numNamedArgs),
-    numMissingNamedArgs = Math.max(0, numNamedArgs - numArgs),
-    argPadding          = Array(numMissingNamedArgs),
-    variadicArgs        = _slice.call(arguments, numNamedArgs);
-
-  return fn.apply(this, namedArgs
-                          .concat(argPadding)
-                          .concat([variadicArgs]));
-};   }
-</code></pre>
-
-<p>window.variadic = variadic;
-}).call(this, this);</p>
-
-<p>// -&gt; [‘why’, ‘hello’, ‘there’]
-variadic(unary)(‘why’, ‘hello’, ‘there’);</p>
-
-<p>// -&gt; [‘why’, [‘hello’, ‘there’]]
-variadic(binary)(‘why’, ‘hello’, ‘there’);</p>
-
-<p>// —————————————————-</p>
-
-<p>// 2. spread
-var numbers = [1, 2, 3, 4, 5];</p>
-
-<p>// 传统写法
-var max = Math.max.apply(Math, number);</p>
-
-<p>var filled = numbers.slice(0);
-[].push.apply(filled, [6, 7, 8, 9, 10]);</p>
-
-<p>// 新式写法
-var max = Math.max(…number);
-var filled = […numbers, 6, 7, 8, 9, 10]
-```</p>
-
-<h3 id="destructuring-assignment">5. 解构赋值(Destructuring Assignment)</h3>
-
-<p>如果你想从数组中拿取多个元素并赋予其他变量，或是从函数中返回多值，那么ES6提供的<code>解构赋值(Destructuring Assignment)</code>特性正是我们所需要的。</p>
-
-<p>```js
-// 1. 数组解构赋值
-let a = 1, b = 2;
-[b, a] = [a, b];   // swap two variabls</p>
-
-<p>console.log(a, b); // -&gt; 2 1</p>
-
-<p>function dest() {
-  return [‘why’, ‘hello’, ‘there’];
-}</p>
-
-<p>let [foo, bar, baz] = dest();</p>
-
-<p>// -&gt; ‘why’ ‘hello’ ‘there’
-console.log(foo, bar, baz);</p>
-
-<p>// 忽略不需要的值
-let [a, , c] = dest();</p>
-
-<p>// -&gt; ‘why’ ‘there’
-console.log(a, c);</p>
-
-<p>// 2. 对象解构赋值
-let janeDoe = {
-  first: ‘jane’,
-  last: ‘doe’,
-  gender: ‘female’,
-  hobbies: [‘music’, ‘sports’]
-};</p>
-
-<p>let { first: firstName, last: lastName } = janeDoe;</p>
-
-<p>// -&gt; ‘jane’ ‘doe’
-console.log(firstName, lastName);</p>
-
-<p>let { first, last } = janeDoe;</p>
-
-<p>// -&gt; ‘jane’ ‘doe’
-console.log(first, last);</p>
-
-<p>function whatever({ first: f, last: l }) {
-  console.log(f, l);
-}</p>
-
-<p>// -&gt; ‘jane’ ‘doe’
-whatever(janeDoe);</p>
-
-<p>function another({ gender, hobbies: [hob1, hob2] }) {
-  console.log(gender, hob1, hob2);
-}</p>
-
-<p>// -&gt; ‘female’ ‘music’ ‘sports’
-another(janeDoe);
-```</p>
-
-<h3 id="forof-">6. for…of 循环语句</h3>
-
-<p>ES6新引入了<code>for…of</code>循环语句，以往我们使用的<code>for..in</code>循环语句用于迭代对象的<code>属性(properties)</code>，而新式的for…of循环语句则用于迭代对象的<code>值(values)</code>。</p>
-
-<p>```js
-var numbers = [1, 2, 3, 4, 5];</p>
-
-<p>// 传统写法
-numbers.forEach(function (number) {
-  console.log(number);
-});</p>
-
-<p>// 新式写法
-for (let number of numbers) {
-  console.log(number);
-}
-```</p>
-
-<h3 id="iterators">7. 迭代器(Iterators)</h3>
-
-<p><code>for..of</code>循环只对迭代对象有效，这意味着要使一个对象可迭代，对象自身需要迭代器。具体可移步参阅<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-iterators-and-for-of-loops">这里</a></p>
-
-<h3 id="generators">8. 生成器(Generators)</h3>
-
-<p>生成器可以创建迭代器，并且可以用它来创建自定义迭代对象。生成器异常强大，网上你可以找到它联合<code>Promises</code>一起使用的情形，它为ajax异步调用开启一个新的世界，一个没有<code>callbacks</code>，没有<code>then</code>的世界，它的强大会超乎你的想象。</p>
-
-<p>```js
-// 基本用法
-function* numberGen() {
-  let limit = 3, i = 0;</p>
-
-<p>do {
-    yield i++;
-  } while (i &lt; limit);
-}</p>
-
-<p>let iter = numberGen();</p>
-
-<p>// -&gt; { value: 0, done: false }
-iter.next();</p>
-
-<p>// -&gt; { value: 1, done: false }
-iter.next();</p>
-
-<p>// -&gt; { value: 2, done: false }
-iter.next();</p>
-
-<p>// -&gt; { value: undefined, done: true }
-iter.next();</p>
-
-<p>// 过滤偶数
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];</p>
-
-<p>function* even(numbers) {
-  for (let n of numbers) {
-    if (n % 2 === 0) {
-      yield n;
-    }
-  }
-}</p>
-
-<p>for (let n of even(numbers)) {
-  console.log(n);
-}</p>
-
-<p>// 延伸用法1
-let janeDoe = {
-  first: ‘jane’,
-  last: ‘doe’
-};</p>
-
-<p>function* iterObj(obj) {
-  for (let prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      yield [prop, obj[prop]];
-    }
-  }
-}</p>
-
-<p>// -&gt; “first: jane”
-// -&gt; “last: doe”
-for (let [key, value] of iterObj(janeDoe)) {
-  console.log([key, value].join(‘: ‘));
-}</p>
-
-<p>// 延伸用法2
-function Person(firstName, lastName) {
-  this.firstName = firstName;
-  this.lastName = lastName;
-}</p>
-
-<p>Person.prototype.greeting = function (name) {
-  return ‘Hello, ‘ + name;
-};</p>
-
-<p>// Person.prototype[Symbol.iterator]
-Person.prototype[’@@iterator’] = function* () {
-  for (let prop in this) {
-    if (this.hasOwnProperty(prop)) {
-      yield [prop, this[prop]];
-    }
-  }
-};</p>
-
-<p>let johndoe = new Person(‘john’, ‘doe’);</p>
-
-<p>// -&gt; “first: john”
-// -&gt; “last: doe”
-for (let [key, value] of johndoe) {
-  console.log([key, value].join(‘: ‘));
-}
-```</p>
-
-<h3 id="comprehensions">9. Comprehensions</h3>
-
-<p>Python最早引入了<code>List Comprehensions(列表推导)</code>的概念，这一特性深受程序员的喜爱，这一特性继而引申出<code>Dict Comprehensions</code>及<code>Generator Comprehensions</code>。CoffeeScript设计时也参考了Python，它也有<code>Comprehensions</code>的概念。而作为日渐流行的JavaScript，这么好的东西怎么能错过呢？自然而然地它也成为了JavaScript的标配。
-我们在操作数组的时候经常会使用<code>Array.prototype.map</code>和<code>Array.prototype.filter</code>方法，ES6为我们提供的<code>Comprehensions</code>简直可以称为这两个方法提供<code>语法糖(syntax sugar)</code>，其语法表达直白、简明、形象。</p>
-
-<p>```js
-let fruits = [‘apple’, ‘orange’, ‘banana’];</p>
-
-<p>// 传统应用
-let ripeFruits = fruits.map(function (item) {
-  return ‘ripe ‘ + item;
-});</p>
-
-<p>let fruitsWithN = fruits.filter(function (item) {
-  return item.indexOf(‘n’) &gt; -1;
-});</p>
-
-<p>console.log(ripeFruits);
-console.log(fruitsWithN);</p>
-
-<p>// 新式玩法
-// 1. 数组推导(Array Comprehension)
-let ripeFruits2 = [‘ripe ‘ + item for (item of fruits)];
-let fruitsWithN2 = [item for (item of fruits) if (item.indexOf(‘n’) &gt; -1)];
-let ripeFruitsWithN = [‘ripe ‘ + item for (item of fruits) if (item.indexOf(‘n’) &gt; -1)];</p>
-
-<p>console.log(ripeFruits2);
-console.log(fruitsWithN2);
-console.log(ripeFruitsWithN);</p>
-
-<p>// 2. 生成器推导(Generator Comprehension)
-let iter = (‘ripe ‘ + item for (item of fruits) if (item.indexOf(‘n’) &gt; -1));
-console.log(iter.next()); // -&gt; “ripe orange”
-console.log(iter.next()); // -&gt; “ripe banana”
-```</p>
-
-<h3 id="arrow-functions">10. 箭头函数(Arrow Functions)</h3>
-
-<p>有关ES6箭头函数的介绍移步<a href="http://www.nczonline.net/blog/2013/09/10/understanding-ecmascript-6-arrow-functions/">这里</a>参阅。</p>
-
-<h2 id="ii">II、新的代码组织方式</h2>
-
-<h3 id="classes">1. 类(Classes)</h3>
-
-<p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-classes">这里</a>以及<a href="http://www.nczonline.net/blog/2012/10/16/does-javascript-need-classes/">这里</a>进行参阅。</p>
-
-<h3 id="modules">2. 模块(Modules)</h3>
-
-<p>移步<a href="https://github.com/google/traceur-compiler/wiki/LanguageFeatures#wiki-modules">这里</a>进行参阅。</p>
-
-<h2 id="iii">III、新的标准类库</h2>
-
-<h3 id="set">1. 集合(Set)</h3>
-
-<p>Python的作者是个数学家，所以这门语言早期就有了对<code>Set</code>的支持。现在，ES6也将<code>Set</code>纳为标配了。有了集合，数组去除已然不费吹灰之力了。
-更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/09/25/ecmascript-6-collections-part-1-sets/">这里</a>。</p>
-
-<p>```js
-// 创建集合实例
-let items = new Set([1, 2, 2, 3, 4, 3, 5, ‘2’]);</p>
-
-<p>// 判断指定元素是否在集合中
-console.log(items.has(‘2’));</p>
-
-<p>// 遍历集合元素
-for (let item of items) {
-  console.log(item);
-}</p>
-
-<p>// 添加元素到集合中
-items.add(6);</p>
-
-<p>// 从集合中移除元素
-items.delete(1);</p>
-
-<p>// 获取集合里元素个数
-console.log(items.size);</p>
-
-<p>// 遍历集合元素
-for (let item of items) {
-  console.log(item);
-}</p>
-
-<p>// 移除集合里所有元素
-items.clear();
-```</p>
-
-<h3 id="map">2. 映射(Map)</h3>
-
-<p>以往我们都是使用字面对象构建键值对映射，ES6提供的<code>Map</code>结构提供了友好直白的API让我们可以更好地操纵键值对，就像<code>localStorge</code>一样，它使我们更好地在客户端保存数据。
-更详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/10/09/ecmascript-6-collections-part-2-maps/">这里</a>。</p>
-
-<p>```js
-// 创建映射实例
-let stuff = new Map();</p>
-
-<p>// 设置键值对
-stuff.set(‘foo’, ‘bar’)
-// 你没看错，对象也可以作为Map的key
-stuff.set(document, document.createElement(‘div’));</p>
-
-<p>// 判断是否设置了指定键
-console.log(stuff.has(‘foo’));</p>
-
-<p>// 获取键值对个数
-console.log(stuff.size);</p>
-
-<p>// 获取指定键的值
-console.log(stuff.get(‘foo’));</p>
-
-<p>// 删除指定的键
-stuff.delete(‘foo’);</p>
-
-<p>// 清除所有键
-stuff.clear();</p>
-
-<p>// 遍历键值对
-for (let item of stuff) {
-  // key = item[0];
-  // value = item[1];
-  // do something
-}</p>
-
-<p>// 同上
-for (let item of stuff.items()) {
-  // do something
-}</p>
-
-<p>// 同上(解构赋值)
-for (let [key, value] of stuff) {
-  // do something
-}</p>
-
-<p>// 遍历所有键
-for (let key of stuff.keys()) {
-  // do something
-}</p>
-
-<p>// 遍历所有值
-for (let value of stuff.values()) {
-  // do something
-}
-```</p>
-
-<h3 id="weakmap">2. 弱映射(WeakMap)</h3>
-
-<p><code>WeakMap</code>和<code>Map</code>类似，但<code>WeakMap</code>的键只能为对象，而不能为原始类型。
-有关<code>WeakMap</code>的详细的介绍请移步<a href="http://www.nczonline.net/blog/2012/11/06/ecmascript-6-collections-part-3-weakmaps/">这里</a>以及<a href="http://www.nczonline.net/blog/2014/01/21/private-instance-members-with-weakmaps-in-javascript/">这里</a>。</p>
-
-<h3 id="promises">3. Promises</h3>
-
-<p>由于JavaScript的异步编程的普遍应用，Promises尤显得重要。众望所归，ES6也把<code>Promises</code>写入草案中了。目前<code>Firefox 30+及Chrome33+</code>实现了<code>Promises</code>，加了这个<a href="https://github.com/jakearchibald/es6-promise">polyfill</a>，我们可以在所有现代浏览器中使用它。</p>
-
-<p>```js
-function get(url) {
-  return new Promise(function (resolve, reject) {
-    var xhr = new XMLHttpRequest();</p>
-
-<pre><code>xhr.open('GET', url);
-
-xhr.onload = function () {
-  var status = xhr.status;
-
-  if ((status &gt;= 200 &amp;&amp; status &lt; 300) || status === 304) {
-    resolve(xhr.response);
-  } else {
-    reject(xhr.statusText);
-  }
-};
-
-xhr.onerror = function () {
-  reject('Network error');
-};
-
-xhr.send(null);   }); }
-</code></pre>
-
-<p>function getJSON(url) {
-  return get(url).then(JSON.parse);
-}</p>
-
-<p>// file1.txt: { “message”: “This is the first file.” }
-// file2.txt: { “message”: “This is the second file.” }
-// file3.txt: 404</p>
-
-<p>let promise = getJSON(‘file1.txt’);</p>
-
-<p>promise
-  .then(function (obj) {
-    alert(obj.message);
-    return getJSON(‘file2.txt’);
-  })
-  .then(function () {
-    alert(obj.message);
-    return getJSON(‘file3.txt’);
-  })
-  .then(function (obj) {
-    alert(obj.message);
-  })
-  .catch(console.log);
-```</p>
-
-<h3 id="proxies">3. 虚拟对象(Proxies)</h3>
-
-<p><code>Proxies</code>实为虚拟对象，它为对象操纵添加了一道包装，使用它有点Ruby元编程的味道。更多关于<code>Proxies</code>的解释请参阅<a href="http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies">这里</a></p>
-
-<p>```js
-// 原型
-let handler = {
-  get: function (proxy, name) {
-    console.log(‘Getter for ‘ + name);
-  },</p>
-
-<p>set: function (proxy, name, value) {
-    console.log(‘Setter for ‘ + name + ‘ and value of ‘ + value);
-  },</p>
-
-<p>has: function (name) {
-    console.log(name + ‘ is in the has trap.’);
-  }
-};</p>
-
-<p>var proxy = Proxy.create(handler);</p>
-
-<p>// 实例
-let createElement = (function () {
-  let specialProps = [‘id’, ‘className’];</p>
-
-<p>return function (tagName) {
-    let element = document.createElement(tagName);</p>
-
-<pre><code>let p = Proxy.create({
-  get: function (proxy, name) {
-    if (name === 'node') {
-      return element;
-    }
-
-    if (name in element) {
-      return element[name];
-    }
-
-    return element.getAttribute(name);
-  },
-
-  set: function (proxy, name, value) {
-    if (name === 'node') {
-      throw new Error('node cannot be set');
-    }
-
-    if (name in element) {
-      if (specialProps.indexOf(name) === -1) {
-        throw new Error(name + ' cannot be set');
-      }
-
-      element[name] = value;
-    } else {
-      element.setAttribute(name, value);
-    }
-  }
-});
-
-return p;   }; })();
-</code></pre>
-
-<p>let el = createElement(‘div’); // proxy</p>
-
-<p>el.id = ‘proxyTest’;
-el.className = ‘first-class’;
-el.classList.add(‘second-class’);
-el.foo = ‘bar’;
-el[‘data-proxy-test’] = true;</p>
-
-<p>console.log(el.node);
-console.log(el.id);
-console.log(el.className);
-console.log(el.foo);
-console.log(el[‘data-proxy-test’]);
-```</p>
-
-<h2 id="iv">IV、尾声</h2>
-
-<p>更多关于ES6的信息可参阅如下链接：</p>
-
-<ol>
-  <li><a href="https://github.com/addyosmani/es6-tools">Addy Osmani ES6 Tools</a></li>
-  <li><a href="http://addyosmani.com/blog/tracking-es6-support/">Tracking ECMAScript 6 Support</a></li>
-  <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla">ES6 Support in Mozilla</a></li>
-  <li><a href="http://kangax.github.io/es5-compat-table/es6/">Kangax’s ES6 Support Table</a></li>
-  <li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts">ES6 Specification Wiki</a></li>
-</ol>
 ]]></content>
   </entry>
   
