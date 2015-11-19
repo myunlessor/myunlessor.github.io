@@ -103,7 +103,7 @@ void function () {
 ```javascript
 void function () {
   var raws = ['[6, 7]', '{}', '42', 'a * b'];
-  var out = raws.map(eval.$eval.bind({ a: 6, b: 7}));
+  var out = raws.map(eval.$eval.bind({ a: 6, b: 7 }));
 
   //=> [[6, 7], {}, 42, 42]
   console.log(out);
