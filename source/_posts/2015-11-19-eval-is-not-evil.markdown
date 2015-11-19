@@ -10,7 +10,7 @@ categories: [javascript]
 
 <!-- more -->
 
-依赖`Function`，我们可以实现自己的`“eval”`。这里我将实现的`“eval”`命名为`$eval`，以示区分。当然，`$eval`实现的功能和原生`eval`功能不尽相同。同时，这里还额外将`$eval`方法定义到`Object.prototype`中以适用不同场合。
+依赖`Function`构造函数，我们可以实现自己的`“eval”`。这里我将实现的`“eval”`命名为`$eval`，以示区分。当然，`$eval`实现的功能和原生`eval`功能不尽相同。同时，这里还额外将`$eval`方法定义到`Object.prototype`中以适用不同场合。
 
 下面是`$eval`和`Object.prototype.$eval`的代码实现。
 
@@ -48,7 +48,7 @@ void function (global) {
       return global.$eval(expr, this);
     }
   });
-}(function () { return this; });
+}(function () { return this; }());
 ```
 
 以下是一些关于`$eval`和`Object.prototype.$eval`的使用例子。
@@ -100,10 +100,10 @@ void function () {
 
 ```javascript
 void function () {
-  var raws = ['[6, 7]', '{}', '42', 'a * b'];
+  var raws = ['42', '"42"', 'a * b', '[a, b]', '{ x: a, y: b }'];
   var out = raws.map(eval.$eval.bind({ a: 6, b: 7 }));
 
-  //=> [[6, 7], {}, 42, 42]
+  //=> [42, '42', 42, [6, 7], { x: 6, y: 7 }]
   console.log(out);
 }();
 ```
@@ -120,20 +120,37 @@ void function () {
     y: 7,
     times: function () {
       return this.x * this.y;
+    },
+    sum: function (x, y) {
+      return x + y;
     }
   };
 
-  console.log($eval(function () {
-    return $scope;
-  }, obj) === obj); //=> true
+  console.log(
+    $eval('$scope', obj) === obj,                        //=> true
+    $eval(function () { return $scope; }, obj) === obj,  //=> true
+    obj.$eval('$scope') === obj,                         //=> true
+    obj.$eval(function () { return $scope; }) === obj    //=> true
+  );
 
-  console.log(obj.$eval('$scope') === obj); //=> true
+  console.log(
+    obj.$eval('times()'),             //=> 300
+    obj.$eval('$scope.times()'),      //=> 42
+    obj.$eval('times.call($scope)')   //=> 42
+  );
 
   obj.$eval(function () {
     console.log(times());             //=> 300
     console.log($scope.times());      //=> 42
     console.log(times.call($scope));  //=> 42
   });
+
+  console.log(
+    obj.$eval('sum(x,y)'),                          //=> 13
+    obj.$eval(function () { return sum(x, y); }),   //=> 13
+    $eval('sum(x,y)', obj),                         //=> 13
+    $eval(function () { return sum(x, y); }, obj)   //=> 13
+  );
 }();
 ```
 
