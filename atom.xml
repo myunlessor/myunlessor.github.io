@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-11-19T22:09:15+08:00</updated>
+  <updated>2015-11-19T22:12:33+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -193,7 +193,7 @@
 <span class="line-number">7</span>
 </pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 </span><span class="line">  <span class="kd">var</span> <span class="nx">raws</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[6, 7]&#39;</span><span class="p">,</span> <span class="s1">&#39;{}&#39;</span><span class="p">,</span> <span class="s1">&#39;42&#39;</span><span class="p">,</span> <span class="s1">&#39;a * b&#39;</span><span class="p">];</span>
-</span><span class="line">  <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">raws</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nb">eval</span><span class="p">.</span><span class="nx">$eval</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span> <span class="nx">a</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="mi">7</span><span class="p">}));</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">out</span> <span class="o">=</span> <span class="nx">raws</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nb">eval</span><span class="p">.</span><span class="nx">$eval</span><span class="p">.</span><span class="nx">bind</span><span class="p">({</span> <span class="nx">a</span><span class="o">:</span> <span class="mi">6</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="mi">7</span> <span class="p">}));</span>
 </span><span class="line">
 </span><span class="line">  <span class="c1">//=&gt; [[6, 7], {}, 42, 42]</span>
 </span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">out</span><span class="p">);</span>
