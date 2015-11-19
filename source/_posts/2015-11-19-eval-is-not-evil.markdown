@@ -10,14 +10,12 @@ categories: [javascript]
 
 <!-- more -->
 
-依赖Function，我们可以实现自己的`“eval”`。这里我将实现的`“eval”`命名为`$eval`，以示区分。当然，`$eval`实现的功能和原生`eval`功能不尽相同。同时，这里还额外将`$eval`方法定义到`Object.prototype`中以适用不同场合。
+依赖`Function`，我们可以实现自己的`“eval”`。这里我将实现的`“eval”`命名为`$eval`，以示区分。当然，`$eval`实现的功能和原生`eval`功能不尽相同。同时，这里还额外将`$eval`方法定义到`Object.prototype`中以适用不同场合。
 
 下面是`$eval`和`Object.prototype.$eval`的代码实现。
 
 ```javascript
-void function () {
-  var global = this;
-
+void function (global) {
   /**
    * Execute javascript code within specific scope
    * @param  {Function|String} fn Scoped function or expression
