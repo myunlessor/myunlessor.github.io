@@ -111,7 +111,7 @@
 
 <!-- more -->
 
-<p>依赖Function，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+<p>依赖<code>Function</code>，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
 
 <p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
 
@@ -149,11 +149,7 @@
 <span class="line-number">32</span>
 <span class="line-number">33</span>
 <span class="line-number">34</span>
-<span class="line-number">35</span>
-<span class="line-number">36</span>
-</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class="line">  <span class="kd">var</span> <span class="nx">global</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class="line">
+</pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
 </span><span class="line">  <span class="cm">/**</span>
 </span><span class="line"><span class="cm">   * Execute javascript code within specific scope</span>
 </span><span class="line"><span class="cm">   * @param  {Function|String} fn Scoped function or expression</span>

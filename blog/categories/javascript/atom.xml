@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-11-19T22:12:33+08:00</updated>
+  <updated>2015-11-19T23:43:56+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -22,15 +22,13 @@
 
 <!-- more -->
 
-<p>依赖Function，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+<p>依赖<code>Function</code>，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
 
 <p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
 
 <p>```javascript
-void function () {
-  var global = this;</p>
-
-<p>/**
+void function (global) {
+  /**
    * Execute javascript code within specific scope
    * @param  {Function|String} fn Scoped function or expression
    * @param  {Object} imports     An object which defines required local variables
