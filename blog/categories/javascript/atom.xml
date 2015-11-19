@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-11-19T23:43:56+08:00</updated>
+  <updated>2015-11-20T00:44:26+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -22,7 +22,7 @@
 
 <!-- more -->
 
-<p>依赖<code>Function</code>，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+<p>依赖<code>Function</code>构造函数，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
 
 <p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
 
@@ -60,7 +60,7 @@ return Function('$scope', body).call(null, imports);   }
       return global.$eval(expr, this);
     }
   });
-}(function () { return this; });
+}(function () { return this; }());
 ```</p>
 
 <p>以下是一些关于<code>$eval</code>和<code>Object.prototype.$eval</code>的使用例子。</p>
@@ -118,10 +118,10 @@ void function () {
 
 <p>```javascript
 void function () {
-  var raws = [‘[6, 7]’, ‘{}’, ‘42’, ‘a * b’];
+  var raws = [‘42’, ‘“42”’, ‘a * b’, ‘[a, b]’, ‘{ x: a, y: b }’];
   var out = raws.map(eval.$eval.bind({ a: 6, b: 7 }));</p>
 
-<p>//=&gt; [[6, 7], {}, 42, 42]
+<p>//=&gt; [42, ‘42’, 42, [6, 7], { x: 6, y: 7 }]
   console.log(out);
 }();
 ```</p>
@@ -140,20 +140,37 @@ y = 30;</p>
     y: 7,
     times: function () {
       return this.x * this.y;
+    },
+    sum: function (x, y) {
+      return x + y;
     }
   };</p>
 
-<p>console.log($eval(function () {
-    return $scope;
-  }, obj) === obj); //=&gt; true</p>
+<p>console.log(
+    $eval(‘$scope’, obj) === obj,                        //=&gt; true
+    $eval(function () { return $scope; }, obj) === obj,  //=&gt; true
+    obj.$eval(‘$scope’) === obj,                         //=&gt; true
+    obj.$eval(function () { return $scope; }) === obj    //=&gt; true
+  );</p>
 
-<p>console.log(obj.$eval(‘$scope’) === obj); //=&gt; true</p>
+<p>console.log(
+    obj.$eval(‘times()’),             //=&gt; 300
+    obj.$eval(‘$scope.times()’),      //=&gt; 42
+    obj.$eval(‘times.call($scope)’)   //=&gt; 42
+  );</p>
 
 <p>obj.$eval(function () {
     console.log(times());             //=&gt; 300
     console.log($scope.times());      //=&gt; 42
     console.log(times.call($scope));  //=&gt; 42
-  });
+  });</p>
+
+<p>console.log(
+    obj.$eval(‘sum(x,y)’),                          //=&gt; 13
+    obj.$eval(function () { return sum(x, y); }),   //=&gt; 13
+    $eval(‘sum(x,y)’, obj),                         //=&gt; 13
+    $eval(function () { return sum(x, y); }, obj)   //=&gt; 13
+  );
 }();
 ```</p>
 
