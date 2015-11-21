@@ -111,7 +111,7 @@
 
 <!-- more -->
 
-<p>依赖<code>Function</code>构造函数，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
+<p>依赖<code>Function</code>构造函数，我们可以实现自己的<code>“eval”</code>。这里我将实现的<code>“eval”</code>命名为<code>$eval</code>，以示区分。当然，<code>$eval</code>实现的功能和原生<code>eval</code>功能不尽相同。<code>$eval</code>可以让我们在指定作用域下执行代码。同时，这里还额外将<code>$eval</code>方法定义到<code>Object.prototype</code>中以适用不同场合。</p>
 
 <p>下面是<code>$eval</code>和<code>Object.prototype.$eval</code>的代码实现。</p>
 
@@ -223,9 +223,9 @@
 </span><span class="line">  <span class="p">});</span>
 </span><span class="line">
 </span><span class="line">  <span class="c1">// ReferenceError: a is not defined</span>
-</span><span class="line">  <span class="c1">// $eval(&#39;a + b&#39;);</span>
+</span><span class="line">  <span class="c1">// console.log($eval(&#39;a + b&#39;));</span>
 </span><span class="line">
-</span><span class="line">  <span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;y / x&#39;</span><span class="p">);</span> <span class="c1">//=&gt; 3</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">$eval</span><span class="p">(</span><span class="s1">&#39;y / x&#39;</span><span class="p">));</span> <span class="c1">//=&gt; 3</span>
 </span><span class="line"><span class="p">}();</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
@@ -516,10 +516,9 @@
 <section>
   <h1>友情链接</h1>
   <ul>
-    <li><a href="http://www.xiezongxing.com/">谢宗星博客</a></li>
     <li><a href="http://mengkang.net/">周梦康</a></li>
-    <li><a href="http://bibodeng.sinaapp.com/">bibodeng</a></li>
-    <li><a href="http://www.mapleshaw.com/">chrome丁</a></li>
+    <li><a href="http://www.bibodeng.com/">bibodeng</a></li>
+    <li><a href="http://blog.imfer.me/">colinfan</a></li>
   </ul>
 </section>
 
