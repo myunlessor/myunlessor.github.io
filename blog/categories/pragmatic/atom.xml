@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: pragmatic | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/pragmatic/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-12-20T01:26:14+08:00</updated>
+  <updated>2015-12-20T01:27:20+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -231,7 +231,7 @@ var mutePrior = function (promisifiedFunc) {
 });   }; }; ```
 </code></pre>
 
-<p>有了<code>mutePrior</code>，一切都变得很简单了，变成了纯粹的模式复用了。</p>
+<p>有了<code>mutePrior</code>，一切都变得很简单了，简单到纯粹的模式复用了。</p>
 
 <p>```javascript
 var result;</p>
