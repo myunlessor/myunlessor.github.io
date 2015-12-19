@@ -14,7 +14,7 @@
   <meta name="keywords" content="supli, emiblus, myunlessor, photoshop, javascript, html5, css3">
 
   
-  <meta name="description" content="一般我们代码几乎不会使用到eval, 但凡需要使用到eval的地方，都会代而使用构造器Function生成函数实例的方式，因为eval is evil。eval可以在全局作域下执行代码，也可以在局部作用域（间接调用eval）下执行代码。而使用构造器Function生成函数实例的方式， &hellip;">
+  <meta name="description" content="问题分析 考虑这种应用场景：用户与页面进行交互，切换不同的查询条件，实时发起异步请求，待响应返回后，将响应数据渲染到页面指定区域。大部分情况下，前一次操作发起的请求都会比后一次操作发起的请求先响应。先响应的先渲染，后响应的将先渲染的结果覆盖。于是我们可以得到查询条件与响应数据显示一致的结果。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +79,51 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem/">利用Promise消除“先发起请求后收到响应”问题带来的副作用</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-19T20:39:00+08:00" pubdate data-updated="true">2015年12月19日</time>
+        
+         | <a href="/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2 id="section">问题分析</h2>
+
+<p>考虑这种应用场景：用户与页面进行交互，切换不同的查询条件，实时发起异步请求，待响应返回后，将响应数据渲染到页面指定区域。大部分情况下，前一次操作发起的请求都会比后一次操作发起的请求先响应。先响应的先渲染，后响应的将先渲染的结果覆盖。于是我们可以得到查询条件与响应数据显示一致的结果。这是我们所期望的结果，也是我们眼中的“正常”流程。如果我们认真对待它的话，是不应该忽略“异常”流程的。由于请求是异步的，前一次发起的请求不会阻塞后一次请求的发起，顺理成章地，前一次请求也未必会比后一次请求先返回。于是导致的直接后果就是后一次请求响应的数据先渲染，待前一次请求响应时，直接覆盖了后一次请求的渲染结果。这可不是我们所期望看到的。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem/">继续阅读 &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -515,51 +560,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/14/embrace-sublime-text/">情逗Sublime Text</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-14T13:11:00+08:00" pubdate data-updated="true">2013年12月14日</time>
-        
-         | <a href="/blog/2013/12/14/embrace-sublime-text/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本是脑子里一闪而过的念头，停留之际，思绪暗涌，忽觉有必要整理下自己凌乱的思想了。</p>
-
-<p>一直想明白现实是什么，可又不愿去理解。它是抽象的，或是跟上帝一样，是一种虚无的存在。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/12/14/embrace-sublime-text/">继续阅读 &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -572,10 +572,14 @@
   
     <section>
   <h1>文章分类</h1>
-  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (11)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (6)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/javascript'>JAVASCRIPT (12)</a></li><li><a href='/blog/categories/jquery'>JQUERY (1)</a></li><li><a href='/blog/categories/photoshop'>PHOTOSHOP (2)</a></li><li><a href='/blog/categories/pragmatic'>PRAGMATIC (7)</a></li><li><a href='/blog/categories/promise'>PROMISE (1)</a></li><li><a href='/blog/categories/python'>PYTHON (2)</a></li><li><a href='/blog/categories/sublime-text'>SUBLIME TEXT (4)</a></li></ul>
 </section><section>
   <h1>近期文章</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem/">利用Promise消除“先发起请求后收到响应”问题带来的副作用</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/11/19/eval-is-not-evil/">&#8220;Eval&#8221; Is Not Evil</a>

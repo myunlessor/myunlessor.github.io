@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: pragmatic | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/pragmatic/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-11-21T12:38:20+08:00</updated>
+  <updated>2015-12-20T01:20:01+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,260 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[利用Promise消除“先发起请求后收到响应”问题带来的副作用]]></title>
+    <link href="http://myunlessor.me/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem/"/>
+    <updated>2015-12-19T20:39:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2015/12/19/promise-solve-continuous-request-and-respone-not-in-order-problem</id>
+    <content type="html"><![CDATA[<h2 id="section">问题分析</h2>
+
+<p>考虑这种应用场景：用户与页面进行交互，切换不同的查询条件，实时发起异步请求，待响应返回后，将响应数据渲染到页面指定区域。大部分情况下，前一次操作发起的请求都会比后一次操作发起的请求先响应。先响应的先渲染，后响应的将先渲染的结果覆盖。于是我们可以得到查询条件与响应数据显示一致的结果。这是我们所期望的结果，也是我们眼中的“正常”流程。如果我们认真对待它的话，是不应该忽略“异常”流程的。由于请求是异步的，前一次发起的请求不会阻塞后一次请求的发起，顺理成章地，前一次请求也未必会比后一次请求先返回。于是导致的直接后果就是后一次请求响应的数据先渲染，待前一次请求响应时，直接覆盖了后一次请求的渲染结果。这可不是我们所期望看到的。</p>
+
+<!-- more -->
+
+<p>以上场景如果用代码来描述的话，是这样的：</p>
+
+<p>```javascript
+var result;</p>
+
+<p>// A function to simulate async request delay
+var request = function (msec, mockedData, callback) {
+  setTimeout(function () {
+    callback(mockedData);
+  }, msec);
+};</p>
+
+<p>var sample = [
+  { msec: 200, data: ‘stale’ },
+  { msec: 100, data: ‘fresh’ }
+];</p>
+
+<p>// 模拟<code>先发起请求后响应</code>的情景
+sample.forEach(function (item) {
+  request(item.msec, item.data, function (resp) {
+    result = resp;
+  });
+});</p>
+
+<p>// wait 1s, we inspect the <code>result</code>
+setTimeout(function () {
+  // we expect <code>result</code> to be <code>fresh</code>, but it is <code>stale</code>
+  console.log(result); // =&gt; <code>stale</code>
+}, 1000);
+```</p>
+
+<h2 id="section-1">解决问题</h2>
+
+<p>解决方法有很多，归根结底我们需要解决的问题就是：在后一次请求响应返回并渲染时，保证渲染结果不会被前一次请求的响应结果覆盖。</p>
+
+<h3 id="section-2">简单粗暴式</h3>
+
+<p>最简单粗暴的方式就是在当前请求还未响应时，禁止发起下一次请求。对于性急的人来说，这种做法实在不可接受，直接pass。</p>
+
+<h3 id="section-3">简单直观式</h3>
+
+<p>另外一种思路：在每次响应后且在渲染之前，判断当前响应是不是对应最新一次请求的。是，则渲染；不是，则不渲染。</p>
+
+<p>这种思路最容易想到的实现就是使用<code>全局变量</code>标记最新请求，<code>局部变量</code>标记当前请求，然后在响应回调中判断<code>局部变量</code>的值是否和<code>全局变量</code>的值一样。如果不一样，忽略响应结果；如果一样，我们可以断言这是最新请求的响应，直接渲染。</p>
+
+<p>以下是这种思路针对上面代码的改写：</p>
+
+<p>```javascript
+var result;
+var globalMark = 0;</p>
+
+<p>// A function to simulate async request delay
+var request = function (msec, mockedData, callback) {
+  setTimeout(function () {
+    callback(mockedData);
+  }, msec);
+};</p>
+
+<p>var sample = [
+  { msec: 200, data: ‘stale’ },
+  { msec: 100, data: ‘fresh’ }
+];</p>
+
+<p>// 模拟<code>先发起请求后响应</code>的情景
+sample.forEach(function (item) {
+  var localMark = ++globalMark;</p>
+
+<p>request(item.msec, item.data, function (resp) {
+    if (localMark !== globalMark) {
+      return;
+    }</p>
+
+<pre><code>result = resp;   }); });
+</code></pre>
+
+<p>// wait 1s, we inspect <code>result</code>
+setTimeout(function () {
+  // now our <code>result</code> is <code>fresh</code>, just as expected
+  console.log(result); // =&gt; <code>fresh</code>
+}, 1000);
+```</p>
+
+<p>和我们所期望的一样，这种思路可以正常工作，而且简单直观。但是当我们要处理大量这类请求问题时，这类重复逻辑的代码将散落在各个地方，不是很优雅。问题不在于思路上，而在于实现。我们需要在源头（请求）处规避（控制）问题，而不是到结果（响应）处解决问题。</p>
+
+<h3 id="promise">Promise式</h3>
+
+<p><code>Promise</code>正在已经成为解决异步问题的一大解决工具了，经过多年的实际考验，它甚至已纳入W3C规范，制定标准API了。所以回到这个问题，<code>we should think in promise at the first place</code>。</p>
+
+<p>例如，上面的<code>request</code>方法我们实际可以写成<code>Promise</code>的形式：</p>
+
+<p>```javascript
+// A function to simulate async request delay
+var request = function (msec, mockedData) {
+  return $.Deferred(function (dfd) {
+    setTimeout(function () {
+      dfd.resolve(mockedData);
+    }, msec);
+  }).promise();
+};</p>
+
+<p>request(200, ‘some data’).then(function (resp) {
+  console.log(resp); // =&gt; ‘some data’
+});
+```</p>
+
+<p>我们可以封装出<code>promisify</code>方法，这样可以将形如<code>request</code>的方法方便地包装为<code>promise化</code>的方法：</p>
+
+<p><strong>jQuery.Deferred版本</strong></p>
+
+<p>```javascript
+var promisify = function (fn) {
+  // does <code>fn</code> thenable?
+  return fn.then ? fn : function () {
+    var args = [].slice.call(arguments);</p>
+
+<pre><code>return $.Deferred(function () {
+  fn.apply(null, args.concat(this.resolve));
+}).promise();   }; }; ```
+</code></pre>
+
+<p><strong>ES6版本</strong></p>
+
+<p><code>javascript
+var promisify = function (fn) {
+  // does `fn` thenable?
+  return fn.then ? fn : function () {
+    var args = Array.from(arguments);
+    return new Promise(resolve =&gt; void fn(...args.concat(resolve)));
+  };
+};
+</code></p>
+
+<p>以下是将<code>request</code>方法<code>promise化</code>的例子：</p>
+
+<p>```javascript
+// A function to simulate async request delay
+var request = function (msec, mockedData, callback) {
+  setTimeout(function () {
+    callback(mockedData);
+  }, msec);
+};</p>
+
+<p>// decorate <code>request</code> with <code>promisify</code>
+request = promisify(request);</p>
+
+<p>request(200, ‘some data’).then(function (resp) {
+  console.log(resp); // =&gt; ‘some data’
+});
+```</p>
+
+<p>但是，单单凭<code>promisify</code>并不能解决我们最初的问题，我们需进一步将之前的思路翻译为<code>promise式</code>的代码。为了不改变原有调用方式，我们可以对原有<code>promisify</code>后得到的方法再进行一层装饰，装饰后的方法仍是<code>promise</code>化的，这样对外调用完全是透明的。</p>
+
+<p>以下是装饰器的实现方法，我将它命名为<code>mutePrior</code>, 意为<code>mute prior</code>：</p>
+
+<p><strong>jQuery.Deferred版本</strong></p>
+
+<p>```javascript
+var mutePrior = function (promisifiedFunc) {
+  // 用于存储<code>promise</code>对象，从第2个位置开始存储
+  var registry = [0];</p>
+
+<p>return function () {
+    var promise = promisifiedFunc.apply(null, arguments);</p>
+
+<pre><code>// 已发起的请求(promise)入队，可以看到新发起的请求(promise)始终位列数组末尾
+registry.push(promise);
+
+return $.Deferred(function (dfd) {
+  var proxyCallbacks = ['resolve', 'reject'].map(function (action) {
+    return function () {
+      // 关键代码：截获原有响应结果，判断对应请求是否为最新一次请求
+      if (registry.indexOf(promise) === registry.length - 1) {
+        dfd[action].apply(dfd, [].slice.call(arguments));
+
+        // 重置`registry`
+        registry.length = 1;
+      }
+    };
+  });
+
+  // 添加代理回调
+  promise.then.apply(promise, proxyCallbacks);
+}).promise();   }; }; ```
+</code></pre>
+
+<p><strong>ES6版本</strong></p>
+
+<p>```javascript
+var mutePrior = function (promisifiedFunc) {
+  var registry = [0];</p>
+
+<p>return function () {
+    var promise = promisifiedFunc(…arguments);
+    registry.push(promise);</p>
+
+<pre><code>return new Promise(function (...actions) {
+  var proxyCallbacks = actions.map(action =&gt; function (result) {
+    if (registry.indexOf(promise) === registry.length - 1) {
+      action(result);
+      registry.length = 1;
+    }
+  });
+
+  promise.then(...proxyCallbacks);
+});   }; }; ```
+</code></pre>
+
+<p>有了<code>mutePrior</code>，一切都变得很简单了，变成了纯粹的模式复用了。</p>
+
+<p>```javascript
+var result;</p>
+
+<p>// A function to simulate async request delay
+var request = function (msec, mockedData, callback) {
+  setTimeout(function () {
+    callback(mockedData);
+  }, msec);
+};</p>
+
+<p>// decorate <code>request</code> with both <code>promisify</code> and <code>mutePrior</code>
+request = mutePrior(promisify(request));</p>
+
+<p>var sample = [
+  { msec: 200, data: ‘stale’ },
+  { msec: 100, data: ‘fresh’ }
+];</p>
+
+<p>// 模拟<code>先发起请求后响应</code>的情景
+sample.forEach(function (item) {
+  request(item.msec, item.data).then(function (resp) {
+    result = resp;
+  });
+});</p>
+
+<p>// wait 1s, we inspect <code>result</code>
+setTimeout(function () {
+  // now our <code>result</code> is <code>fresh</code>, just as expected
+  console.log(result); // =&gt; <code>fresh</code>
+}, 1000);
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[触摸Sublime Text Plugins]]></title>
@@ -527,187 +781,6 @@ var foo = function () {
 <ul>
   <li><a href="http://goo.gl/1A8ew">Secrets of the JavaScript Ninja</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用Photoshop: 将整图一分为九]]></title>
-    <link href="http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts/"/>
-    <updated>2013-05-20T20:31:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2013/05/20/divide-slice-by-using-photoshop-scripts</id>
-    <content type="html"><![CDATA[<h2 id="section">引子</h2>
-
-<p>前些天一同事在做拼图游戏。设计师提供了很多素材图片给他，这些图片都是整张整张的，他需要将这些图片切图成九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)等。如果单张单张地进行计算然后裁切肯定不现实，那样实在效率低下，然后他问我有没快捷方法可以帮助他。</p>
-
-<!-- more -->
-
-<h2 id="section-1">思路一(动作)</h2>
-
-<p>我们切图一般都在<code>photoshop</code>中完成。以往我遇到这种大量的重复性工作时，我绝对不会坐以待毙，我会想方设法，不达目的绝不罢休。通常面对这种问题时，我首先想到的就是生成一个<code>action</code>(动作)，然后利用它批量完成。</p>
-
-<p>该<code>action</code>(动作)的大致思路是将各宫格图片分散到不同的图层中，然后便可以通过菜单命令<code>File | Scripts | Export Layers to Files…</code>将图层一一导出为文件，具体如下：</p>
-
-<ul>
-  <li>计算一张图片的三等分宽高，生成并保存选区</li>
-  <li>将选区定位在图片左上角，然后通过菜单命令<code>Layer | New | Layer via Cut(Copy)</code>将该区域隔离到新的图层</li>
-  <li>重新载入选区，移位选区至新的位置，执行第二步同样命令</li>
-  <li>重复执行第三步，直到图片九等分分散在不同图层</li>
-</ul>
-
-<p>但是，生成这样的动作不仅麻烦，而且也不甚高效，原因如下：</p>
-
-<ul>
-  <li>需要为九宫格(3 x 3)、十六宫格(4 x 4)、二十五宫格(5 x 5)不同规格生成不同的动作</li>
-  <li>其他原因忘了~^~…</li>
-</ul>
-
-<p>于是这种思路只成为了一种念想，一闪即过。</p>
-
-<h2 id="section-2">思路二(切片工具)</h2>
-
-<p>然后有考虑利用<code>Divide Slice…</code>(划分切图)及<code>Slices from Guides</code>(辅助线自动生成切片)功能——一种传统古老的切图方式。然后通过菜单命令<code>File | Save for Web…</code>将各切片导出为图片。这种方式可行是可行，但事实是提供的图片不是很理想，宫格中有1个像素的透明<code>gutter</code>(间隙)。如果不考虑<code>gutter</code>(间隙)的话，九宫格切图只需四条均分辅助线，否则需要八条，这样就会导出很多垃圾图片——1像素宽或(和)1像素高的图。这样效果不是很理想(自许准理想主义者)，于是这种方法也不了了之了。</p>
-
-<blockquote>
-  <p>事实是，这种方法确实可行，考虑四条均分辅助线生成切片，最后可以生成个<code>action</code>(动作)对这些图片做最后的<code>sanitization</code>(“消毒处理”)，傻眼了当时…</p>
-</blockquote>
-
-<h2 id="section-3">思路三(脚本)</h2>
-
-<p>最后，不得不实施<code>Last Resort</code>(破釜沉舟之计)。我想到了脚本语言(事实是，原来我调侃同事用写段<code>Java</code>代码生成图片…^-^)，<code>photoshop</code>自带的脚本功能(支持<code>JavaScript</code>、<code>VBScript</code>、<code>AppleScript</code>三种脚本语言)做这类事可谓游刃有余，一段简短的代码就可以干净利落地解决它，代码如下：</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>划分切图脚本 (divide_slice.js)</span> <a href='/downloads/code/divide_slice.js'>下载</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="err">#</span><span class="nx">target</span> <span class="nx">photoshop</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">!==</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// 采用像素单位进行计算</span>
-</span><span class='line'>  <span class="nx">app</span><span class="p">.</span><span class="nx">preferences</span><span class="p">.</span><span class="nx">rulerUnits</span> <span class="o">=</span> <span class="nx">Units</span><span class="p">.</span><span class="nx">PIXELS</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 当前文档引用</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docRef</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">activeDocument</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 文档宽度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docWidth</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// 文档高度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">docHeight</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 细分次数(默认 3 x 3，即九宫格切分)</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">divides</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 宫格间隙(默认无间隙)</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">gutter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 每宫格宽度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">slotWidth</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docWidth</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
-</span><span class='line'><span class="c1">// 每宫格高度</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">slotHeight</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">docHeight</span> <span class="o">/</span> <span class="nx">divides</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 保存当前图层(即整图)引用</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">layerRef</span> <span class="o">=</span> <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 遍历行</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="nx">y</span> <span class="o">=</span> <span class="nx">docWidth</span><span class="p">;</span> <span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">y</span> <span class="o">-=</span> <span class="nx">slotHeight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// 遍历列</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">docHeight</span><span class="p">;</span> <span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">x</span> <span class="o">-=</span> <span class="nx">slotWidth</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// 重置当前图片为原图层(即整图)</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">activeLayer</span> <span class="o">=</span> <span class="nx">layerRef</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 从右往左、从下往上设置选区</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">select</span><span class="p">([</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span> <span class="c1">// 左</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="nx">slotHeight</span><span class="p">],</span>  <span class="c1">// 上</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">],</span> <span class="c1">// 右</span>
-</span><span class='line'>      <span class="p">[</span><span class="nx">x</span> <span class="o">-</span> <span class="nx">slotWidth</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="c1">// 下</span>
-</span><span class='line'>    <span class="p">],</span> <span class="nx">SelectionType</span><span class="p">.</span><span class="nx">REPLACE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// layer via copy ^-^</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">selection</span><span class="p">.</span><span class="nx">copy</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">artLayers</span><span class="p">.</span><span class="nx">add</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">docRef</span><span class="p">.</span><span class="nx">paste</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 水平轴向间隙偏移</span>
-</span><span class='line'>    <span class="nx">x</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">// 垂直轴向间隙偏移</span>
-</span><span class='line'>  <span class="nx">y</span> <span class="o">-=</span> <span class="nx">gutter</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 删除原图层(即整图)</span>
-</span><span class='line'><span class="nx">layerRef</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>用法很简单，只需下载这段脚本到本地，打开需要切分的图片，然后执行菜单命令<code>File | Scripts | Browse…</code>，在打开的弹出框中找到该脚本，双击执行即可。
-r
-如果要处理的图片很多的话，配合动作使用即可实现批处理。</p>
-
-<h2 id="section-4">参考书目</h2>
-
-<ol>
-  <li><a href="http://goo.gl/IFQav">Photoshop CS6 Scripting Guide</a></li>
-  <li><a href="http://goo.gl/ukIhf">Photoshop CS6 JavaScript Ref</a></li>
-</ol>
 ]]></content>
   </entry>
   
