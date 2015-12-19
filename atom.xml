@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-12-20T01:20:01+08:00</updated>
+  <updated>2015-12-20T01:26:14+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -200,7 +200,7 @@
 
 <p>我们可以封装出<code>promisify</code>方法，这样可以将形如<code>request</code>的方法方便地包装为<code>promise化</code>的方法：</p>
 
-<p><strong>jQuery.Deferred版本</strong></p>
+<p><strong>promisify [jQuery.Deferred版本]</strong></p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -224,7 +224,7 @@
 </span><span class="line"><span class="p">};</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p><strong>ES6版本</strong></p>
+<p><strong>promisify [ES6版本]</strong></p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -272,11 +272,11 @@
 </span><span class="line"><span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>但是，单单凭<code>promisify</code>并不能解决我们最初的问题，我们需进一步将之前的思路翻译为<code>promise式</code>的代码。为了不改变原有调用方式，我们可以对原有<code>promisify</code>后得到的方法再进行一层装饰，装饰后的方法仍是<code>promise</code>化的，这样对外调用完全是透明的。</p>
+<p>但是，单单凭<code>promisify</code>并不能解决我们最初的问题，我们需进一步将之前的思路翻译为<code>promise式</code>的代码。为了不改变原有调用方式，我们可以对原有<code>promisify</code>后得到的方法再进行一层装饰。装饰后的方法仍是<code>promise化</code>的，这样对外调用完全是透明的。</p>
 
 <p>以下是装饰器的实现方法，我将它命名为<code>mutePrior</code>, 意为<code>mute prior</code>：</p>
 
-<p><strong>jQuery.Deferred版本</strong></p>
+<p><strong>mutePrior [jQuery.Deferred版本]</strong></p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
@@ -336,7 +336,7 @@
 </span><span class="line"><span class="p">};</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p><strong>ES6版本</strong></p>
+<p><strong>mutePrior [ES6版本]</strong></p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
 <span class="line-number">2</span>
