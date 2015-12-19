@@ -120,7 +120,7 @@ request(200, 'some data').then(function (resp) {
 
 我们可以封装出`promisify`方法，这样可以将形如`request`的方法方便地包装为`promise化`的方法：
 
-**jQuery.Deferred版本**
+**promisify [jQuery.Deferred版本]**
 
 ```javascript
 var promisify = function (fn) {
@@ -135,7 +135,7 @@ var promisify = function (fn) {
 };
 ```
 
-**ES6版本**
+**promisify [ES6版本]**
 
 ```javascript
 var promisify = function (fn) {
@@ -165,11 +165,11 @@ request(200, 'some data').then(function (resp) {
 });
 ```
 
-但是，单单凭`promisify`并不能解决我们最初的问题，我们需进一步将之前的思路翻译为`promise式`的代码。为了不改变原有调用方式，我们可以对原有`promisify`后得到的方法再进行一层装饰，装饰后的方法仍是`promise`化的，这样对外调用完全是透明的。
+但是，单单凭`promisify`并不能解决我们最初的问题，我们需进一步将之前的思路翻译为`promise式`的代码。为了不改变原有调用方式，我们可以对原有`promisify`后得到的方法再进行一层装饰。装饰后的方法仍是`promise化`的，这样对外调用完全是透明的。
 
 以下是装饰器的实现方法，我将它命名为`mutePrior`, 意为`mute prior`：
 
-**jQuery.Deferred版本**
+**mutePrior [jQuery.Deferred版本]**
 
 ```javascript
 var mutePrior = function (promisifiedFunc) {
@@ -202,7 +202,7 @@ var mutePrior = function (promisifiedFunc) {
 };
 ```
 
-**ES6版本**
+**mutePrior [ES6版本]**
 
 ```javascript
 var mutePrior = function (promisifiedFunc) {
@@ -226,7 +226,7 @@ var mutePrior = function (promisifiedFunc) {
 };
 ```
 
-有了`mutePrior`，一切都变得很简单了，变成了纯粹的模式复用了。
+有了`mutePrior`，一切都变得很简单了，简单到纯粹的模式复用了。
 
 ```javascript
 var result;
