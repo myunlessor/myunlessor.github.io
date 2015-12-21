@@ -124,7 +124,7 @@ request(200, 'some data').then(function (resp) {
 
 ```javascript
 var promisify = function (fn) {
-  // does `fn` thenable?
+  // Is `fn` thenable?
   return fn.then ? fn : function () {
     var args = [].slice.call(arguments);
 
@@ -139,7 +139,7 @@ var promisify = function (fn) {
 
 ```javascript
 var promisify = function (fn) {
-  // does `fn` thenable?
+  // Is `fn` thenable?
   return fn.then ? fn : function () {
     var args = Array.from(arguments);
     return new Promise(resolve => void fn(...args.concat(resolve)));
