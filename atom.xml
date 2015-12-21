@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-12-20T01:32:38+08:00</updated>
+  <updated>2015-12-22T00:02:16+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -213,7 +213,7 @@
 <span class="line-number">9</span>
 <span class="line-number">10</span>
 </pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">var</span> <span class="nx">promisify</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">  <span class="c1">// does `fn` thenable?</span>
+</span><span class="line">  <span class="c1">// Is `fn` thenable?</span>
 </span><span class="line">  <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">then</span> <span class="o">?</span> <span class="nx">fn</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 </span><span class="line">    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
 </span><span class="line">
@@ -234,7 +234,7 @@
 <span class="line-number">6</span>
 <span class="line-number">7</span>
 </pre></td><td class="code"><pre><code class="javascript"><span class="line"><span class="kd">var</span> <span class="nx">promisify</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class="line">  <span class="c1">// does `fn` thenable?</span>
+</span><span class="line">  <span class="c1">// Is `fn` thenable?</span>
 </span><span class="line">  <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">then</span> <span class="o">?</span> <span class="nx">fn</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
 </span><span class="line">    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
 </span><span class="line">    <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="nx">resolve</span> <span class="o">=&gt;</span> <span class="k">void</span> <span class="nx">fn</span><span class="p">(...</span><span class="nx">args</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">resolve</span><span class="p">)));</span>

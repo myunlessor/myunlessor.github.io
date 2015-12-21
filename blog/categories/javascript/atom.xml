@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2015-12-20T01:32:38+08:00</updated>
+  <updated>2015-12-22T00:02:16+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -135,7 +135,7 @@ var request = function (msec, mockedData) {
 
 <p>```javascript
 var promisify = function (fn) {
-  // does <code>fn</code> thenable?
+  // Is <code>fn</code> thenable?
   return fn.then ? fn : function () {
     var args = [].slice.call(arguments);</p>
 
@@ -148,7 +148,7 @@ var promisify = function (fn) {
 
 <p><code>javascript
 var promisify = function (fn) {
-  // does `fn` thenable?
+  // Is `fn` thenable?
   return fn.then ? fn : function () {
     var args = Array.from(arguments);
     return new Promise(resolve =&gt; void fn(...args.concat(resolve)));
