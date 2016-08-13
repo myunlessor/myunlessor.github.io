@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2016-08-14T02:34:10+08:00</updated>
+  <updated>2016-08-14T02:35:08+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -395,7 +395,7 @@
 <span class="line-number">24</span>
 <span class="line-number">25</span>
 </pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- 预先引入`store-manager.js` --&gt;</span>
-</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://xxx.com/static/js/store-manager.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://www.xxx.com/static/js/store-manager.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
 </span><span class="line">
 </span><span class="line"><span class="c">&lt;!-- 或者将`store-manager.js`内联到页面中 --&gt;</span>
 </span><span class="line"><span class="nt">&lt;script&gt;</span> <span class="cm">/* 精简过的`store-manager.js`代码 */</span> <span class="nt">&lt;/script&gt;</span>

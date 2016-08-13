@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2016-08-14T02:34:10+08:00</updated>
+  <updated>2016-08-14T02:35:08+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -238,7 +238,7 @@ void function (fn) {
 
 <p>```html
 <!-- 预先引入`store-manager.js` -->
-<script src="https://xxx.com/static/js/store-manager.js"></script></p>
+<script src="https://www.xxx.com/static/js/store-manager.js"></script></p>
 
 <!-- 或者将`store-manager.js`内联到页面中 -->
 <script> /* 精简过的`store-manager.js`代码 */ </script>
