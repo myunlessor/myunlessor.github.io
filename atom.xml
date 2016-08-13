@@ -4,7 +4,7 @@
   <title><![CDATA[Silent Reverie]]></title>
   <link href="http://myunlessor.me/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2016-08-13T20:32:42+08:00</updated>
+  <updated>2016-08-14T02:23:41+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,418 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[缓存JS代码到本地localStorage的一种思路]]></title>
+    <link href="http://myunlessor.me/blog/2016/08/15/cache-javascript-code-to-localstorage/"/>
+    <updated>2016-08-15T11:22:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2016/08/15/cache-javascript-code-to-localstorage</id>
+    <content type="html"><![CDATA[<p>为了加快页面的加载速度和交互速度，缓存JS脚本文件内容到本地<code>localStorage</code>（以下简称<code>缓存JS</code>）是一种行之有效的手段。</p>
+
+<p>以加载<code>foo.js</code>文件为例，<code>缓存JS</code>的逻辑大致如下：</p>
+
+<p><img src="http://myunlessor.me/images/cachejs2localstorage/cache-to-local.png" /></p>
+
+<!-- more -->
+
+<p>在实际应用中，<code>缓存JS</code>需要解决以下两个问题：</p>
+
+<ul>
+  <li>获取JS脚本文件的内容并写入缓存</li>
+  <li>JS脚本文件的内容变化时自动更新缓存</li>
+</ul>
+
+<h2 id="js">获取JS脚本文件的内容并写入缓存</h2>
+
+<p>前端JS文件一般使用单独的域名存放到CDN上，跨域问题使得我们无法通过ajax请求获取JS文件的内容。</p>
+
+<p>那有其他办法可以获取脚本文件的内容吗？答案是有的。</p>
+
+<p>以<code>https://www.xxx.com/static/js/foo.js</code>为例，其文件内容如下：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;first line&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;second line&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>大家都知道，函数是可以转换成字符串类型的，因此我们可以这种方式获取函数本身的代码，如下所示：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;first line&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;second line&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 函数转换为字符串 =&gt; 函数代码的字符串形式</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">foo</span><span class="p">));</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 也可以这样调用得到</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">foo</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>得到函数完整的字符串代码后，需要将字符串进行剥离，只获取得到body部分，这一步可以使用正则表达式将body匹配出来：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="c1">// 正则表达式匹配完整的函数语句</span>
+</span><span class="line"><span class="c1">// 这里使用`^`和`$`匹配头尾，匹配性能不成问题</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">rfunc</span> <span class="o">=</span> <span class="sr">/^function\s*(?:[^(]*)\(([^)]*)\)\s*{([\s\S]*)}$/</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// 变量`code`存放的就是`foo.js`的代码内容</span>
+</span><span class="line"><span class="kd">var</span> <span class="nx">code</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rfunc</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nb">RegExp</span><span class="p">.</span><span class="nx">$2</span><span class="p">;</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">code</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>所以，将原代码包裹一层<code>function</code>，我们可以成功拿到任意脚本文件的内容，而完全不用关心是否存在跨域问题。</p>
+
+<p>于是我们可以将原先的<code>foo.js</code>自动转换成如下形式，这一步实际可以通过构建（打包）工具（如<code>webpack</code>）自动完成。</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="c1">// 自执行函数</span>
+</span><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="c1">// 执行代码逻辑</span>
+</span><span class="line">  <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}());</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">var</span> <span class="nx">rfunc</span> <span class="o">=</span> <span class="sr">/^function\s*(?:[^(]*)\(([^)]*)\)\s*{([\s\S]*)}$/</span><span class="p">;</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">code</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">fn</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rfunc</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nb">RegExp</span><span class="p">.</span><span class="nx">$2</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// TODO: 将`code`写入到`localStorage`中（见下文）</span>
+</span><span class="line"><span class="p">}(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;first line&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;second line&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="js-1">JS脚本文件的内容变化时自动更新缓存</h2>
+
+<p>我们可以通过计算文件内容的md5值，然后取md5值前面若干位作为文件的版本号拼到文件名中（如<code>foo.09c1ff3231.js</code>、<code>foo.b9193b0ded.js</code>等），以此标记文件内容发生了变化。</p>
+
+<p>假设<code>foo.09c1ff3231.js</code>是旧版本文件，<code>foo.b9193b0ded.js</code>是新版本文件，用流程图可以清晰地呈现缓存自动更新的过程：</p>
+
+<p><img src="http://myunlessor.me/images/cachejs2localstorage/update-cache-to-local.png" /></p>
+
+<h2 id="section">实际应用</h2>
+
+<p>在实际应用中，我们可以将缓存相关的逻辑封装到普通对象（如命名为<code>StoreManager</code>，并保存为文件<code>store-manager.js</code>，该对象应实现如下几个功能：</p>
+
+<ul>
+  <li>获取指定脚本文件名的缓存内容</li>
+  <li>判断是否已缓存指定版本号的文件内容</li>
+  <li>将指定版本号的文件内容写入到缓存（或替换掉已缓存版本）</li>
+  <li>将指定脚本文件名的内容从缓存中移除</li>
+  <li>清理已过期的缓存内容（可选）</li>
+</ul>
+
+<p>以下是<code>StoreManager</code>的实现代码：</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+<span class="line-number">35</span>
+<span class="line-number">36</span>
+<span class="line-number">37</span>
+<span class="line-number">38</span>
+<span class="line-number">39</span>
+<span class="line-number">40</span>
+<span class="line-number">41</span>
+<span class="line-number">42</span>
+<span class="line-number">43</span>
+<span class="line-number">44</span>
+<span class="line-number">45</span>
+<span class="line-number">46</span>
+<span class="line-number">47</span>
+<span class="line-number">48</span>
+<span class="line-number">49</span>
+<span class="line-number">50</span>
+<span class="line-number">51</span>
+<span class="line-number">52</span>
+<span class="line-number">53</span>
+<span class="line-number">54</span>
+<span class="line-number">55</span>
+<span class="line-number">56</span>
+<span class="line-number">57</span>
+<span class="line-number">58</span>
+<span class="line-number">59</span>
+<span class="line-number">60</span>
+<span class="line-number">61</span>
+<span class="line-number">62</span>
+<span class="line-number">63</span>
+<span class="line-number">64</span>
+<span class="line-number">65</span>
+<span class="line-number">66</span>
+<span class="line-number">67</span>
+<span class="line-number">68</span>
+<span class="line-number">69</span>
+<span class="line-number">70</span>
+<span class="line-number">71</span>
+<span class="line-number">72</span>
+<span class="line-number">73</span>
+<span class="line-number">74</span>
+<span class="line-number">75</span>
+<span class="line-number">76</span>
+<span class="line-number">77</span>
+<span class="line-number">78</span>
+<span class="line-number">79</span>
+<span class="line-number">80</span>
+<span class="line-number">81</span>
+<span class="line-number">82</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">storage</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 缓存js时存储的key使用统一的前缀作为命名空间</span>
+</span><span class="line">  <span class="c1">// 这样方便管理及尽可能避免冲突</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">prefix</span> <span class="o">=</span> <span class="s1">&#39;store-manager/js/&#39;</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 匹配版本号(8~12位)</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">rkey</span> <span class="o">=</span> <span class="sr">/^(.+)\.(\w{8,20})\.js$/</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 默认缓存时长</span>
+</span><span class="line">  <span class="c1">// 30 days (单位：小时)</span>
+</span><span class="line">  <span class="kd">var</span> <span class="nx">defaultExpiration</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">24</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">  <span class="kd">var</span> <span class="nx">store</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">    <span class="c1">// 获取指定脚本文件名的缓存内容</span>
+</span><span class="line">    <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="nx">prefix</span> <span class="o">+</span> <span class="nx">key</span><span class="p">);</span>
+</span><span class="line">      <span class="k">try</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">item</span> <span class="o">||</span> <span class="s1">&#39;false&#39;</span><span class="p">);</span>
+</span><span class="line">      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 判断是否已缓存指定版本号的文件内容</span>
+</span><span class="line">    <span class="nx">has</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">md5key</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="kd">var</span> <span class="nx">matches</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">md5key</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rkey</span><span class="p">);</span>
+</span><span class="line">      <span class="k">return</span> <span class="nx">matches</span> <span class="o">?</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nx">md5</span> <span class="o">===</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 将指定版本号的文件内容写入到缓存（或替换掉已缓存版本）</span>
+</span><span class="line">    <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">md5key</span><span class="p">,</span> <span class="nx">code</span><span class="p">,</span> <span class="nx">opts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="kd">var</span> <span class="nx">matches</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">md5key</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rkey</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">if</span> <span class="p">(</span><span class="nx">matches</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">now</span> <span class="o">=</span> <span class="o">+</span><span class="k">new</span> <span class="nb">Date</span><span class="p">;</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">storeKey</span> <span class="o">=</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">opts</span> <span class="o">||</span> <span class="p">(</span><span class="nx">opts</span> <span class="o">=</span> <span class="p">{});</span>
+</span><span class="line">
+</span><span class="line">        <span class="kd">var</span> <span class="nx">storeVal</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="line">          <span class="s1">&#39;md5&#39;</span><span class="o">:</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+</span><span class="line">          <span class="s1">&#39;stamp&#39;</span><span class="o">:</span> <span class="nx">now</span><span class="p">,</span>
+</span><span class="line">          <span class="s1">&#39;expire&#39;</span><span class="o">:</span> <span class="p">(</span><span class="nx">now</span> <span class="o">+</span> <span class="p">(</span><span class="nx">opts</span><span class="p">.</span><span class="nx">expire</span> <span class="o">||</span> <span class="nx">defaultExpiration</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">),</span>
+</span><span class="line">          <span class="s1">&#39;code&#39;</span><span class="o">:</span> <span class="nx">code</span><span class="p">,</span>
+</span><span class="line">        <span class="p">};</span>
+</span><span class="line">
+</span><span class="line">        <span class="nx">storage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">storeKey</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">storeVal</span><span class="p">));</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 将指定脚本文件名的内容从缓存中移除</span>
+</span><span class="line">    <span class="nx">remove</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="nx">storage</span><span class="p">.</span><span class="nx">removeItem</span><span class="p">(</span><span class="nx">prefix</span> <span class="o">+</span> <span class="nx">key</span><span class="p">);</span>
+</span><span class="line">      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">
+</span><span class="line">    <span class="c1">// 清理（已过期的）缓存内容</span>
+</span><span class="line">    <span class="nx">clear</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">expired</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="kd">var</span> <span class="nx">now</span> <span class="o">=</span> <span class="o">+</span><span class="k">new</span> <span class="nb">Date</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">item</span> <span class="k">in</span> <span class="nx">storage</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">        <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">prefix</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line">        <span class="k">if</span> <span class="p">(</span><span class="nx">key</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">!</span><span class="nx">expired</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">).</span><span class="nx">expire</span> <span class="o">&lt;=</span> <span class="nx">now</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">          <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+</span><span class="line">        <span class="p">}</span>
+</span><span class="line">      <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class="line">    <span class="p">},</span>
+</span><span class="line">  <span class="p">};</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 导出为全局变量</span>
+</span><span class="line">  <span class="c1">// 注：一旦我们的脚本重命名后，缓存的旧版本会失去跟踪，</span>
+</span><span class="line">  <span class="c1">// 执行`clear(true)`，这样失去跟踪的缓存内容过期后能够得到清理</span>
+</span><span class="line">  <span class="nx">global</span><span class="p">.</span><span class="nx">StoreManager</span> <span class="o">=</span> <span class="nx">store</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class="line">
+</span><span class="line"><span class="p">}(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}());</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>有了<code>StoreManager</code>对象后，我们就可以轻松地<code>缓存JS</code>了。</p>
+
+<ul>
+  <li>源文件<code>foo.js</code>：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;line 1&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;line 2&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>通过构建（打包）工具得到<code>foo.b9193b0ded.js</code>(这里md5随便取的名，实际代码应该需要精简)：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="js"><span class="line"><span class="c1">// 自执行函数</span>
+</span><span class="line"><span class="k">void</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">  <span class="c1">// 执行代码逻辑</span>
+</span><span class="line">  <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="p">}());</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1">// 容错检测</span>
+</span><span class="line">  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">StoreManager</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">StoreManager</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">rfunc</span> <span class="o">=</span> <span class="sr">/^function\s*(?:[^(]*)\(([^)]*)\)\s*{([\s\S]*)}$/</span><span class="p">;</span>
+</span><span class="line">    <span class="kd">var</span> <span class="nx">code</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">fn</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span><span class="nx">rfunc</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nb">RegExp</span><span class="p">.</span><span class="nx">$2</span><span class="p">;</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">      <span class="c1">// 缓存一个月</span>
+</span><span class="line">      <span class="nx">StoreManager</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;foo.b9193b0ded.js&#39;</span><span class="p">,</span> <span class="nx">code</span><span class="p">,</span> <span class="p">{</span> <span class="s1">&#39;expire&#39;</span><span class="o">:</span> <span class="mi">720</span> <span class="p">});</span>
+</span><span class="line">    <span class="p">}</span>
+</span><span class="line">  <span class="p">}</span>
+</span><span class="line"><span class="p">}(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;line 1&#39;</span><span class="p">);</span>
+</span><span class="line">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;line 2&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<ul>
+  <li>得到条件判断加载（执行）<code>foo.b9193b0ded.js</code>文件的代码（同上，实际代码应该需要精简）：</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+</pre></td><td class="code"><pre><code class="html"><span class="line"><span class="c">&lt;!-- 预先引入`store-manager.js` --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://xxx.com/static/js/store-manager.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- 或者将`store-manager.js`内联到页面中 --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span> <span class="cm">/* 精简过的`store-manager.js`代码 */</span> <span class="nt">&lt;/script&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- 通过构建（打包）工具得到如下&lt;script&gt;片段 --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line"><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">StoreManager</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">StoreManager</span> <span class="o">&amp;&amp;</span> <span class="nx">StoreManager</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">&#39;foo.b9193b0ded.js&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">  <span class="k">try</span> <span class="p">{</span> <span class="nb">eval</span><span class="p">(</span><span class="nx">StoreManager</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">).</span><span class="nx">code</span><span class="p">);</span> <span class="p">}</span>
+</span><span class="line">  <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">  <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;&lt;script src=&quot;https://xxx.com/static/js/foo.b9193b0ded.js&quot;&gt;&lt;\/script&gt;&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c">&lt;!-- 其他需缓存的js脚本文件，etc --&gt;</span>
+</span><span class="line"><span class="nt">&lt;script&gt;</span>
+</span><span class="line"><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">StoreManager</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">StoreManager</span> <span class="o">&amp;&amp;</span> <span class="nx">StoreManager</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">&#39;bar.3e9a1fbe8c.js&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="line">  <span class="k">try</span> <span class="p">{</span> <span class="nb">eval</span><span class="p">(</span><span class="nx">StoreManager</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">).</span><span class="nx">code</span><span class="p">);</span> <span class="p">}</span>
+</span><span class="line">  <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{}</span>
+</span><span class="line"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="line">  <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;&lt;script src=&quot;https://xxx.com/static/js/bar.3e9a1fbe8c.js&quot;&gt;&lt;\/script&gt;&#39;</span><span class="p">);</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line"><span class="nt">&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>最后，<code>localStorage</code>针对每个域可存储容量很有限，需节制使用。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[利用Promise消除“先发起请求后收到响应”问题带来的副作用]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: javascript | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2016-08-13T20:32:42+08:00</updated>
+  <updated>2016-08-14T02:23:41+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -12,6 +12,262 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[缓存JS代码到本地localStorage的一种思路]]></title>
+    <link href="http://myunlessor.me/blog/2016/08/15/cache-javascript-code-to-localstorage/"/>
+    <updated>2016-08-15T11:22:00+08:00</updated>
+    <id>http://myunlessor.me/blog/2016/08/15/cache-javascript-code-to-localstorage</id>
+    <content type="html"><![CDATA[<p>为了加快页面的加载速度和交互速度，缓存JS脚本文件内容到本地<code>localStorage</code>（以下简称<code>缓存JS</code>）是一种行之有效的手段。</p>
+
+<p>以加载<code>foo.js</code>文件为例，<code>缓存JS</code>的逻辑大致如下：</p>
+
+<p><img src="/images/cachejs2localstorage/cache-to-local.png"></p>
+
+<!-- more -->
+
+<p>在实际应用中，<code>缓存JS</code>需要解决以下两个问题：</p>
+
+<ul>
+  <li>获取JS脚本文件的内容并写入缓存</li>
+  <li>JS脚本文件的内容变化时自动更新缓存</li>
+</ul>
+
+<h2 id="js">获取JS脚本文件的内容并写入缓存</h2>
+
+<p>前端JS文件一般使用单独的域名存放到CDN上，跨域问题使得我们无法通过ajax请求获取JS文件的内容。</p>
+
+<p>那有其他办法可以获取脚本文件的内容吗？答案是有的。</p>
+
+<p>以<code>https://www.xxx.com/static/js/foo.js</code>为例，其文件内容如下：</p>
+
+<p><code>js
+console.log('first line');
+console.log('second line');
+</code></p>
+
+<p>大家都知道，函数是可以转换成字符串类型的，因此我们可以这种方式获取函数本身的代码，如下所示：</p>
+
+<p>```js
+function foo() {
+  console.log(‘first line’);
+  console.log(‘second line’);
+}</p>
+
+<p>// 函数转换为字符串 =&gt; 函数代码的字符串形式
+console.log(String(foo));</p>
+
+<p>// 也可以这样调用得到
+console.log(foo.toString());
+```</p>
+
+<p>得到函数完整的字符串代码后，需要将字符串进行剥离，只获取得到body部分，这一步可以使用正则表达式将body匹配出来：</p>
+
+<p>```js
+// 正则表达式匹配完整的函数语句
+// 这里使用<code>^</code>和<code>$</code>匹配头尾，匹配性能不成问题
+var rfunc = /^function\s<em>(?:[^(]</em>)(([^)]<em>))\s</em>{([\s\S]*)}$/;</p>
+
+<p>// 变量<code>code</code>存放的就是<code>foo.js</code>的代码内容
+var code = String(foo).match(rfunc) &amp;&amp; RegExp.$2;
+console.log(code);
+```</p>
+
+<p>所以，将原代码包裹一层<code>function</code>，我们可以成功拿到任意脚本文件的内容，而完全不用关心是否存在跨域问题。</p>
+
+<p>于是我们可以将原先的<code>foo.js</code>自动转换成如下形式，这一步实际可以通过构建（打包）工具（如<code>webpack</code>）自动完成。</p>
+
+<p>```js
+// 自执行函数
+void function (fn) {
+  // 执行代码逻辑
+  fn.call(function () { return this; }());</p>
+
+<p>var rfunc = /^function\s<em>(?:[^(]</em>)(([^)]<em>))\s</em>{([\s\S]*)}$/;
+  var code = String(fn).match(rfunc) &amp;&amp; RegExp.$2;</p>
+
+<p>// TODO: 将<code>code</code>写入到<code>localStorage</code>中（见下文）
+}(function () {
+  console.log(‘first line’);
+  console.log(‘second line’);
+});
+```</p>
+
+<h2 id="js-1">JS脚本文件的内容变化时自动更新缓存</h2>
+
+<p>我们可以通过计算文件内容的md5值，然后取md5值前面若干位作为文件的版本号拼到文件名中（如<code>foo.09c1ff3231.js</code>、<code>foo.b9193b0ded.js</code>等），以此标记文件内容发生了变化。</p>
+
+<p>假设<code>foo.09c1ff3231.js</code>是旧版本文件，<code>foo.b9193b0ded.js</code>是新版本文件，用流程图可以清晰地呈现缓存自动更新的过程：</p>
+
+<p><img src="/images/cachejs2localstorage/update-cache-to-local.png"></p>
+
+<h2 id="section">实际应用</h2>
+
+<p>在实际应用中，我们可以将缓存相关的逻辑封装到普通对象（如命名为<code>StoreManager</code>，并保存为文件<code>store-manager.js</code>，该对象应实现如下几个功能：</p>
+
+<ul>
+  <li>获取指定脚本文件名的缓存内容</li>
+  <li>判断是否已缓存指定版本号的文件内容</li>
+  <li>将指定版本号的文件内容写入到缓存（或替换掉已缓存版本）</li>
+  <li>将指定脚本文件名的内容从缓存中移除</li>
+  <li>清理已过期的缓存内容（可选）</li>
+</ul>
+
+<p>以下是<code>StoreManager</code>的实现代码：</p>
+
+<p>```js
+void function (global) {
+  var storage = global.localStorage;</p>
+
+<p>// 缓存js时存储的key使用统一的前缀作为命名空间
+  // 这样方便管理及尽可能避免冲突
+  var prefix = ‘store-manager/js/’;</p>
+
+<p>// 匹配版本号(8~12位)
+  var rkey = /^(.+).(\w{8,20}).js$/;</p>
+
+<p>// 默认缓存时长
+  // 30 days (单位：小时)
+  var defaultExpiration = 30 * 24;</p>
+
+<p>var store = {
+    // 获取指定脚本文件名的缓存内容
+    get: function (key) {
+      var item = storage.getItem(prefix + key);
+      try {
+        return JSON.parse(item || ‘false’);
+      } catch (e) {
+        return false;
+      }
+    },</p>
+
+<pre><code>// 判断是否已缓存指定版本号的文件内容
+has: function (md5key) {
+  var matches = String(md5key).match(rkey);
+  return matches ? (this.get(matches[1]).md5 === matches[2]) : false;
+},
+
+// 将指定版本号的文件内容写入到缓存（或替换掉已缓存版本）
+set: function (md5key, code, opts) {
+  var matches = String(md5key).match(rkey);
+
+  if (matches) {
+    var now = +new Date;
+    var storeKey = prefix + matches[1];
+
+    opts || (opts = {});
+
+    var storeVal = {
+      'md5': matches[2],
+      'stamp': now,
+      'expire': (now + (opts.expire || defaultExpiration) * 60 * 60 * 1000),
+      'code': code,
+    };
+
+    storage.setItem(storeKey, JSON.stringify(storeVal));
+  }
+
+  return this;
+},
+
+// 将指定脚本文件名的内容从缓存中移除
+remove: function (key) {
+  storage.removeItem(prefix + key);
+  return this;
+},
+
+// 清理（已过期的）缓存内容
+clear: function (expired) {
+  var now = +new Date;
+
+  for (var item in storage) {
+    var key = item.replace(prefix, '');
+
+    if (key &amp;&amp; (!expired || this.get(key).expire &lt;= now)) {
+      this.remove(key);
+    }
+  }
+
+  return this;
+},   };
+</code></pre>
+
+<p>// 导出为全局变量
+  // 注：一旦我们的脚本重命名后，缓存的旧版本会失去跟踪，
+  // 执行<code>clear(true)</code>，这样失去跟踪的缓存内容过期后能够得到清理
+  global.StoreManager = store.clear(true);</p>
+
+<p>}(function () { return this; }());
+```</p>
+
+<p>有了<code>StoreManager</code>对象后，我们就可以轻松地<code>缓存JS</code>了。</p>
+
+<ul>
+  <li>源文件<code>foo.js</code>：</li>
+</ul>
+
+<p><code>js
+console.log('line 1');
+console.log('line 2');
+</code></p>
+
+<ul>
+  <li>通过构建（打包）工具得到<code>foo.b9193b0ded.js</code>(这里md5随便取的名，实际代码应该需要精简)：</li>
+</ul>
+
+<p>```
+// 自执行函数
+void function (fn) {
+  // 执行代码逻辑
+  fn.call(function () { return this; }());</p>
+
+<p>// 容错检测
+  if (typeof StoreManager === ‘object’ &amp;&amp; StoreManager) {
+    var rfunc = /^function\s<em>(?:[^(]</em>)(([^)]<em>))\s</em>{([\s\S]*)}$/;
+    var code = String(fn).match(rfunc) &amp;&amp; RegExp.$2;</p>
+
+<pre><code>if (code) {
+  // 缓存一个月
+  StoreManager.set('foo.b9193b0ded.js', code, { 'expire': 720 });
+}   } }(function () {   console.log('line 1');   console.log('line 2'); }); ```
+</code></pre>
+
+<ul>
+  <li>得到条件判断加载（执行）<code>foo.b9193b0ded.js</code>文件的代码（同上，实际代码应该需要精简）：</li>
+</ul>
+
+<p>```html
+<!-- 预先引入`store-manager.js` -->
+<script src="https://xxx.com/static/js/store-manager.js"></script></p>
+
+<!-- 或者将`store-manager.js`内联到页面中 -->
+<script> /* 精简过的`store-manager.js`代码 */ </script>
+
+<!-- 通过构建（打包）工具得到如下<script>片段 -->
+<script>
+if (typeof StoreManager === 'object' && StoreManager && StoreManager.has('foo.b9193b0ded.js')) {
+  try { eval(StoreManager.get('foo').code); }
+  catch (e) {}
+} else {
+  document.write('<script src="https://xxx.com/static/js/foo.b9193b0ded.js"><\/script>');
+}
+</script>
+
+<!-- 其他需缓存的js脚本文件，etc -->
+<script>
+if (typeof StoreManager === 'object' && StoreManager && StoreManager.has('bar.3e9a1fbe8c.js')) {
+  try { eval(StoreManager.get('bar').code); }
+  catch (e) {}
+} else {
+  document.write('<script src="https://xxx.com/static/js/bar.3e9a1fbe8c.js"><\/script>');
+}
+</script>
+
+<p>```</p>
+
+<p>最后，<code>localStorage</code>针对每个域可存储容量很有限，需节制使用。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[利用Promise消除“先发起请求后收到响应”问题带来的副作用]]></title>
@@ -664,339 +920,6 @@ var pubsub = {
 
 <p>END</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[简单的分页折叠逻辑实现]]></title>
-    <link href="http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic/"/>
-    <updated>2014-06-19T10:28:00+08:00</updated>
-    <id>http://myunlessor.me/blog/2014/06/19/one-way-to-implement-pagination-folding-logic</id>
-    <content type="html"><![CDATA[<p>列表数据量过多时，常见有以下两种呈现方式：</p>
-
-<ul>
-  <li>将数据列表分页呈现</li>
-  <li>采用瀑布流形式加载数据</li>
-</ul>
-
-<p>本文单讲前者，即以分页方式呈现时分页折叠逻辑实现。</p>
-
-<p>以往遇到需要分页的需求时，我一般采用项目中已经写好的公用组件直接用，或者利用第三方插件。观察这类代码的实现，有一个共同点：分页折叠逻辑和分页标签渲染是揉合在一块执行的。最近自己尝试着写了一个分页折叠逻辑实现，我把这部分逻辑从分页标签渲染中抽取出来了——我先处理分页折叠逻辑、再进而渲染分页标签。这么做有个好处：分页折叠逻辑和分页渲染处理实现解耦、职责区分，分页折叠逻辑代码的更换不会影响随后的渲染。</p>
-
-<!-- more -->
-
-<h2 id="section">思考过程</h2>
-
-<p>假设我们的数据有15页，如果不考虑分页折叠逻辑的话，我们分页显示大概像这样：</p>
-
-<p><code>js
-//=&gt; [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-_.range(1, 15 + 1)
-</code>
-我们可以对以上这个数组遍历渲染为标签。然而我们的页面横向空间有限，分页过多时，我们不希望将每一页都显示为标签。我们需要将跟当前页不太相干的页号折叠起来，不管数据有多少页，只显示固定可视页就好。比如，当前页为第7页，且最多显示9个槽位，我们希望显示成这样：</p>
-
-<p><code>js
-[1, '…', 5, 6, '7', 8, 9, '…', 15]
-</code></p>
-
-<p>我们显示第一页、最末页以及与第7页相邻的页，其他页做折叠处理，即上述数组中的<code>…</code>，并且当前页显示为数字字符串以区分非当前页。</p>
-
-<p>如果当前页是第2页呢？</p>
-
-<p><code>js
-[1, '2', 3, 4, 5, 6, 7, '…', 15]
-</code></p>
-
-<p>如果当前页是第12页呢？</p>
-
-<p><code>js
-[1, '…', 9, 10, 11, '12', 13, 14, 15]
-</code></p>
-
-<p>我们将分页折叠呈现用javascript的数组直接表示出来了，一切都很直观。既然这样，何不写个方法进行数组变换呢？我把这样的一个方法叫做<code>foldpages</code>：</p>
-
-<p>```js
-/**
- * [foldpages description]
- * @param  {[Array]}  pages    [未作变换的分页数组]
- * @param  {[Number]} current  [当前显示页]
- * @param  {[Number]} viewsize [分页显示槽位个数]
- * @return {[Array]}           [分页折叠后的数组]
- */
-function foldpages(pages, current, viewsize) {}</p>
-
-<p>var pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-var viewsize = 9;</p>
-
-<p>//=&gt; expected result: [1, ‘…’, 5, 6, 7, 8, 9, ‘…’, 15]
-foldpages(pages, 7, viewsize);</p>
-
-<p>//=&gt; expected result: [1, 2, 3, 4, 5, 6, 7, ‘…’, 15]
-foldpages(pages, 2, viewsize);</p>
-
-<p>//=&gt; expected result: [1, ‘…’, 9, 10, 11, 12, 13, 14, 15]
-foldpages(pages, 12, viewsize);
-```</p>
-
-<p>剩下的就是实现了！</p>
-
-<p>```js
-var foldpages = function (pages, current, viewsize) {
-  var ret  = [].concat(pages),
-      min  = 1,
-      max  = ret.length,
-      dots = ‘…’,
-      remain;</p>
-
-<p>current = Math.max(min, Math.min(current, max));</p>
-
-<p>if (max &lt;= viewsize) {
-    ret[current - 1] = ‘’ + ret[current - 1];
-    return ret;
-  }</p>
-
-<p>viewsize = Math.max(5, viewsize || 7);
-  ret      = [’’ + current];
-  remain   = viewsize - 1;</p>
-
-<p>while (true) {
-    var first = +ret[0], last = +ret[ret.length - 1];</p>
-
-<pre><code>if (first &gt; min)  {
-  ret.unshift(first - 1);
-  if (!--remain) break;
-}
-
-if (last &lt; max) {
-  ret.push(last + 1);
-  if (!--remain) break;
-}   }
-</code></pre>
-
-<p>switch (true) {
-  case +ret[0] === min:
-    ret.splice(ret.length - 2, 2, dots, max);
-    break;
-  case +ret[ret.length - 1] === max:
-    ret.splice(0, 2, min, dots);
-    break;
-  default:
-    ret.splice(0, 2, min, dots);
-    ret.splice(ret.length - 2, 2, dots, max);
-    break;
-  }</p>
-
-<p>return ret;
-};
-```</p>
-
-<p>最后再验证下。</p>
-
-<p>```js
-var TOTAL_PAGE = 15;
-var pages = _.range(1, TOTAL_PAGE + 1);</p>
-
-<p><em>.each(</em>.range(6, 10 + 1), function (foldnum) {
-  console.log(‘当显示槽位个数为’ + foldnum + ‘时，每一页的折叠显示如下:’);</p>
-
-<p>_.times(TOTAL_PAGE, function (index) {
-    console.log(++index, foldpages(pages, index, foldnum));
-  });</p>
-
-<p>console.log(‘\n’);
-});</p>
-
-<p>// =============================================
-// OUTPUT
-// =============================================</p>
-
-<p>/**
-当显示槽位个数为6时，每一页的折叠显示如下:
- 1 [“1”, 2, 3, 4, “…”, 15]
- 2 [1, “2”, 3, 4, “…”, 15]
- 3 [1, 2, “3”, 4, “…”, 15]
- 4 [1, 2, 3, “4”, “…”, 15]
- 5 [1, “…”, 4, “5”, “…”, 15]
- 6 [1, “…”, 5, “6”, “…”, 15]
- 7 [1, “…”, 6, “7”, “…”, 15]
- 8 [1, “…”, 7, “8”, “…”, 15]
- 9 [1, “…”, 8, “9”, “…”, 15]
-10 [1, “…”, 9, “10”, “…”, 15]
-11 [1, “…”, 10, “11”, “…”, 15]
-12 [1, “…”, 11, “12”, “…”, 15]
-13 [1, “…”, 12, “13”, 14, 15]
-14 [1, “…”, 12, 13, “14”, 15]
-15 [1, “…”, 12, 13, 14, “15”]</p>
-
-<p>当显示槽位个数为7时，每一页的折叠显示如下:
- 1 [“1”, 2, 3, 4, 5, “…”, 15]
- 2 [1, “2”, 3, 4, 5, “…”, 15]
- 3 [1, 2, “3”, 4, 5, “…”, 15]
- 4 [1, 2, 3, “4”, 5, “…”, 15]
- 5 [1, “…”, 4, “5”, 6, “…”, 15]
- 6 [1, “…”, 5, “6”, 7, “…”, 15]
- 7 [1, “…”, 6, “7”, 8, “…”, 15]
- 8 [1, “…”, 7, “8”, 9, “…”, 15]
- 9 [1, “…”, 8, “9”, 10, “…”, 15]
-10 [1, “…”, 9, “10”, 11, “…”, 15]
-11 [1, “…”, 10, “11”, 12, “…”, 15]
-12 [1, “…”, 11, “12”, 13, 14, 15]
-13 [1, “…”, 11, 12, “13”, 14, 15]
-14 [1, “…”, 11, 12, 13, “14”, 15]
-15 [1, “…”, 11, 12, 13, 14, “15”]</p>
-
-<p>当显示槽位个数为8时，每一页的折叠显示如下:
- 1 [“1”, 2, 3, 4, 5, 6, “…”, 15]
- 2 [1, “2”, 3, 4, 5, 6, “…”, 15]
- 3 [1, 2, “3”, 4, 5, 6, “…”, 15]
- 4 [1, 2, 3, “4”, 5, 6, “…”, 15]
- 5 [1, 2, 3, 4, “5”, 6, “…”, 15]
- 6 [1, “…”, 4, 5, “6”, 7, “…”, 15]
- 7 [1, “…”, 5, 6, “7”, 8, “…”, 15]
- 8 [1, “…”, 6, 7, “8”, 9, “…”, 15]
- 9 [1, “…”, 7, 8, “9”, 10, “…”, 15]
-10 [1, “…”, 8, 9, “10”, 11, “…”, 15]
-11 [1, “…”, 9, 10, “11”, 12, “…”, 15]
-12 [1, “…”, 10, 11, “12”, 13, 14, 15]
-13 [1, “…”, 10, 11, 12, “13”, 14, 15]
-14 [1, “…”, 10, 11, 12, 13, “14”, 15]
-15 [1, “…”, 10, 11, 12, 13, 14, “15”]</p>
-
-<p>当显示槽位个数为9时，每一页的折叠显示如下:
- 1 [“1”, 2, 3, 4, 5, 6, 7, “…”, 15]
- 2 [1, “2”, 3, 4, 5, 6, 7, “…”, 15]
- 3 [1, 2, “3”, 4, 5, 6, 7, “…”, 15]
- 4 [1, 2, 3, “4”, 5, 6, 7, “…”, 15]
- 5 [1, 2, 3, 4, “5”, 6, 7, “…”, 15]
- 6 [1, “…”, 4, 5, “6”, 7, 8, “…”, 15]
- 7 [1, “…”, 5, 6, “7”, 8, 9, “…”, 15]
- 8 [1, “…”, 6, 7, “8”, 9, 10, “…”, 15]
- 9 [1, “…”, 7, 8, “9”, 10, 11, “…”, 15]
-10 [1, “…”, 8, 9, “10”, 11, 12, “…”, 15]
-11 [1, “…”, 9, 10, “11”, 12, 13, 14, 15]
-12 [1, “…”, 9, 10, 11, “12”, 13, 14, 15]
-13 [1, “…”, 9, 10, 11, 12, “13”, 14, 15]
-14 [1, “…”, 9, 10, 11, 12, 13, “14”, 15]
-15 [1, “…”, 9, 10, 11, 12, 13, 14, “15”]</p>
-
-<p>当显示槽位个数为10时，每一页的折叠显示如下:
- 1 [“1”, 2, 3, 4, 5, 6, 7, 8, “…”, 15]
- 2 [1, “2”, 3, 4, 5, 6, 7, 8, “…”, 15]
- 3 [1, 2, “3”, 4, 5, 6, 7, 8, “…”, 15]
- 4 [1, 2, 3, “4”, 5, 6, 7, 8, “…”, 15]
- 5 [1, 2, 3, 4, “5”, 6, 7, 8, “…”, 15]
- 6 [1, 2, 3, 4, 5, “6”, 7, 8, “…”, 15]
- 7 [1, “…”, 4, 5, 6, “7”, 8, 9, “…”, 15]
- 8 [1, “…”, 5, 6, 7, “8”, 9, 10, “…”, 15]
- 9 [1, “…”, 6, 7, 8, “9”, 10, 11, “…”, 15]
-10 [1, “…”, 7, 8, 9, “10”, 11, 12, “…”, 15]
-11 [1, “…”, 8, 9, 10, “11”, 12, 13, 14, 15]
-12 [1, “…”, 8, 9, 10, 11, “12”, 13, 14, 15]
-13 [1, “…”, 8, 9, 10, 11, 12, “13”, 14, 15]
-14 [1, “…”, 8, 9, 10, 11, 12, 13, “14”, 15]
-15 [1, “…”, 8, 9, 10, 11, 12, 13, 14, “15”]
-*/
-```</p>
-
-<p>分页折叠逻辑实现好了，接下的的分页渲染就信手拈来，不费吹灰之力了！</p>
-
-<h2 id="section-1">渲染分页</h2>
-
-<p>直接上代码吧！</p>
-
-<p>```js
-var renderpages = function (pages) {
-  return _.map(pages, function (page) {
-    switch (true) {
-    case page === +page: return ‘<a href="javascript:;">’ + page + ‘</a>’;
-    case page ==  +page: return ‘<span class="current">’ + page + ‘</span>’;
-    default:             return ‘<span>’ + page + ‘</span>’;
-    }
-  }).join(‘’);
-};</p>
-
-<p>renderpages([1, ‘…’, 5, 6, ‘7’, 8, 9, ‘…’, 15]);</p>
-
-<p>//=============== OUTPUT ============&gt;
-      ‘<a href="javascript:;">1</a>’ +
-      ‘<span>…</span>’ +
-      ‘<a href="javascript:;">5</a>’ +
-      ‘<a href="javascript:;">6</a>’ +
-      ‘<span class="current">7</span>’ +
-      ‘<a href="javascript:;">8</a>’ +
-      ‘<a href="javascript:;">9</a>’ +
-      ‘<span>…</span>’ +
-      ‘<a href="javascript:;">15</a>’
-```</p>
-
-<p>可以看到分页渲染时没有了分页折叠逻辑的干扰，代码清晰而简明了。我们一般都习惯把复杂的东西简单化。当然，要想要简单的事情变复杂化也是可行的。不信，我们以分页渲染为例，看能够将它复杂化到什么程度。</p>
-
-<h2 id="section-2">简单的事情复杂化</h2>
-
-<p>仍是直接上代码的方式。</p>
-
-<p>```js
-function existy(x) { return x != null; }
-function truthy(x) { return (x !== false) &amp;&amp; existy(x); }</p>
-
-<p>function cat() {
-  var head = _.first(arguments);
-  return existy(head) ?
-         head.concat.apply(head, _.rest(arguments)) : [];
-}</p>
-
-<p>function construct(head, tail) {
-  return cat([head], _.toArray(tail));
-}</p>
-
-<p>//=&gt; [4, 8, 15, 16, 23, 42]
-cat([4], [8, 15], [16, 23, 42]);</p>
-
-<p>//=&gt; [4, 8, 15, 16, 23, 42]
-construct(4, [8, 15, 16, 23, 42]);</p>
-
-<p>function dispatch(/* funs */) {
-  var funs = _.toArray(arguments), size = funs.length;</p>
-
-<p>return function (target /*, args */) {
-    var ret = undefined, args = _.rest(arguments);</p>
-
-<pre><code>_.detect(funs, function (fun) {
-  ret = fun.apply(fun, construct(target, args));
-  return existy(ret);
-});
-
-return ret;   }; }
-</code></pre>
-
-<p>function whilst(cond, action) {
-  return function (obj) {
-    return truthy(cond(obj)) ? action(obj) : undefined;
-  };
-}</p>
-
-<p>var renderer = dispatch(
-  whilst(
-    function (x) { return x === +x; },
-    function (x) { return ‘<a href="javascript:;">’ + x + ‘</a>’; }
-  ),
-  whilst(
-    function (x) { return x == +x; },
-    function (x) { return ‘<span class="current">’ + x + ‘</span>’; }
-  ),
-  function (x) { return ‘<span>’ + x + ‘</span>’; }
-);</p>
-
-<p>var result = _.map([1, ‘…’, 5, 6, ‘7’, 8, 9, ‘…’, 15], renderer).join(‘’);
-```</p>
-
-<p>以上展示了如何用函数式编程方式把简单的事情复杂化。不过，它已背离了本文的宗旨，还是就此打住吧！</p>
-
-<p>后记：想了好几种方式实现<code>foldpages</code>方法，天马行空的。然而，没有一种方式觉得很理想，包括贴在此处的这个！我想我是有代码洁癖症的，希望以后能想到更好的实现办法！这需要灵感：或是触类旁通的，或是恍然大悟的。</p>
-
-<p><code>js
-var inspiration = _.result(aspiration, action);
-</code></p>
 ]]></content>
   </entry>
   
