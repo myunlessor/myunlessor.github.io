@@ -232,7 +232,7 @@ if (typeof StoreManager === 'object' && StoreManager && StoreManager.has('foo.b9
   try { eval(StoreManager.get('foo').code); }
   catch (e) {}
 } else {
-  document.write('<script src="https://xxx.com/static/js/foo.b9193b0ded.js"><\/script>');
+  document.write('<script src="https://www.xxx.com/static/js/foo.b9193b0ded.js"><\/script>');
 }
 </script>
 
@@ -242,7 +242,7 @@ if (typeof StoreManager === 'object' && StoreManager && StoreManager.has('bar.3e
   try { eval(StoreManager.get('bar').code); }
   catch (e) {}
 } else {
-  document.write('<script src="https://xxx.com/static/js/bar.3e9a1fbe8c.js"><\/script>');
+  document.write('<script src="https://www.xxx.com/static/js/bar.3e9a1fbe8c.js"><\/script>');
 }
 </script>
 ```
