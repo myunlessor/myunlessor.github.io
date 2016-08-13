@@ -4,7 +4,7 @@
   <title><![CDATA[文章分类: pragmatic | Silent Reverie]]></title>
   <link href="http://myunlessor.me/blog/categories/pragmatic/atom.xml" rel="self"/>
   <link href="http://myunlessor.me/"/>
-  <updated>2016-08-14T02:35:08+08:00</updated>
+  <updated>2016-08-14T02:39:22+08:00</updated>
   <id>http://myunlessor.me/</id>
   <author>
     <name><![CDATA[俞乐]]></name>
@@ -233,7 +233,7 @@ void function (fn) {
 </code></pre>
 
 <ul>
-  <li>得到条件判断加载（执行）<code>foo.b9193b0ded.js</code>文件的代码（同上，实际代码应该需要精简）：</li>
+  <li>通过条件判断是否从缓存中执行对应<code>foo.b9193b0ded.js</code>文件的代码逻辑（同上，实际代码应该需要精简）：</li>
 </ul>
 
 <p>```html
