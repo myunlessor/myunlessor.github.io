@@ -221,7 +221,7 @@ void function (fn) {
 
 ```html
 <!-- 预先引入`store-manager.js` -->
-<script src="https://xxx.com/static/js/store-manager.js"></script>
+<script src="https://www.xxx.com/static/js/store-manager.js"></script>
 
 <!-- 或者将`store-manager.js`内联到页面中 -->
 <script> /* 精简过的`store-manager.js`代码 */ </script>
